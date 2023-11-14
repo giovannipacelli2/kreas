@@ -1,0 +1,19 @@
+GET:
+
+/products/all               -> Restituisce tutti i prodotti
+/products/{$id}/product     -> Restituisce i dati inerenti ad un solo prodotto
+/products/saved-co2         -> estrae il totale della co2 risparmiata nelle vendite
+
+/sales-orders/all            -> Restituisce tutti gli ordini
+/sales-orders/{id}/information   -> Informazioni di un singolo ordine
+
+/sales-orders/date-interval?start={$start}&end={$end}            -> Restituisce tutti gli ordini
+/sales-orders/destination?country=Italy                      -> Restituisce tutti gli ordini fatti verso l'Italia
+
+POST:  
+
+/products   ->  inserire nel corpo della richiesta la riga da inserire
+
+PUT:
+
+/products/query?code={value}    -> esegue l'update della riga con quel codice prodotto
