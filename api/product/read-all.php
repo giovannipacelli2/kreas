@@ -22,7 +22,13 @@ $product = new Product( $conn );
 
 $stmt = $product->read();
 
-getOutput($stmt);
+if ( $stmt ) {
+    writeApi($stmt);
+}
+
+$GLOBALS["stmt"] = NULL;
+$GLOBALS["db"] = NULL;
+$GLOBALS["conn"] = NULL;
 
 /*-------------------------------FUNCTIONS-----------------------------*/
 
@@ -45,7 +51,7 @@ function writeApi( PDOStatement $stmt ) {
 
     header("Content-Type: application/json charset=UTF-8");
     http_response_code(200);
-    return json_encode( $result );
+    echo json_encode( $result );
 
 }
 

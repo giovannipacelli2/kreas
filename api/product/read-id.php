@@ -13,8 +13,6 @@ checkMethod( "GET" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-/*------------Test-Value------------*/
-//$PARAMS_URI = "1345";
 
 use App\model\Product;
 
@@ -26,7 +24,13 @@ $product->product_code = $GLOBALS["PARAMS_URI"];
 
 $stmt = $product->read_by_code();
 
-getOutput($stmt);
+if ( $stmt ) {
+    writeApi($stmt);
+}
+
+$GLOBALS["stmt"] = NULL;
+$GLOBALS["db"] = NULL;
+$GLOBALS["conn"] = NULL;
 
 
 
@@ -67,7 +71,7 @@ function writeApi ( PDOStatement $stmt ) {
         http_response_code(200);
     }
     header("Content-Type: application/json charset=UTF-8");
-    return json_encode( $result );
+    echo json_encode( $result );
 
 }
 

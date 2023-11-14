@@ -8,10 +8,6 @@ require_once "./api-functions.php";
 header("Acces-Control-Allow-Origin: *");
 header("Acces-Control-Allow-Methods: GET");
 
-/*----------------------FOR-DEBUG--------------------------*/
-//require_once "../../vendor/autoload.php";
-//$config = require_once "../../config/db_config.php";
-
 checkMethod( "GET" );
 
 
@@ -26,7 +22,13 @@ $sales_orders = new Sale( $conn );
 
 $stmt = $sales_orders->read();
     
-getOutput($stmt);
+if ( $stmt ) {
+    writeApi($stmt);
+}
+
+$GLOBALS["stmt"] = NULL;
+$GLOBALS["db"] = NULL;
+$GLOBALS["conn"] = NULL;
 
 /*-------------------------------FUNCTIONS-----------------------------*/
 
@@ -55,7 +57,7 @@ function writeApi( PDOStatement $stmt ) {
 
     header("Content-Type: application/json charset=UTF-8");
     http_response_code(200);
-    return json_encode( $result );
+    echo json_encode( $result );
 
 }
 

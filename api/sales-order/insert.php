@@ -39,23 +39,31 @@ foreach( $data as $key=>$value ) {
     $sale->$key = $value;
 }
 
-$stmt = $sale->insert();
+$affected_rows = $sale->insert();
 
-getOutput($stmt);
+if ( !is_null( $affected_rows ) ) {
+    writeApi( $affected_rows );
+}
+
+$GLOBALS["stmt"] = NULL;
+$GLOBALS["db"] = NULL;
+$GLOBALS["conn"] = NULL;
 
 
 
 /*-------------------------------FUNCTIONS-----------------------------*/
 
 
-function writeApi ( $stmt ) {
+function writeApi ( int $affected_rows ) {
 
     $result = [];
     
-    if ( $stmt ){
+    if ( $affected_rows > 0 ){
+
+        $s = $affected_rows == 1 ? "" : "s";
 
         $result["result"] = [
-            "message" => "inserted successfully!"
+            "message" => "inserted " . $affected_rows . " row" . $s
         ]; 
 
         http_response_code(200);
@@ -68,7 +76,7 @@ function writeApi ( $stmt ) {
     }
     
     header("Content-Type: application/json charset=UTF-8");
-    return json_encode( $result );
+    echo json_encode( $result );
 
 }
 

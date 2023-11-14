@@ -45,18 +45,24 @@ foreach( $data as $key=>$value ) {
 
 $stmt = $product->update( $product_code );
 
-getOutput($stmt);
+if ( $stmt ) {
+    writeApi( $stmt->rowCount() );
+}
+
+$GLOBALS["stmt"] = NULL;
+$GLOBALS["db"] = NULL;
+$GLOBALS["conn"] = NULL;
 
 
 
 /*-------------------------------FUNCTIONS-----------------------------*/
 
 
-function writeApi ( PDOStatement $stmt ) {
+function writeApi ( int $affected_rows ) {
 
     $result = [];
     
-    if ( $stmt->rowCount() > 0 ){
+    if ( $affected_rows > 0 ){
 
         $result["result"] = [
             "message" => "Updated successfully!"
@@ -71,7 +77,7 @@ function writeApi ( PDOStatement $stmt ) {
     }
     
     header("Content-Type: application/json charset=UTF-8");
-    return json_encode( $result );
+    echo json_encode( $result );
 
 }
 

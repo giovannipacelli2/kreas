@@ -7,9 +7,6 @@ require_once "./api-functions.php";
 header("Acces-Control-Allow-Origin: *");
 header("Acces-Control-Allow-Methods: GET");
 
-/*----------------------FOR-DEBUG--------------------------*/
-//require_once "../../vendor/autoload.php";
-//$config = require_once "../../config/db_config.php";
 
 checkMethod( "GET" );
 
@@ -26,7 +23,13 @@ $sales->sales_code = $GLOBALS["PARAMS_URI"];
 
 $stmt = $sales->read_by_code();
 
-getOutput($stmt);
+if ( $stmt ) {
+    writeApi($stmt);
+}
+
+$GLOBALS["stmt"] = NULL;
+$GLOBALS["db"] = NULL;
+$GLOBALS["conn"] = NULL;
 
 
 /*-------------------------------FUNCTIONS-----------------------------*/
@@ -63,7 +66,7 @@ function writeApi( PDOStatement $stmt ) {
     }
     
     header("Content-Type: application/json charset=UTF-8");
-    return json_encode( $result );
+    echo json_encode( $result );
 
 }
 

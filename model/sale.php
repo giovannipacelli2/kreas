@@ -106,6 +106,8 @@ class Sale{
 
     function insert(){
 
+        $affected_rows = 0;
+
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
         $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
@@ -126,8 +128,6 @@ class Sale{
                     "( sales_code, sales_date, destination, product_id ) VALUES(
                         :sales_code, :sales_date, :destination, :product_id
                     )";
-    
-            $query_ok = TRUE;
     
             for ( $i = 0; $i < count($products); $i++ ){
     
@@ -157,15 +157,13 @@ class Sale{
         
                     $stmt->execute();
                     
-                    if ( $stmt->rowCount() < 1 ) {
-                        $query_ok = FALSE;
+                    if ( $stmt->rowCount() > 0 ) {
+                        $affected_rows += $stmt->rowCount();
                     }
-                } else {
-                    $query_ok = FALSE;
                 }
             }
 
-            return $query_ok;
+            return $affected_rows;
 
         } catch( PDOException $e ) {
 

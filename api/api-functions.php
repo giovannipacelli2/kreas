@@ -39,19 +39,6 @@ function getInput() {
     return json_decode($data);
 }
 
-
-function getOutput( $stmt ) {
-
-/*     if ( $stmt ) {
-        echo writeApi( $stmt );
-    } */
-    echo writeApi( $stmt );
-    
-    $GLOBALS["stmt"] = NULL;
-    $GLOBALS["db"] = NULL;
-    $GLOBALS["conn"] = NULL;
-}
-
 function combineBySalesCode( PDOStatement $stmt ) {
 
     $tmp_arr = [];
@@ -112,11 +99,13 @@ function dataController( $data, $describe ) {
 
 function inputChecker( $data, $stmt ) {
 
+    if ( !$stmt ) exit(); 
+
     $describe = $stmt->fetchAll( PDO::FETCH_ASSOC );
 
     if ( !dataController( $data, $describe ) ) {
         
-        Message::writeMessage("Uncomplete data!");
+        Message::writeJsonMessage("Uncomplete data!");
         exit();
     }
 
