@@ -1,4 +1,5 @@
 # misc
 .env
 
-./query
+/query
+/query/*
