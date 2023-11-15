@@ -113,7 +113,7 @@ class Sale{
         $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
         $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
 
-        $products = explode( ",", $this->product_id );
+        $products = $this->strToArray( $this->product_id );
 
         try{
 
@@ -124,14 +124,8 @@ class Sale{
                             destination=:destination AND
                             product_id=:product_id;";
 
-            $q = "INSERT INTO " . $this->table_name . " " .
-                    "( sales_code, sales_date, destination, product_id ) VALUES(
-                        :sales_code, :sales_date, :destination, :product_id
-                    )";
     
             for ( $i = 0; $i < count($products); $i++ ){
-    
-                $product = trim( $products[$i] );
 
                 /*----------------Check-if-row-already-exists----------------*/
                 
@@ -140,26 +134,20 @@ class Sale{
                 $check->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
                 $check->bindParam( ":sales_date", $this->sales_date, PDO::PARAM_STR );
                 $check->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
-                $check->bindParam( ":product_id", $product, PDO::PARAM_STR );
+                $check->bindParam( ":product_id",  $products[$i], PDO::PARAM_STR );
                 
                 $check->execute();
                 
                 /*----------------It-does-the-insert-normally----------------*/
 
                 if ( $check->rowCount() < 1 ) {
-  
-                    $stmt = $this->conn->prepare($q);
-        
-                    $stmt->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
-                    $stmt->bindParam( ":sales_date", $this->sales_date, PDO::PARAM_STR );
-                    $stmt->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
-                    $stmt->bindParam( ":product_id", $product, PDO::PARAM_STR );
-        
-                    $stmt->execute();
                     
+                    $stmt = $this->simple_insert( $products[$i] );
+
                     if ( $stmt->rowCount() > 0 ) {
                         $affected_rows += $stmt->rowCount();
                     }
+  
                 }
             }
 
@@ -172,6 +160,196 @@ class Sale{
         } catch( Exception $e ) {
             $this->errorMessage( $e );
         }
+    }
+
+    function simple_insert( $single_product ){
+
+        $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
+        $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
+        $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
+
+        try{
+
+            $q = "INSERT INTO " . $this->table_name . " " .
+                    "( sales_code, sales_date, destination, product_id ) VALUES(
+                        :sales_code, :sales_date, :destination, :product_id
+                    )";
+    
+            /*----------------------Query-Insert-------------------------*/
+            
+  
+            $stmt = $this->conn->prepare($q);
+        
+            $stmt->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
+            $stmt->bindParam( ":sales_date", $this->sales_date, PDO::PARAM_STR );
+            $stmt->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
+            $stmt->bindParam( ":product_id", $single_product, PDO::PARAM_STR );
+        
+            $stmt->execute();
+                    
+
+            return $stmt;
+
+        } catch( PDOException $e ) {
+
+            $this->errorMessage( $e );
+            
+        } catch( Exception $e ) {
+            $this->errorMessage( $e );
+        }
+    }
+ 
+
+    /*-------------------------------UPDATE--------------------------------*/
+
+    function update( string $code ){
+
+        $affected_rows = 0;
+
+        $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
+        $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
+        $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
+        $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
+
+        // code by uri
+        $old_sales_code = htmlspecialchars( strip_tags( $code ) );
+
+        $products = $this->strToArray( $this->product_id );
+
+        try{
+
+            $q_check = "SELECT * FROM " . $this->table_name . " " .
+                        "WHERE sales_code=:code;";
+
+            /*--extrapolate which products are linked to the sales order--*/
+                
+            $check = $this->conn->prepare($q_check);
+
+            $check->bindParam( ":code", $old_sales_code, PDO::PARAM_STR );
+            
+            $check->execute();
+
+            $old_data = $check->fetchAll(PDO::FETCH_ASSOC);
+            
+            // existing products
+            $already_exists = array_map( function($row){
+                return $row["product_id"];
+            }, $old_data );
+
+            
+            // Products to insert not yet present in sales orders' table
+            
+            $to_update = [];
+            $to_insert = [];
+            
+            for( $i = 0; $i < count($products); $i++ ) {
+                $exists= in_array( $products[$i], $already_exists );
+
+                if ($exists) {
+                    array_push( $to_update, $products[$i] );
+                } else {
+                    array_push( $to_insert, $products[$i] );
+                }
+            }
+            /*---------------------DELETE-OLD-VALUES----------------------*/
+            
+            
+            if ( $already_exists || $this->sales_code != $old_sales_code ){
+
+
+                $del_id = "'" . implode( "','", $products ) . "'";
+    
+                $q_delete = "DELETE FROM " . $this->table_name .
+                " WHERE sales_code = :sales_code 
+                AND product_id NOT IN ( " . $del_id . " );";
+                
+                $stmt = $this->conn->prepare( $q_delete );
+                
+                $stmt->bindParam( ":sales_code", $old_sales_code, PDO::PARAM_STR );
+                
+                $stmt->execute();
+
+                var_dump("cancellazione effettuata");
+
+            }
+
+            /*---------------------INSERT-NEW-VALUES----------------------*/
+            
+            if ( $to_insert ){
+                foreach( $to_insert as $p ) {
+                    $this->simple_insert( $p );
+                }
+                var_dump("Inserimento effettuato");
+            }
+
+            /*---------------------UPDATE-OLD-VALUES----------------------*/
+            
+            if ( $to_update ){
+                foreach( $to_update as $p ) {
+                    
+                    $q = "UPDATE " . $this->table_name . " " .
+                    "SET sales_code=:sales_code,
+                        sales_date=:sales_date,
+                        destination=:destination,
+                        product_id=:product_id
+                    WHERE sales_code=:old_code
+                    AND product_id=:product_id;";
+
+                    /*--extrapolate which products are linked to the sales order--*/
+                        
+                    $stmt = $this->conn->prepare($q);
+
+                    $stmt->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
+                    $stmt->bindParam( ":sales_date", $this->sales_date, PDO::PARAM_STR );
+                    $stmt->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
+
+                    $stmt->bindParam( ":product_id", $p, PDO::PARAM_STR );
+                    $stmt->bindParam( ":old_code", $old_sales_code, PDO::PARAM_STR );
+                    
+                    $stmt->execute();
+
+                }
+                var_dump("Update effettuato");
+            }
+
+        } catch( PDOException $e ) {
+
+            $this->errorMessage( $e );
+            
+        } catch( Exception $e ) {
+            $this->errorMessage( $e );
+        }
+
+    }
+
+    
+    /*-------------------------------DELETE--------------------------------*/
+
+    function delete( string $code ){
+        // code by uri
+        $code = htmlspecialchars( strip_tags( $code ) );
+        
+        try{
+            
+            $q = "DELETE FROM " . $this->table_name .
+            " WHERE product_code IN ( :code );";
+            
+            $stmt = $this->conn->prepare( $q );
+            
+            $stmt->bindParam( ":code", $code, PDO::PARAM_STR );
+            
+            $stmt->execute();
+
+            return $stmt;
+            
+        } catch( PDOException $e ) {
+
+            $this->errorMessage( $e );
+
+        } catch( Exception $e ) {
+            $e->getMessage();
+        }
+            
     }
 
     /*---------------------------OTHER-FUNCTIONS---------------------------*/
@@ -189,6 +367,16 @@ class Sale{
         header("Content-Type: application/json charset=UTF-8");
         echo json_encode( $message );
     
+    }
+
+    function strToArray( string $string ) : array {
+
+        $arr = explode( ",", $string );
+
+        for ( $i = 0; $i < count($arr); $i++ ) {
+            $arr[$i] = trim( $arr[$i] );
+        }
+        return $arr;
     }
 
 }

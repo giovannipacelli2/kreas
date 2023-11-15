@@ -160,9 +160,9 @@ class Product{
 
             $this->errorMessage( $e );
             
-            } catch( Exception $e ) {
-                $e->getMessage();
-            }
+        } catch( Exception $e ) {
+            $e->getMessage();
+        }
 
     }
 
