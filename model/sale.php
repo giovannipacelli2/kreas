@@ -5,6 +5,7 @@ namespace App\model;
 use Exception;
 use PDO;
 use PDOException;
+use PDOStatement;
 
 class Sale{
 
@@ -144,7 +145,7 @@ class Sale{
                     
                     $stmt = $this->simple_insert( $products[$i] );
 
-                    if ( $stmt->rowCount() > 0 ) {
+                    if ( isset($stmt) && $stmt->rowCount() > 0 ){
                         $affected_rows += $stmt->rowCount();
                     }
   
@@ -193,9 +194,11 @@ class Sale{
         } catch( PDOException $e ) {
 
             $this->errorMessage( $e );
+            exit();
             
         } catch( Exception $e ) {
             $this->errorMessage( $e );
+            exit();
         }
     }
  
@@ -204,7 +207,7 @@ class Sale{
 
     function update( string $code ){
 
-        $affected_rows = 0;
+        $result = [];
 
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
@@ -251,6 +254,28 @@ class Sale{
                     array_push( $to_insert, $products[$i] );
                 }
             }
+            
+
+            /*---------------------INSERT-NEW-VALUES----------------------*/
+            
+            if ( $to_insert ){
+
+                $count = 0;
+
+                foreach( $to_insert as $p ) {
+
+                    $stmt = $this->simple_insert( $p );
+
+                    if ( isset($stmt) && $stmt->rowCount() > 0 ){
+                        $count += $stmt->rowCount();
+                    }
+                }
+                
+                if ($count != 0){
+                    $result["insert"] = $this->operationMessage( $count );
+                }
+            }
+
             /*---------------------DELETE-OLD-VALUES----------------------*/
             
             
@@ -269,22 +294,18 @@ class Sale{
                 
                 $stmt->execute();
 
-                var_dump("cancellazione effettuata");
-
-            }
-
-            /*---------------------INSERT-NEW-VALUES----------------------*/
-            
-            if ( $to_insert ){
-                foreach( $to_insert as $p ) {
-                    $this->simple_insert( $p );
+                if ( $stmt->rowCount() != 0 ) {
+                    $result["delete"] = $this->operationMessage( $stmt->rowCount() );
                 }
-                var_dump("Inserimento effettuato");
+
             }
 
             /*---------------------UPDATE-OLD-VALUES----------------------*/
             
             if ( $to_update ){
+
+                $count = 0;
+
                 foreach( $to_update as $p ) {
                     
                     $q = "UPDATE " . $this->table_name . " " .
@@ -308,9 +329,26 @@ class Sale{
                     
                     $stmt->execute();
 
+                    if ( $stmt ) {
+                        $count += $stmt->rowCount();
+                    }
+
                 }
-                var_dump("Update effettuato");
+                
+                if ( $count != 0 ) {
+                    $result["update"] = $this->operationMessage( $count );
+                }
+                
             }
+
+            /*-----------------------RETURN-RESULT------------------------*/
+
+            if ( $result ){
+                return $result;
+            } else {
+                return FALSE;
+            }
+
 
         } catch( PDOException $e ) {
 
@@ -332,7 +370,7 @@ class Sale{
         try{
             
             $q = "DELETE FROM " . $this->table_name .
-            " WHERE product_code IN ( :code );";
+            " WHERE sales_code IN ( :code );";
             
             $stmt = $this->conn->prepare( $q );
             
@@ -377,6 +415,17 @@ class Sale{
             $arr[$i] = trim( $arr[$i] );
         }
         return $arr;
+    }
+
+    function operationMessage( int $n_rows ) : string {
+
+        if ( $n_rows > 0 ) {
+            $s = $n_rows == 1 ? "" : "s";
+
+            return $n_rows . " row" . $s;
+
+        }
+        return "";
     }
 
 }

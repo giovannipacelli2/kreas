@@ -2,16 +2,16 @@
 
 require_once "./api-functions.php";
 
-/*-----------------------UPDATE-CONNECTION-HEADER----------------------*/
+/*-----------------------DELETE-CONNECTION-HEADER----------------------*/
 
 header("Acces-Control-Allow-Origin: *");
-header("Acces-Control-Allow-Methods: PUT");
+header("Acces-Control-Allow-Methods: DELETE");
 
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 
-checkMethod( "PUT" );
+checkMethod( "DELETE" );
 
 
 /*---------------------------START-CONNECTION--------------------------*/
@@ -24,30 +24,16 @@ use App\model\Sale;
 
 $conn = getConnection( $config );
 
-$sale = new Sale( $conn );
+$sales = new Sale( $conn );
 
 // QUERY PARAM
 $sales_code = $GLOBALS["PARAMS_URI"]["code"];
 
-// GET DATA FROM REQUEST
-$data = getInput();
+$stmt = $sales->delete( $sales_code );
 
-$stmt = $sale->describe();
-
-// Check the correctness of data
-inputChecker( $data, $stmt );
-
-// Inserting input data into new "sale" instance
-
-foreach( $data as $key=>$value ) {
-    $sale->$key = $value;
-    
+if ( $stmt ) {
+    writeApi( $stmt->rowCount() );
 }
-
-$res = $sale->update( $sales_code );
-
-writeApi( $res );
-
 
 $GLOBALS["stmt"] = NULL;
 $GLOBALS["db"] = NULL;
@@ -58,19 +44,21 @@ $GLOBALS["conn"] = NULL;
 /*-------------------------------FUNCTIONS-----------------------------*/
 
 
-function writeApi ( mixed $res ) {
+function writeApi ( int $affected_rows ) {
 
     $result = [];
     
-    if ( $res ){
-        
-        $result["result"] = $res;
+    if ( $affected_rows > 0 ){
+
+        $result["result"] = [
+            "message" => "Deleting successfully!"
+        ]; 
 
         http_response_code(200);
 
     } else {
         $result["result"] = [
-            "message" => "Update unsuccessful"
+            "message" => "DELETE unsuccessful"
         ]; 
     }
     
