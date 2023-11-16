@@ -1,6 +1,7 @@
 <?php
 
-require_once "./api-functions.php";
+use App\model\Product;
+use App\core\ApiFunctions;
 
 /*------------------------READ-CONNECTION-HEADER-----------------------*/
 
@@ -8,15 +9,13 @@ header("Acces-Control-Allow-Origin: *");
 header("Acces-Control-Allow-Methods: GET");
 
 
-checkMethod( "GET" );
+ApiFunctions::checkMethod( "GET" );
 
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-use App\model\Product;
 
-
-$conn = getConnection( $config );
+$conn = ApiFunctions::getConnection( $config );
 
 $product = new Product( $conn );
 

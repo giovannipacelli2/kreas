@@ -1,6 +1,7 @@
 <?php
 
-require_once "./api-functions.php";
+use App\model\Product;
+use App\core\ApiFunctions;
 
 /*-----------------------UPDATE-CONNECTION-HEADER----------------------*/
 
@@ -11,18 +12,15 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 
-checkMethod( "PUT" );
+ApiFunctions::checkMethod( "PUT" );
 
 
 /*---------------------------START-CONNECTION--------------------------*/
 
 
-use App\model\Product;
-
-
 // $GLOBALS["PARAMS_URI"] = [ query => value ]
 
-$conn = getConnection( $config );
+$conn = ApiFunctions::getConnection( $config );
 
 $product = new Product( $conn );
 
@@ -30,12 +28,12 @@ $product = new Product( $conn );
 $product_code = $GLOBALS["PARAMS_URI"]["code"];
 
 // GET DATA FROM REQUEST
-$data = getInput();
+$data = ApiFunctions::getInput();
 
 $stmt = $product->describe();
 
 // Check the correctness of data
-inputChecker( $data, $stmt );
+ApiFunctions::inputChecker( $data, $stmt );
 
 // Inserting input data into new "product" instance
 

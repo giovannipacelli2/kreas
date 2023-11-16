@@ -1,6 +1,7 @@
 <?php
 
-require_once "./api-functions.php";
+use App\model\Product;
+use App\core\ApiFunctions;
 
 /*-----------------------INSERT-CONNECTION-HEADER----------------------*/
 
@@ -11,27 +12,26 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 
-checkMethod( "POST" );
+ApiFunctions::checkMethod( "POST" );
 
 
 /*---------------------------START-CONNECTION--------------------------*/
 
 
-use App\model\Product;
 
 
 
-$conn = getConnection( $config );
+$conn = ApiFunctions::getConnection( $config );
 
 $product = new Product( $conn );
 
 // GET DATA FROM REQUEST
-$data = getInput();
+$data = ApiFunctions::getInput();
 
 $stmt = $product->describe();
 
 // Check the correctness of data
-inputChecker( $data, $stmt );
+ApiFunctions::inputChecker( $data, $stmt );
 
 // inserting input data into new "product" instance
 

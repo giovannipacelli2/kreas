@@ -61,6 +61,7 @@ class ComposerStaticInite26fbaf1633b4649105edb686f538c0f
     );
 
     public static $classMap = array (
+        'App\\core\\ApiFunctions' => __DIR__ . '/../..' . '/core/ApiFunctions.php',
         'App\\core\\Connection' => __DIR__ . '/../..' . '/core/Connection.php',
         'App\\core\\Message' => __DIR__ . '/../..' . '/core/Message.php',
         'App\\core\\UriBuilder' => __DIR__ . '/../..' . '/core/UriBuilder.php',

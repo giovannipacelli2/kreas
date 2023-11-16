@@ -1,22 +1,20 @@
 <?php
 
 
-require_once "./api-functions.php";
+use App\model\Sale;
+use App\core\ApiFunctions;
 
 /*-----------------------INSERT-CONNECTION-HEADER----------------------*/
 
 header("Acces-Control-Allow-Origin: *");
 header("Acces-Control-Allow-Methods: GET");
 
-checkMethod( "GET" );
+ApiFunctions::checkMethod( "GET" );
 
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-use App\model\Sale;
-
-
-$conn = getConnection( $config );
+$conn = ApiFunctions::getConnection( $config );
 
 $sales_orders = new Sale( $conn );
 
@@ -36,7 +34,7 @@ $GLOBALS["conn"] = NULL;
 function writeApi( PDOStatement $stmt ) {
 
     $result = [];
-    $tmp_arr = combineBySalesCode( $stmt );
+    $tmp_arr = ApiFunctions::combineBySalesCode( $stmt );
 
     $result["result"]["sales_orders"]=[];
 

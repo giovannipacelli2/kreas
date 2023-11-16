@@ -1,6 +1,7 @@
 <?php
 
-require_once "./api-functions.php";
+use App\model\Sale;
+use App\core\ApiFunctions;
 
 /*-----------------------INSERT-CONNECTION-HEADER----------------------*/
 
@@ -8,15 +9,13 @@ header("Acces-Control-Allow-Origin: *");
 header("Acces-Control-Allow-Methods: GET");
 
 
-checkMethod( "GET" );
+ApiFunctions::checkMethod( "GET" );
 
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-use App\model\Sale;
 
-
-$conn = getConnection( $config );
+$conn = ApiFunctions::getConnection( $config );
 
 $sales = new Sale( $conn );
 $sales->sales_code = $GLOBALS["PARAMS_URI"];
@@ -47,7 +46,7 @@ function writeApi( PDOStatement $stmt ) {
 
     } else {
         
-        $tmp_arr = combineBySalesCode( $stmt );
+        $tmp_arr = ApiFunctions::combineBySalesCode( $stmt );
 
         $key = array_key_first( $tmp_arr );
         $row = $tmp_arr[$key];

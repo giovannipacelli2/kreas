@@ -1,6 +1,7 @@
 <?php
 
-require_once "./api-functions.php";
+use App\model\Sale;
+use App\core\ApiFunctions;
 
 /*-----------------------DELETE-CONNECTION-HEADER----------------------*/
 
@@ -11,18 +12,15 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 
-checkMethod( "DELETE" );
+ApiFunctions::checkMethod( "DELETE" );
 
 
 /*---------------------------START-CONNECTION--------------------------*/
 
 
-use App\model\Sale;
-
-
 // $GLOBALS["PARAMS_URI"] = [ query => value ]
 
-$conn = getConnection( $config );
+$conn = ApiFunctions::getConnection( $config );
 
 $sales = new Sale( $conn );
 
