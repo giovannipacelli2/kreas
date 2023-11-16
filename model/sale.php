@@ -51,7 +51,7 @@ class Sale{
         
         try{
 
-            $q = "SELECT p.name, so.sales_code, so.sales_date, so.destination, p.saved_kg_co2,
+            $q = "SELECT p.name, p.product_code, so.sales_code, so.sales_date, so.destination, p.saved_kg_co2,
             SUM(p.saved_kg_co2) OVER ( PARTITION BY so.sales_code ) AS `total_saved_co2`,
             COUNT(so.sales_code) OVER ( PARTITION BY so.sales_code ) AS `articles_num`
             FROM " . $this->table_join .
@@ -79,7 +79,7 @@ class Sale{
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         
         try{
-            $q = "SELECT p.name, so.sales_code, so.sales_date, so.destination, p.saved_kg_co2,
+            $q = "SELECT p.name, p.product_code, so.sales_code, so.sales_date, so.destination, p.saved_kg_co2,
                     SUM(p.saved_kg_co2) OVER ( PARTITION BY so.sales_code ) AS `total_saved_co2`,
                     COUNT(so.sales_code) OVER ( PARTITION BY so.sales_code ) AS `articles_num`
                     FROM ". $this->table_join .

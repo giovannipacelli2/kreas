@@ -4,22 +4,18 @@ return [
     "GET" => [
         "products" => [
                 "all" => [
-                    "query" => "",
                     "file" => "./product/crud/read-all.php",
                 ],
                 "{id}" => [
-                    "query" => "",
                     "file" => "./product/crud/read-id.php",
                 ]
         ],
 
         "sales-orders" => [
                 "all" => [
-                    "query" => "",
                     "file" => "./sales-order/crud/read-all.php",
                 ],
                 "{id}" => [
-                    "query" => "",
                     "file" => "./sales-order/crud/read-id.php",
                 ],
                 "date-interval" => [
@@ -34,11 +30,9 @@ return [
     ],
     "POST" => [
         "products" => [
-            "query"=>"",
             "file"=>"./product/crud/insert.php",
         ],
         "sales-orders" => [
-            "query"=>"",
             "file"=>"./sales-order/crud/insert.php",
         ]
     ],

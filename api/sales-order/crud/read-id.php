@@ -57,6 +57,7 @@ function writeApi( PDOStatement $stmt ) {
             "sales_date" => $row["sales_date"],
             "destination_country" => $row["destination"],
             "sold_products" => $row["name"],
+            "product_codes" => $row["product_code"],
             "articles_number" => $row["articles_num"],
             "total_saved_co2" => $row["total_saved_co2"]
         ]; 

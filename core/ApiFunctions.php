@@ -59,7 +59,8 @@ class ApiFunctions {
             } else {
                 $tmp_arr[$row["sales_code"]] = [
                     ...$tmp_arr[$row["sales_code"]],
-                    "name" => $tmp_arr[$row["sales_code"]]["name"] . ", " . $row["name"]
+                    "name" => $tmp_arr[$row["sales_code"]]["name"] . ", " . $row["name"],
+                    "product_code" => $tmp_arr[$row["sales_code"]]["product_code"] . ", " . $row["product_code"]
                 ];
             }
         }
