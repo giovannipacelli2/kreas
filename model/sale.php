@@ -74,9 +74,9 @@ class Sale{
 
     }
 
-    public function read_by_code() {
+    public function read_by_code( $sales_code ) {
 
-        $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
+        $sales_code = htmlspecialchars( strip_tags( $sales_code ) );
         
         try{
             $q = "SELECT p.name, p.product_code, so.sales_code, so.sales_date, so.destination, p.saved_kg_co2,
@@ -88,7 +88,7 @@ class Sale{
                     ORDER BY so.sales_code;";
 
             $stmt = $this->conn->prepare( $q );
-            $stmt->bindParam( ':sales_code', $this->sales_code, PDO::PARAM_STR );
+            $stmt->bindParam( ':sales_code', $sales_code, PDO::PARAM_STR );
             
             $stmt->execute();
 
@@ -207,16 +207,52 @@ class Sale{
 
     function update( string $code ){
 
+        // Check values we want to change
+        
+        if ( empty($this->sales_code)
+                || empty($this->sales_code)
+                || empty($this->destination)
+                || empty($this->product_id)
+            ) {
+        
+            $old_data = $this->read_by_code( $code )->fetchAll( PDO::FETCH_ASSOC );
+            
+            if ( !$this->sales_code ) {
+                $this->sales_code = $old_data[0]["sales_code"];
+            }
+            if ( !$this->sales_date ) {
+                $this->sales_date = $old_data[0]["sales_date"];
+            }
+            if ( !$this->destination ) {
+                $this->destination = $old_data[0]["destination"];
+            }  
+            if ( !$this->product_id ) {
+
+                $res = "";
+
+                foreach ( $old_data as $old ) {
+                    if ( $res === "" ){
+                        $res = $old["product_code"];
+                    } else {
+                        $res = $res . ", " . $old["product_code"];
+                    }
+                }
+                $this->product_id = $res;
+            }  
+        }
+
         $result = [];
 
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
         $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
+        // All product codes as string -> "0100, 1234, 4040"
         $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
 
         // code by uri
         $old_sales_code = htmlspecialchars( strip_tags( $code ) );
 
+        // Extraxt values in array -> [ 0100, 1234, 4040 ]
         $products = $this->strToArray( $this->product_id );
 
         try{

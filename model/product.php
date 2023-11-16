@@ -131,26 +131,28 @@ class Product{
 
     public function update( string $code ) {
 
-        $code = htmlspecialchars( strip_tags( $code ) );
-
+        
+        // Check values we want to change
+        
         if ( empty($this->product_code)
-            || empty($this->name)
-            || empty($this->saved_kg_co2)) {
-
-                $old_data = $this->read_by_code( $code )->fetch( PDO::FETCH_ASSOC );
-                               
-                if ( !$this->product_code ) {
-                    $this->product_code = $old_data["product_code"];
-                }
-                if ( !$this->name ) {
-                    $this->name = $old_data["name"];
-                }
-                if ( !$this->saved_kg_co2 ) {
-                    $this->saved_kg_co2 = $old_data["saved_kg_co2"];
-                }
-
-
+                || empty($this->name)
+                || empty($this->saved_kg_co2)
+            ) {
+        
+            $old_data = $this->read_by_code( $code )->fetch( PDO::FETCH_ASSOC );
+            
+            if ( !$this->product_code ) {
+                $this->product_code = $old_data["product_code"];
             }
+            if ( !$this->name ) {
+                $this->name = $old_data["name"];
+            }
+            if ( !$this->saved_kg_co2 ) {
+                $this->saved_kg_co2 = $old_data["saved_kg_co2"];
+            }  
+        }
+    
+        $code = htmlspecialchars( strip_tags( $code ) );
 
         $this->product_code = htmlspecialchars( strip_tags( $this->product_code ) );
         $this->name = htmlspecialchars( strip_tags( $this->name ) );
