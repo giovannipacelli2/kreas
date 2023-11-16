@@ -3,7 +3,7 @@
 
 function fileManager( $uri ) {
     
-    $list = require_once "../config/api_config/requests.php";
+    $list = require_once "../config/api_config/routes.php";
 
     // type, request, method
     extract( $uri );
