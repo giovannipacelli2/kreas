@@ -41,6 +41,7 @@ function writeApi( PDOStatement $stmt ) {
     while ( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ) {
     
         $array_row = [
+            "product_code" => $row["product_code"],
             "name" => $row["name"],
             "saved_kg_co2" => $row["saved_kg_co2"]
         ];

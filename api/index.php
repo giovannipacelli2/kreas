@@ -30,10 +30,10 @@ $uri = UriBuilder::requestParts() ;
 
 if ($uri) {
     // result = [ file, param ]
-    $result = fileManager( $uri );
+    $result = fileRenderer( $uri );
 
     if (!$result) {
-        Message::writeMessage( "Resource not found" );
+        Message::writeJsonMessage( "Resource not found" );
         exit();
     }
 
@@ -45,11 +45,11 @@ if ($uri) {
 } 
 elseif (!$uri) {    // $uri=FALSE only if not exists "path" & "query"
 
-    Message::writeMessage( "Not valid parameters" );
+    Message::writeJsonMessage( "Not valid parameters" );
     exit();
 }
 elseif ($uri["query"] && !( $uri["type"] && $uri["query"] ) ) {
-    Message::writeMessage( "Not valid parameters" );
+    Message::writeJsonMessage( "Not valid parameters" );
     exit();
 }
 

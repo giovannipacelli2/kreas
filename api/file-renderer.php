@@ -1,7 +1,7 @@
 <?php
 
 
-function fileManager( $uri ) {
+function fileRenderer( $uri ) {
     
     $list = require_once "../config/api_config/routes.php";
 
