@@ -33,12 +33,15 @@ $data = ApiFunctions::getInput();
 $stmt = $product->describe();
 
 // Check the correctness of data
-ApiFunctions::inputChecker( $data, $stmt );
+$data_fields = ApiFunctions::updateChecker( $data, $stmt );
 
 // Inserting input data into new "product" instance
 
 foreach( $data as $key=>$value ) {
-    $product->$key = $value;
+    if ( in_array( $key, $data_fields ) ){
+        $product->$key = $value;
+    } 
+
 }
 
 $stmt = $product->update( $product_code );

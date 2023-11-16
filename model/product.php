@@ -67,16 +67,16 @@ class Product{
         
     }
     
-    public function read_by_code() {
+    public function read_by_code( $product_code ) {
         
-        $this->product_code = htmlspecialchars( strip_tags( $this->product_code ) );
+        $product_code = htmlspecialchars( strip_tags( $product_code ) );
         
         try{
             $q = "SELECT * FROM " . $this->table_name . 
             " WHERE product_code=:product_code";
             
             $stmt = $this->conn->prepare( $q );
-            $stmt->bindParam( ':product_code', $this->product_code, PDO::PARAM_STR );
+            $stmt->bindParam( ':product_code', $product_code, PDO::PARAM_STR );
             
             $stmt->execute();
             
@@ -131,12 +131,32 @@ class Product{
 
     public function update( string $code ) {
 
+        $code = htmlspecialchars( strip_tags( $code ) );
+
+        if ( empty($this->product_code)
+            || empty($this->name)
+            || empty($this->saved_kg_co2)) {
+
+                $old_data = $this->read_by_code( $code )->fetch( PDO::FETCH_ASSOC );
+                               
+                if ( !$this->product_code ) {
+                    $this->product_code = $old_data["product_code"];
+                }
+                if ( !$this->name ) {
+                    $this->name = $old_data["name"];
+                }
+                if ( !$this->saved_kg_co2 ) {
+                    $this->saved_kg_co2 = $old_data["saved_kg_co2"];
+                }
+
+
+            }
+
         $this->product_code = htmlspecialchars( strip_tags( $this->product_code ) );
         $this->name = htmlspecialchars( strip_tags( $this->name ) );
         $this->saved_kg_co2 = htmlspecialchars( strip_tags( $this->saved_kg_co2 ) );
 
         // code by uri
-        $code = htmlspecialchars( strip_tags( $code ) );
 
         try{
 

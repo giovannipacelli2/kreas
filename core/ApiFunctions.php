@@ -120,6 +120,33 @@ class ApiFunctions {
         }
 
     }
+
+    public static function updateChecker( $data, $stmt ) {
+
+        if ( !$stmt ) exit(); 
+
+        $result = [];
+
+        $describe = $stmt->fetchAll( PDO::FETCH_ASSOC );
+        
+        $fields = array_map( function($elem){
+            return $elem["Field"];
+        }, $describe );
+
+        foreach( $data as $key=>$value ) {
+            if ( in_array( $key, $fields ) ){
+                array_push( $result, $key );
+            }
+        }
+
+        if ( !$result ) {
+            Message::writeJsonMessage("Wrong data");
+            exit();
+        }
+
+        return $result;
+
+    }
 }
 
 ?>

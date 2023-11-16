@@ -18,9 +18,8 @@ ApiFunctions::checkMethod( "GET" );
 $conn = ApiFunctions::getConnection( $config );
 
 $product = new Product( $conn );
-$product->product_code = $GLOBALS["PARAMS_URI"];
 
-$stmt = $product->read_by_code();
+$stmt = $product->read_by_code( $GLOBALS["PARAMS_URI"] );
 
 if ( $stmt ) {
     writeApi($stmt);
