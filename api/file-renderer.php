@@ -1,5 +1,6 @@
 <?php
 
+use App\core\Message;
 
 function fileRenderer( $uri ) {
     
@@ -22,19 +23,21 @@ function fileRenderer( $uri ) {
 
         if ( $query ) {
 
-            // check if the inserted query exists in "requests" file
+            // Check if the entered parameters are correct
+
             $count = 0;
-
+            
             foreach ( $query as $key=>$value ) {
-
+                
                 if ( in_array( $key, $find_file["query"] ) ) {
-
+                    
                     $count++;
                 }
             }
+            
+            // checks if the number of parameters matches those of the routes.php file
 
-            if ( count( $query ) == $count ) {
-                
+            if ( count( $find_file["query"] ) == $count ) {
                 $res = [
                     "file" => $find_file["file"],
                     "param" => $query
@@ -43,8 +46,6 @@ function fileRenderer( $uri ) {
             } else {
                 $res = FALSE;
             }
-
-
         } 
 
         else {
