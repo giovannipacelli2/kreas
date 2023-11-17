@@ -5,7 +5,7 @@ function fileRenderer( $uri ) {
     
     $list = require_once "../config/api_config/routes.php";
 
-    // type, request, method
+    // type, request, method, query
     extract( $uri );
 
     if (!$request && $method=="GET" ) return FALSE;
@@ -23,8 +23,17 @@ function fileRenderer( $uri ) {
         if ( $query ) {
 
             // check if the inserted query exists in "requests" file
+            $count = 0;
 
-            if ( count($query) == 1 && array_key_exists( $find_file["query"], $query )  ) {
+            foreach ( $query as $key=>$value ) {
+
+                if ( in_array( $key, $find_file["query"] ) ) {
+
+                    $count++;
+                }
+            }
+
+            if ( count( $query ) == $count ) {
                 
                 $res = [
                     "file" => $find_file["file"],

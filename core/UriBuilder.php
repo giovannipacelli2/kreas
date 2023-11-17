@@ -2,6 +2,25 @@
 
     namespace App\core;
 
+    /*---------------------------------------------------------------------------------------
+    |                                                                                       |
+    |    UriBuilder make a associative array starting by URI.                               |
+    |    Example:                                                                           |
+    |                                                                                       |
+    |    GET -> https://{domain}/api/sales-orders/interval-date?start={start}&end={end}     |
+    |                                                                                       |
+    |     [                                                                                 |
+    |        "method" => "GET",                                                             |
+    |        "type" => "sales-orders",                                                      |
+    |        "request" => "interval-date",                                                  |
+    |        "query" => [                                                                   |
+    |            "start" => "value",                                                        |
+    |            "end" => "value"                                                           |
+    |        ]                                                                              |
+    |    ]                                                                                  |
+    |                                                                                       |
+    ---------------------------------------------------------------------------------------*/
+
     class UriBuilder {
 
 

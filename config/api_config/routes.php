@@ -22,12 +22,12 @@ return [
                     "file" => "./sales-order/crud/read-id.php",
                 ],
                 "date-interval" => [
-                    "query" => "start={value}&end={value}",
-                    "file" => "./sales-order/",
+                    "query" => ["start", "end"],
+                    "file" => "./sales-order/query/date-interval.php",
                 ],
                 "destination" => [
-                    "query" => "country={value}",
-                    "file" => "./sales-order/",
+                    "query" => ["country"],
+                    "file" => "./sales-order/query/destination.php",
                 ]
         ]        
     ],
@@ -42,13 +42,13 @@ return [
     "PUT" => [
         "products" => [
             "query" => [
-                "query"=>"code",
+                "query"=>["code"],
                 "file"=>"./product/crud/update.php"
             ]
         ],
         "sales-orders" => [
             "query" => [
-                "query"=>"code",
+                "query"=>["code"],
                 "file"=>"./sales-order/crud/update.php"
             ]
         ]
@@ -56,13 +56,13 @@ return [
     "DELETE" => [
         "products" => [
             "query" => [
-                "query"=>"code",
+                "query"=>["code"],
                 "file"=>"./product/crud/delete.php"
             ]
         ],
         "sales-orders" => [
             "query" => [
-                "query"=>"code",
+                "query"=>["code"],
                 "file"=>"./sales-order/crud/delete.php"
             ]
         ]
