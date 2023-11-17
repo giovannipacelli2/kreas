@@ -2,6 +2,7 @@
 
 use App\model\Sale;
 use App\core\ApiFunctions;
+use App\core\Message;
 
 /*-----------------------INSERT-CONNECTION-HEADER----------------------*/
 
@@ -14,7 +15,9 @@ ApiFunctions::checkMethod( "GET" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-die( var_dump( $GLOBALS["PARAMS_URI"] ) );
+$date = ApiFunctions::checkCorrectDates( $GLOBALS["PARAMS_URI"] );
+
+if ( !$date ) exit();
 
 
 /* $conn = ApiFunctions::getConnection( $config );

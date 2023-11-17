@@ -32,6 +32,9 @@ function fileRenderer( $uri ) {
                 if ( in_array( $key, $find_file["query"] ) ) {
                     
                     $count++;
+                } else {
+                    $count = 0;
+                    return;
                 }
             }
             

@@ -4,6 +4,7 @@ namespace App\core;
 
 use App\core\Connection;
 use App\core\Message;
+use DateTime;
 use PDO;
 use PDOStatement;
 
@@ -145,6 +146,55 @@ class ApiFunctions {
         }
 
         return $result;
+
+    }
+
+
+    public static function checkCorrectDates( array $date_arr ) : mixed {
+        $now = new DateTime("now");
+
+        $date = [
+            "start" => "",
+            "end" => ""
+        ];
+
+        $count = 0;
+
+        foreach( $date_arr as $key=>$value ) {
+
+            if ( $value != "" ){
+                $date[$key] = new DateTime( $value );
+                $count++;
+            }
+        }
+
+        if ( $count === 0 ) {
+            Message::writeJsonMessage("The 'START' and 'END' values ​​cannot be both empty!");
+            return FALSE;
+        } elseif ( $count < count( $date ) ) {
+
+            if ( $date["start"] != "" && $date["start"] >= $now  ) {
+
+                Message::writeJsonMessage("the 'START' date cannot be greater than today's date");
+                return FALSE;
+
+            } elseif ( $date["end"] != "" && $date["end"] <= $now ) {
+
+                Message::writeJsonMessage("the 'END' date cannot be less than today's date");
+                return FALSE;
+
+            }
+
+            if ( $date["start"] == "" ) {
+                $date["start"] = $now;
+            }
+            if ( $date["end"] == "" ) {
+                $date["end"] = $now;
+            }
+
+        }
+
+        return $date;
 
     }
 }
