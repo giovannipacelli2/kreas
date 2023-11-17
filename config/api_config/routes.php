@@ -15,6 +15,9 @@ return [
                 "all" => [
                     "file" => "./sales-order/crud/read-all.php",
                 ],
+                "all-co2" => [
+                    "file" => "./sales-order/query/all-co2.php",
+                ],
                 "{id}" => [
                     "file" => "./sales-order/crud/read-id.php",
                 ],

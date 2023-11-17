@@ -5,11 +5,10 @@ namespace App\model;
 use Exception;
 use PDO;
 use PDOException;
-use PDOStatement;
 
 class Sale{
 
-    public $sales_code, $sales_date, $destination, $product_id, $product_num, $saved_kg_co2;
+    public $sales_code, $sales_date, $destination, $product_id;
 
     private $conn;
     private $table_name = "sales_orders" ;
@@ -425,8 +424,36 @@ class Sale{
         }
             
     }
+    
+    /*-----------------------------------------------QUERY------------------------------------------------*/
 
-    /*---------------------------OTHER-FUNCTIONS---------------------------*/
+    function getCo2FromOrders() {
+
+        try{
+
+            $q = "SELECT SUM(j.saved_kg_co2) AS `total_co2_saved`
+                    FROM (
+                            SELECT p.saved_kg_co2
+                            FROM  " . $this->table_join .
+                            " ON p.product_code = so.product_id
+                        ) AS j;";
+
+            $stmt = $this->conn->prepare( $q );
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch( PDOException $e ) {
+
+            $this->errorMessage( $e );
+
+        } catch( Exception $e ) {
+            $e->getMessage();
+        }
+
+    }
+    
+    /*-------------------------------------------OTHER-FUNCTIONS------------------------------------------*/
 
     function errorMessage( $e ) {
 
