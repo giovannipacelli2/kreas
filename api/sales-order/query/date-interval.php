@@ -19,57 +19,39 @@ $date = ApiFunctions::checkCorrectDates( $GLOBALS["PARAMS_URI"] );
 
 if ( !$date ) exit();
 
-
-/* $conn = ApiFunctions::getConnection( $config );
+$conn = ApiFunctions::getConnection( $config );
 
 $sales = new Sale( $conn );
 
-$stmt = $sales->read_by_code( $GLOBALS["PARAMS_URI"] );
+$stmt = $sales->getCo2FromOrdersDate( ...$date );
 
 if ( $stmt ) {
-    writeApi($stmt);
+    writeApi($stmt, $date);
 }
 
 $GLOBALS["stmt"] = NULL;
 $GLOBALS["db"] = NULL;
 $GLOBALS["conn"] = NULL;
- */
+
 
 /*-------------------------------FUNCTIONS-----------------------------*/
 
 
-function writeApi( PDOStatement $stmt ) {
+
+function writeApi( PDOStatement $stmt, array $date ) {
+
+    $res = $stmt->fetch( PDO::FETCH_ASSOC );
 
     $result = [];
-
-    if ( $stmt->rowCount() == 0 ) {
-
-        $result["result"] = [
-            "message" => "Resource Not Found"
-        ];
-
-    } else {
+    $result["result"] = [
+        "start_date" => $date["start"]->format( "Y-m-d" ),
+        "end_date" => $date["end"]->format( "Y-m-d" ), 
+        ...$res
         
-        $tmp_arr = ApiFunctions::combineBySalesCode( $stmt );
+    ];
 
-        $key = array_key_first( $tmp_arr );
-        $row = $tmp_arr[$key];
-
-    
-        $result["result"] = [
-            "sales_code" => $row["sales_code"],
-            "sales_date" => $row["sales_date"],
-            "destination_country" => $row["destination"],
-            "sold_products" => $row["name"],
-            "product_codes" => $row["product_code"],
-            "articles_number" => $row["articles_num"],
-            "total_saved_co2" => $row["total_saved_co2"]
-        ]; 
-
-        http_response_code(200);
-    }
-    
     header("Content-Type: application/json charset=UTF-8");
+    http_response_code(200);
     echo json_encode( $result );
 
 }

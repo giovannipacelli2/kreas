@@ -34,11 +34,11 @@ class Product{
             
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-            } catch( Exception $e ) {
-                $e->getMessage();
-            }
+
+        }
             
         }
         
@@ -59,11 +59,11 @@ class Product{
             
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-            } catch( Exception $e ) {
-                $e->getMessage();
-            }
+
+        }
         
     }
     
@@ -84,11 +84,11 @@ class Product{
             
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-            } catch( Exception $e ) {
-                $e->getMessage();
-            }
+
+        }
             
         }
         
@@ -119,11 +119,11 @@ class Product{
 
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-            } catch( Exception $e ) {
-                $e->getMessage();
-            }
+
+        }
 
     }
 
@@ -180,10 +180,10 @@ class Product{
 
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-        } catch( Exception $e ) {
-            $e->getMessage();
+
         }
 
     }
@@ -210,32 +210,31 @@ class Product{
             
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
 
-            } catch( Exception $e ) {
-                $e->getMessage();
-            }
-            
         }
+            
+    }
         
     /*---------------------------OTHER-FUNCTIONS---------------------------*/
 
     function errorMessage( $e ) {
 
-        $message = [
+        $user_message = [
             "error" => [
                 "error_type" => "Query Error",
-                "error_code" => $e->getCode(),
-                "message" => $e->getMessage()
+                "error_code" => $e->getCode()
                 ]
             ];
-            
+                
         header("Content-Type: application/json charset=UTF-8");
-        echo json_encode( $message );
-
-    }
-        
-        
-    }
+        echo json_encode( $user_message );
     
-    ?>
+    }
+        
+        
+}
+    
+?>

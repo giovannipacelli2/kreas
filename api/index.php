@@ -9,6 +9,7 @@ header("Acces-Control-Allow-Methods: *");
 /*----------------------------REQUIRE-FILES----------------------------*/
 require "../vendor/autoload.php";
 require "./file-renderer.php";
+require "./error-handler.php";
 $config = require_once "../config/db_config.php";
 
 /*---------------------------REQUIRE-CLASSES---------------------------*/

@@ -2,7 +2,7 @@
 
 namespace App\model;
 
-use Exception;
+use DateTime;
 use PDO;
 use PDOException;
 
@@ -34,11 +34,11 @@ class Sale{
             
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-            } catch( Exception $e ) {
-                $e->getMessage();
-            }
+
+        }
             
         }
     
@@ -65,11 +65,11 @@ class Sale{
 
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-            } catch( Exception $e ) {
-                $e->getMessage();
-            }
+
+        }
 
     }
 
@@ -95,11 +95,11 @@ class Sale{
 
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-            } catch( Exception $e ) {
-                $e->getMessage();
-            }
+
+        }
 
     }
     /*-------------------------------INSERT--------------------------------*/
@@ -155,10 +155,10 @@ class Sale{
 
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-        } catch( Exception $e ) {
-            $this->errorMessage( $e );
+
         }
     }
 
@@ -192,12 +192,11 @@ class Sale{
 
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
             exit();
-            
-        } catch( Exception $e ) {
-            $this->errorMessage( $e );
-            exit();
+
         }
     }
  
@@ -387,10 +386,10 @@ class Sale{
 
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
-            
-        } catch( Exception $e ) {
-            $this->errorMessage( $e );
+
         }
 
     }
@@ -417,15 +416,17 @@ class Sale{
             
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
 
-        } catch( Exception $e ) {
-            $e->getMessage();
         }
             
     }
     
     /*-----------------------------------------------QUERY------------------------------------------------*/
+
+    /*------------------------------TOTAL-CO2------------------------------*/
 
     function getCo2FromOrders() {
 
@@ -445,10 +446,49 @@ class Sale{
 
         } catch( PDOException $e ) {
 
+            exceptionHandler( $e );
+
             $this->errorMessage( $e );
 
-        } catch( Exception $e ) {
-            $e->getMessage();
+        }
+
+    }
+
+    /*----------------------TOTAL-CO2-IN-DATE-INTERVAL---------------------*/
+
+    function getCo2FromOrdersDate( DateTime $start, DateTime $end ) {
+
+        $start = htmlspecialchars( strip_tags( $start->format( "Y-m-d H:i:s" ) ) );
+        $end = htmlspecialchars( strip_tags( $end->format( "Y-m-d H:i:s" ) ) );
+        
+
+        try{
+
+            $q = "SELECT SUM(j.saved_kg_co2) AS `co2_saved`
+                    
+                    FROM (
+                            SELECT *
+                            FROM " . $this->table_join .
+                            " ON p.product_code = so.product_id
+                        ) AS j
+                    WHERE STR_TO_DATE(j.sales_date, '%Y-%m-%d %H:%i:%s') > STR_TO_DATE(:start, '%Y-%m-%d %H:%i:%s')
+                    AND STR_TO_DATE(j.sales_date, '%Y-%m-%d %H:%i:%s') < STR_TO_DATE(:end, '%Y-%m-%d %H:%i:%s');";
+
+            $stmt = $this->conn->prepare( $q );
+
+            $stmt->bindParam(":start", $start, PDO::PARAM_STR);
+            $stmt->bindParam(":end", $end, PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch( PDOException $e ) {
+
+            exceptionHandler( $e );
+
+            $this->errorMessage( $e );
+
         }
 
     }
@@ -457,16 +497,15 @@ class Sale{
 
     function errorMessage( $e ) {
 
-        $message = [
+        $user_message = [
             "error" => [
                 "error_type" => "Query Error",
-                "error_code" => $e->getCode(),
-                "message" => $e->getMessage()
+                "error_code" => $e->getCode()
                 ]
             ];
                 
         header("Content-Type: application/json charset=UTF-8");
-        echo json_encode( $message );
+        echo json_encode( $user_message );
     
     }
 

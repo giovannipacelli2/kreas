@@ -4,9 +4,10 @@ namespace App\core;
 
 use App\core\Connection;
 use App\core\Message;
-use DateTime;
-use PDO;
-use PDOStatement;
+use DateError;
+use DateTime, PDO, PDOStatement;
+use Exception, DateException;
+
 
 class ApiFunctions {
 
@@ -160,12 +161,17 @@ class ApiFunctions {
 
         $count = 0;
 
-        foreach( $date_arr as $key=>$value ) {
-
-            if ( $value != "" ){
-                $date[$key] = new DateTime( $value );
-                $count++;
+        try{
+            foreach( $date_arr as $key=>$value ) {
+    
+                if ( $value != "" ){
+                    $date[$key] = new DateTime( $value );
+                    $count++;
+                }
             }
+        } catch (Exception $e ) {
+            Message::writeJsonMessage("Error in date format!");
+            return FALSE;
         }
 
         if ( $count === 0 ) {
