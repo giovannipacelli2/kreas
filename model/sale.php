@@ -117,39 +117,68 @@ class Sale{
 
         try{
 
+            /*----------------Check-if-row-already-exists----------------*/
+
             $q_check = "SELECT * FROM " . $this->table_name . " " .
-                        "WHERE 
-                            sales_code=:sales_code AND
-                            sales_date=:sales_date AND
-                            destination=:destination AND
-                            product_id=:product_id;";
+                        "WHERE sales_code=:sales_code";
 
-    
-            for ( $i = 0; $i < count($products); $i++ ){
+            $check = $this->conn->prepare($q_check);
+                        
+            $check->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
+                        
+            $check->execute();
 
-                /*----------------Check-if-row-already-exists----------------*/
-                
-                $check = $this->conn->prepare($q_check);
-                
-                $check->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
-                $check->bindParam( ":sales_date", $this->sales_date, PDO::PARAM_STR );
-                $check->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
-                $check->bindParam( ":product_id",  $products[$i], PDO::PARAM_STR );
-                
-                $check->execute();
-                
-                /*----------------It-does-the-insert-normally----------------*/
+            /*----------------It-does-the-insert-normally----------------*/
 
-                if ( $check->rowCount() < 1 ) {
-                    
+            if ( $check->rowCount() == 0 ) {
+
+                for ( $i = 0; $i < count($products); $i++ ){
+                
                     $stmt = $this->simple_insert( $products[$i] );
 
+                    // Returns affected rows
                     if ( isset($stmt) && $stmt->rowCount() > 0 ){
                         $affected_rows += $stmt->rowCount();
                     }
-  
                 }
             }
+            elseif ( $check->rowCount() != 0 ) {
+                
+                $old_data = $check->fetchAll(PDO::FETCH_ASSOC);
+                
+                /*--------------Check-integrity-of-inserted-data-------------*/
+                if ( 
+                    $old_data[0]["sales_date"] != $this->sales_date ||
+                    $old_data[0]["destination"] != $this->destination
+                ){
+                    throw new PDOException("Integrity violation", 23000);
+                } 
+
+                /*-Check-if-there-are-any-orders-with-the-product_ids-entered-*/
+                else {
+
+                    $old_products = array_map( function($p){
+                        return $p["product_id"];
+                    }, $old_data );
+
+                    for ( $i = 0; $i < count($products); $i++ ){
+
+                        if ( !in_array( $products[$i], $old_products ) ) {
+
+                            $stmt = $this->simple_insert( $products[$i] );
+        
+                            // Returns affected rows
+                            if ( isset($stmt) && $stmt->rowCount() > 0 ){
+                                $affected_rows += $stmt->rowCount();
+                            }
+
+                        }
+                    }
+                }
+
+            }
+    
+            
 
             return $affected_rows;
 

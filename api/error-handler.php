@@ -5,8 +5,11 @@
 
     
     function errorHandler( $err_n, $err_str, $err_file, $err_line ){
+
+        $date = new DateTime("now");
+        $date = $date->format( "Y-m-d" );
         
-        $message = "Error: [$err_n] $err_str - $err_file : $err_line" . PHP_EOL . PHP_EOL;
+        $message = "Date: $date" . PHP_EOL . "Error: [$err_n] $err_str - $err_file : $err_line" . PHP_EOL . PHP_EOL;
         error_log( $message, 3, "../error/error-log.txt" );
         
     }
@@ -16,8 +19,11 @@
         $msg = $e->getMessage();
         $file = $e->getFile();
         $line = $e->getLine();
+
+        $date = new DateTime("now");
+        $date = $date->format( "Y-m-d" );
         
-        $message = "Error: [$code] $msg - $file : $line" . PHP_EOL . PHP_EOL;
+        $message = "Date: $date" . PHP_EOL . "Error: [$code] $msg - $file : line: $line" . PHP_EOL . PHP_EOL;
         error_log( $message, 3, "../error/exception-log.txt" );
         
     }

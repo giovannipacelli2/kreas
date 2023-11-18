@@ -1,6 +1,9 @@
-Error: [42000] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'FROMM products' at line 1 - C:\Users\giess\Documents\GitHub\kreas\model\product.php : 56
+Date: 2023-11-18 
+Error: [23000] Integrity violation - C:\Users\giess\Documents\GitHub\kreas\model\sale.php : 154
 
-Error: [0] syntax error, unexpected token "return" - C:\Users\giess\Documents\GitHub\kreas\model\product.php : 58
+Date: 2023-11-18
+Error: [23000] Integrity violation - C:\Users\giess\Documents\GitHub\kreas\model\sale.php : 154
 
-Error: [0] syntax error, unexpected token "return" - C:\Users\giess\Documents\GitHub\kreas\model\product.php : 58
+Date: 2023-11-18
+Error: [23000] Integrity violation - C:\Users\giess\Documents\GitHub\kreas\model\sale.php : line: 154
 
