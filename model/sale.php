@@ -2,6 +2,7 @@
 
 namespace App\model;
 
+use App\core\Message;
 use DateTime;
 use PDO;
 use PDOException;
@@ -143,38 +144,19 @@ class Sale{
                 }
             }
             elseif ( $check->rowCount() != 0 ) {
+
+                $message["result"] = [
+                    "Error"=> "Integrity violation",
+                    "Message" => "Order already exists"
+                ];
+
+                $message = json_encode( $message );
+                header("Content-Type: application/json charset=UTF-8");
+                echo $message;
                 
-                $old_data = $check->fetchAll(PDO::FETCH_ASSOC);
-                
-                /*--------------Check-integrity-of-inserted-data-------------*/
-                if ( 
-                    $old_data[0]["sales_date"] != $this->sales_date ||
-                    $old_data[0]["destination"] != $this->destination
-                ){
-                    throw new PDOException("Integrity violation", 23000);
-                } 
-
-                /*-Check-if-there-are-any-orders-with-the-product_ids-entered-*/
-                else {
-
-                    $old_products = array_map( function($p){
-                        return $p["product_id"];
-                    }, $old_data );
-
-                    for ( $i = 0; $i < count($products); $i++ ){
-
-                        if ( !in_array( $products[$i], $old_products ) ) {
-
-                            $stmt = $this->simple_insert( $products[$i] );
-        
-                            // Returns affected rows
-                            if ( isset($stmt) && $stmt->rowCount() > 0 ){
-                                $affected_rows += $stmt->rowCount();
-                            }
-
-                        }
-                    }
-                }
+                $message = null;
+                exit();               
+                //throw new PDOException("Integrity violation", 23000);
 
             }
     
