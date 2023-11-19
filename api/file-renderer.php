@@ -26,10 +26,10 @@ function fileRenderer( $uri ) {
             // Check if the entered parameters are correct
 
             $count = 0;
-            
-            foreach ( $query as $key=>$value ) {
+
+            foreach ( $query as $q_row ){
                 
-                if ( in_array( $key, $find_file["query"] ) ) {
+                if ( in_array( array_key_first($q_row), $find_file["query"] ) ) {
                     
                     $count++;
                 } else {

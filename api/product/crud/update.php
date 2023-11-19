@@ -17,7 +17,6 @@ ApiFunctions::checkMethod( "PUT" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-
 // $GLOBALS["PARAMS_URI"] = [ query => value ]
 
 $conn = ApiFunctions::getConnection( $config );
@@ -25,7 +24,7 @@ $conn = ApiFunctions::getConnection( $config );
 $product = new Product( $conn );
 
 // QUERY PARAM
-$product_code = $GLOBALS["PARAMS_URI"]["code"];
+$product_code = $GLOBALS["PARAMS_URI"][0]["code"];
 
 // GET DATA FROM REQUEST
 $data = ApiFunctions::getInput();

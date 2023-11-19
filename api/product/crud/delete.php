@@ -25,7 +25,7 @@ $conn = ApiFunctions::getConnection( $config );
 $product = new Product( $conn );
 
 // QUERY PARAM
-$product_code = $GLOBALS["PARAMS_URI"]["code"];
+$product_code = $GLOBALS["PARAMS_URI"][0]["code"];
 
 $stmt = $product->delete( $product_code );
 

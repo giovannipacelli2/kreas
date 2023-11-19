@@ -14,7 +14,7 @@ ApiFunctions::checkMethod( "GET" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-$product = $GLOBALS["PARAMS_URI"]["product"];
+$product = $GLOBALS["PARAMS_URI"][0]["product"];
 
 if ( !$product ) exit();
 

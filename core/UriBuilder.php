@@ -14,8 +14,8 @@
     |        "type" => "sales-orders",                                                      |
     |        "request" => "interval-date",                                                  |
     |        "query" => [                                                                   |
-    |            "start" => "value",                                                        |
-    |            "end" => "value"                                                           |
+    |            [ "start" => "value" ],                                                    |
+    |            [ "end" => "value" ]                                                       |
     |        ]                                                                              |
     |    ]                                                                                  |
     |                                                                                       |
@@ -58,6 +58,7 @@
             if ( isset($_SERVER['QUERY_STRING']) ) {
 
                 $query = trim( $_SERVER['QUERY_STRING'] );
+
                 $arr_query = explode( "&", $query );
 
                 if ( count($arr_query) > 0 ) {
@@ -67,11 +68,10 @@
                     foreach( $arr_query as $q ) {
 
                         $q_arr = explode( "=", $q );
+
+                        $data = [ $q_arr[0] => $q_arr[1] ];
     
-                        $uri["query"] = [
-                            ...$uri["query"],
-                            $q_arr[0] => $q_arr[1]
-                        ];
+                        array_push( $uri["query"], $data );
 
                     }
                 }

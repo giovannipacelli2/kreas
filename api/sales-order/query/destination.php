@@ -14,7 +14,7 @@ ApiFunctions::checkMethod( "GET" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-$destination = $GLOBALS["PARAMS_URI"]["country"];
+$destination = $GLOBALS["PARAMS_URI"][0]["country"];
 
 if ( !$destination ) exit();
 
