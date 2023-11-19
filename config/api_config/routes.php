@@ -21,13 +21,17 @@ return [
                 "{id}" => [
                     "file" => "./sales-order/crud/read-id.php",
                 ],
-                "date-interval" => [
+                "date-interval-co2" => [
                     "query" => ["start", "end"],
                     "file" => "./sales-order/query/date-interval.php",
                 ],
-                "destination" => [
+                "destination-co2" => [
                     "query" => ["country"],
                     "file" => "./sales-order/query/destination.php",
+                ],
+                "product-co2" => [
+                    "query" => ["product"],
+                    "file" => "./sales-order/query/product-id.php",
                 ]
         ]        
     ],

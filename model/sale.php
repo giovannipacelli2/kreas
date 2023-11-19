@@ -504,6 +504,74 @@ class Sale{
 
     }
     
+    /*-----------------------TOTAL-CO2-BY-DESTINATION----------------------*/
+
+    function getCo2FromDestination( string $destination ) {
+
+        $destination = htmlspecialchars( strip_tags( $destination ) );
+        
+
+        try{
+
+            $q = "SELECT SUM(j.saved_kg_co2) AS `total_co2_saved`
+                    FROM (
+                            SELECT p.saved_kg_co2
+                            FROM " . $this->table_join . 
+                            " ON p.product_code = so.product_id
+                            WHERE so.destination = :destination
+                        ) AS j;";
+
+            $stmt = $this->conn->prepare( $q );
+
+            $stmt->bindParam(":destination", $destination, PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch( PDOException $e ) {
+
+            exceptionHandler( $e );
+
+            $this->errorMessage( $e );
+
+        }
+
+    }
+    /*-------------------------TOTAL-CO2-BY-PRODUCT------------------------*/
+
+    function getCo2FromProduct( string $product_id ) {
+
+        $product_id = htmlspecialchars( strip_tags( $product_id ) );
+        
+        try{
+
+            $q = "SELECT SUM(j.saved_kg_co2) AS `total_co2_saved`
+                    FROM (
+                            SELECT p.saved_kg_co2
+                            FROM " . $this->table_join .
+                            " ON p.product_code = so.product_id
+                            WHERE p.product_code = :product_id
+                        ) AS j;";
+
+            $stmt = $this->conn->prepare( $q );
+
+            $stmt->bindParam(":product_id", $product_id, PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch( PDOException $e ) {
+
+            exceptionHandler( $e );
+
+            $this->errorMessage( $e );
+
+        }
+
+    }
+
     /*-------------------------------------------OTHER-FUNCTIONS------------------------------------------*/
 
     function errorMessage( $e ) {

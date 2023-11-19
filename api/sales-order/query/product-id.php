@@ -14,18 +14,18 @@ ApiFunctions::checkMethod( "GET" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-$date = ApiFunctions::checkCorrectDates( $GLOBALS["PARAMS_URI"] );
+$product = $GLOBALS["PARAMS_URI"]["product"];
 
-if ( !$date ) exit();
+if ( !$product ) exit();
 
 $conn = ApiFunctions::getConnection( $config );
 
 $sales = new Sale( $conn );
 
-$stmt = $sales->getCo2FromOrdersDate( ...$date );
+$stmt = $sales->getCo2FromProduct( $product );
 
 if ( $stmt ) {
-    writeApi($stmt, $date);
+    writeApi($stmt);
 }
 
 $GLOBALS["stmt"] = NULL;
@@ -37,17 +37,25 @@ $GLOBALS["conn"] = NULL;
 
 
 
-function writeApi( PDOStatement $stmt, array $date ) {
-
-    $res = $stmt->fetch( PDO::FETCH_ASSOC );
-
+function writeApi( PDOStatement $stmt ) {
+    
     $result = [];
-    $result["result"] = [
-        "start_date" => $date["start"]->format( "Y-m-d" ),
-        "end_date" => $date["end"]->format( "Y-m-d" ), 
-        ...$res
+
+    $data = $stmt->fetch( PDO::FETCH_ASSOC );
+    
+    $data = isset( $data["total_co2_saved"] ) ? $data : false;
+
+    if ( $data ) {
         
-    ];
+        $result["result"] = [
+            $GLOBALS["product"] => $data
+        ];
+
+    } else {
+        $result["result"] = [
+            "message" => "Product not found!"
+        ];
+    }
 
     header("Content-Type: application/json charset=UTF-8");
     http_response_code(200);
