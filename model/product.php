@@ -2,6 +2,7 @@
 
 namespace App\model;
 
+use App\core\Message;
 use Exception;
 use PDOException;
 use PDO;
@@ -139,17 +140,24 @@ class Product{
                 || empty($this->saved_kg_co2)
             ) {
         
-            $old_data = $this->read_by_code( $code )->fetch( PDO::FETCH_ASSOC );
+            $old_data = $this->read_by_code( $code );
             
-            if ( !$this->product_code ) {
-                $this->product_code = $old_data["product_code"];
+            if ( $old_data->rowCount()>0 ){
+
+                $old_data = $old_data->fetch( PDO::FETCH_ASSOC );
+                
+                if ( !$this->product_code ) {
+                    $this->product_code = $old_data["product_code"];
+                }
+                if ( !$this->name ) {
+                    $this->name = $old_data["name"];
+                }
+                if ( !$this->saved_kg_co2 ) {
+                    $this->saved_kg_co2 = $old_data["saved_kg_co2"];
+                }  
+
             }
-            if ( !$this->name ) {
-                $this->name = $old_data["name"];
-            }
-            if ( !$this->saved_kg_co2 ) {
-                $this->saved_kg_co2 = $old_data["saved_kg_co2"];
-            }  
+            
         }
     
         $code = htmlspecialchars( strip_tags( $code ) );
