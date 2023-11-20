@@ -3,7 +3,6 @@
 namespace App\model;
 
 use App\core\Message;
-use Exception;
 use PDOException;
 use PDO;
 
@@ -138,7 +137,8 @@ class Product{
     public function update( string $code ) {
 
         
-        // Check values we want to change
+        // This ensures that when you make the request, 
+        // you can change one or more values leaving the old values unchanged.
         
         if ( empty($this->product_code)
                 || empty($this->name)

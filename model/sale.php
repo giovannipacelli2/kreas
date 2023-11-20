@@ -143,6 +143,8 @@ class Sale{
                     }
                 }
             }
+
+            /*--------------When-sales-code-already-exists---------------*/
             elseif ( $check->rowCount() != 0 ) {
 
                 $message["result"] = [
@@ -156,7 +158,6 @@ class Sale{
                 
                 $message = null;
                 exit();               
-                //throw new PDOException("Integrity violation", 23000);
 
             }
     
@@ -216,7 +217,8 @@ class Sale{
 
     function update( string $code ){
 
-        // Check values we want to change
+        // This ensures that when you make the request, 
+        // you can change one or more values leaving the old values unchanged.
         
         if ( empty($this->sales_code)
                 || empty($this->sales_code)
