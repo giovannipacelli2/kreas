@@ -23,7 +23,7 @@ $GLOBALS["PARAMS_URI"] = NULL;
 
 
 // Assoviative array with:
-// "type", "request", "query", "method"
+// "method", "type", "request", "query"
 
 $uri = UriBuilder::requestParts() ;
 
@@ -49,7 +49,7 @@ elseif (!$uri) {    // $uri=FALSE only if not exists "path" & "query"
     Message::writeJsonMessage( "Not valid parameters" );
     exit();
 }
-elseif ($uri["query"] && !( $uri["type"] && $uri["query"] ) ) {
+elseif ( $uri["query"] && !$uri["type"] && !$uri["query"] ) {
     Message::writeJsonMessage( "Not valid parameters" );
     exit();
 }
