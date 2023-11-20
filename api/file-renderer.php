@@ -4,7 +4,13 @@ use App\core\Message;
 
 function fileRenderer( $uri ) {
     
-    $list = require_once "../config/api_config/routes.php";
+    $list = include_once("../config/api_config/routes.php");
+    
+
+    if (!$list) {
+        Message::writeJsonMessage( "Error loading routes file" );
+        exit();
+    }
 
     // type, request, method, query
     extract( $uri );
@@ -21,7 +27,7 @@ function fileRenderer( $uri ) {
 
         $find_file = $list[$method][$type][$request];
 
-        if ( $query ) {
+        if ( $query && isset($find_file["query"]) ) {
 
             // Check if the entered parameters are correct
 
@@ -50,6 +56,9 @@ function fileRenderer( $uri ) {
                 $res = FALSE;
             }
         } 
+        elseif ( $query && !isset($find_file["query"]) ){
+            $res = FALSE;
+        }
 
         else {
 
@@ -65,6 +74,8 @@ function fileRenderer( $uri ) {
     } 
 
     elseif ( isset( $list[$method][$type] ) ) {
+
+        if( $query ) return FALSE;
 
         $file = NULL;
 
