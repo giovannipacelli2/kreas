@@ -37,7 +37,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
             
@@ -68,7 +68,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
 
@@ -98,7 +98,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
 
@@ -168,7 +168,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
     }
@@ -205,7 +205,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
             exit();
 
         }
@@ -399,7 +399,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
 
@@ -429,7 +429,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
             
@@ -459,7 +459,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
 
@@ -498,7 +498,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
 
@@ -533,7 +533,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
 
@@ -566,7 +566,7 @@ class Sale{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
 
@@ -574,19 +574,6 @@ class Sale{
 
     /*-------------------------------------------OTHER-FUNCTIONS------------------------------------------*/
 
-    function errorMessage( $e ) {
-
-        $user_message = [
-            "error" => [
-                "error_type" => "Query Error",
-                "error_code" => $e->getCode()
-                ]
-            ];
-                
-        header("Content-Type: application/json charset=UTF-8");
-        echo json_encode( $user_message );
-    
-    }
 
     function strToArray( string $string ) : array {
 

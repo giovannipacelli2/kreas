@@ -14,7 +14,15 @@ ApiFunctions::checkMethod( "GET" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-$date = ApiFunctions::checkCorrectDates( $GLOBALS["PARAMS_URI"] );
+extract($GLOBALS["PARAMS_URI"][0]);
+extract($GLOBALS["PARAMS_URI"][1]);
+
+$params = [
+    "start" => $start,
+    "end" => $end
+];
+
+$date = ApiFunctions::checkCorrectDates( $params );
 
 if ( !$date ) exit();
 
@@ -39,15 +47,25 @@ $GLOBALS["conn"] = NULL;
 
 function writeApi( PDOStatement $stmt, array $date ) {
 
-    $res = $stmt->fetch( PDO::FETCH_ASSOC );
-
     $result = [];
-    $result["result"] = [
-        "start_date" => $date["start"]->format( "Y-m-d" ),
-        "end_date" => $date["end"]->format( "Y-m-d" ), 
-        ...$res
+
+    $res = $stmt->fetch( PDO::FETCH_ASSOC );
+    
+    $res = isset( $res["co2_saved"] ) ? $res : false;
+
+    if ($res) {
         
-    ];
+        $result["result"] = [
+            "start_date" => $date["start"]->format( "Y-m-d" ),
+            "end_date" => $date["end"]->format( "Y-m-d" ), 
+            ...$res
+        ];
+    } else {
+        $result["result"] = [
+            "message" => "Data not found!"
+        ];
+    }
+
 
     header("Content-Type: application/json charset=UTF-8");
     http_response_code(200);

@@ -37,7 +37,7 @@ class Product{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
             
@@ -62,7 +62,7 @@ class Product{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
         
@@ -87,7 +87,7 @@ class Product{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
             
@@ -122,7 +122,12 @@ class Product{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            if ( $e->getCode() == "23000" ) {
+                Message::errorMessage( $e, "Inserted key already exists!!" );
+            } else {
+                Message::errorMessage( $e );
+            }
+
 
         }
 
@@ -190,7 +195,7 @@ class Product{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
 
@@ -220,7 +225,7 @@ class Product{
 
             exceptionHandler( $e );
 
-            $this->errorMessage( $e );
+            Message::errorMessage( $e );
 
         }
             
@@ -228,19 +233,6 @@ class Product{
         
     /*---------------------------OTHER-FUNCTIONS---------------------------*/
 
-    function errorMessage( $e ) {
-
-        $user_message = [
-            "error" => [
-                "error_type" => "Query Error",
-                "error_code" => $e->getCode()
-                ]
-            ];
-                
-        header("Content-Type: application/json charset=UTF-8");
-        echo json_encode( $user_message );
-    
-    }
         
         
 }
