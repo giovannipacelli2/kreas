@@ -4,9 +4,8 @@ namespace App\core;
 
 use App\core\Connection;
 use App\core\Message;
-use DateError;
 use DateTime, PDO, PDOStatement;
-use Exception, DateException;
+use Exception;
 
 
 class ApiFunctions {
@@ -175,9 +174,13 @@ class ApiFunctions {
         }
 
         if ( $count === 0 ) {
+
             Message::writeJsonMessage("The 'START' and 'END' values ​​cannot be both empty!");
             return FALSE;
-        } elseif ( $count < count( $date ) ) {
+
+        } 
+        
+        elseif ( $count < count( $date ) ) {
 
             if ( $date["start"] != "" && $date["start"] >= $now  ) {
 
@@ -196,6 +199,19 @@ class ApiFunctions {
             }
             if ( $date["end"] == "" ) {
                 $date["end"] = $now;
+            }
+
+        }
+
+        elseif ( $count == count( $date ) ) {
+
+            if ( $date["start"] > $date["end"] ) {
+                Message::writeJsonMessage("the 'END' date cannot be less than 'START' date");
+                return FALSE;
+            }
+            elseif ( $date["start"] == $date["end"] ) {
+                Message::writeJsonMessage("The 'START' date can't be the same as the 'END' date");
+                return FALSE;
             }
 
         }
