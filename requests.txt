@@ -1,19 +1,62 @@
 GET:
 
-/products/all               -> Restituisce tutti i prodotti
-/products/{$id}/product     -> Restituisce i dati inerenti ad un solo prodotto
-/products/saved-co2         -> estrae il totale della co2 risparmiata nelle vendite
+api/products/all               -> Restituisce tutti i prodotti
+api/products/{id}               -> Restituisce i dati inerenti ad un solo prodotto
 
-/sales-orders/all            -> Restituisce tutti gli ordini
-/sales-orders/{id}/information   -> Informazioni di un singolo ordine
 
-/sales-orders/date-interval?start={$start}&end={$end}            -> Restituisce tutti gli ordini
-/sales-orders/destination?country=Italy                      -> Restituisce tutti gli ordini fatti verso l'Italia
+api/sales-orders/all            -> Restituisce tutti gli ordini
+api/sales-orders/{id}   -> Informazioni di un singolo ordine
+
+api/sales-orders/all-co2         -> estrae il totale della co2 risparmiata dalle vendite
+
+api/sales-orders/date-interval-co2?start={start}&end={end}   -> Restituisce tutti gli ordini
+
+api/sales-orders/destination-co2?country={country}            -> Restituisce tutti gli ordini fatti verso un determinato paese
+
+api/sales-orders/product-co2?product={id}               -> restituisce il totale della co2 risparmiata dalle vendite di un determinato prodotto
 
 POST:  
 
-/products   ->  inserire nel corpo della richiesta la riga da inserire
+api/products   ->  inserire nel corpo della richiesta i dati del prodotto da inserire.
+
+{
+	"product_code": "4000",
+    "name": "meat",
+    "saved_kg_co2":"6"
+}
+
+api/sales-orders        ->  inserire nel corpo della richiesta i dati della vendita da inserire.
+
+{
+    "sales_code": "AA0000",
+    "sales_date": "2023-11-13 09:36:20",
+    "destination": "Italy",
+    "product_id": "5520, 0100"
+}
 
 PUT:
 
-/products/query?code={value}    -> esegue l'update della riga con quel codice prodotto
+api/products/query?code={value}    -> esegue l'update del prodotto con il codice = {value}
+                                   -> inserire uno o più elementi da modificare nel corpo della richiesta
+
+{
+	"product_code": "5520",
+    "name": "meat",
+    "saved_kg_co2":"7"
+}
+
+api/sales-orders/query?code={value}     -> esegue l'update della vendita con il codice = {value}
+                                        -> inserire uno o più elementi da modificare nel corpo della richiesta
+
+{
+    "sales_code": "BB0000",
+    "sales_date": "2023-11-14",
+    "destination": "USA",
+    "product_id": "5520, 0100, 0234"
+}
+
+DELETE:
+
+api/products/query?code={value}     -> elimina il prodotto con il codice = {value}
+
+api/sales-orders/query?code={value}     -> elimina la vendita con il codice = {value}
