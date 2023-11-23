@@ -5,13 +5,13 @@
 ### - Per l'utilizzo:
 
 * Specifico front-end per la visualizzazione dei dati.
-* Software come Postman che permatta di effettuare richieste ad API.
+* Software come Postman che permetta di effettuare richieste ad API.
 
 ### - Per lo sviluppo:
 
 * Aver installato PHP e MySql ( es. XAMPP )
-* installare composer come dependecy manager
-* creare apposito file .ENV per l’accesso al DB
+* installare `composer` come dependecy manager
+* creare apposito file `.ENV` per l’accesso al DB
 
 		Immettere i propri dati nel file .ENV
         
