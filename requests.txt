@@ -36,8 +36,8 @@ api/sales-orders        ->  inserire nel corpo della richiesta i dati della vend
 
 PUT:
 
-api/products/query?code={value}    -> esegue l'update del prodotto con il codice = {value}
-                                   -> inserire uno o più elementi da modificare nel corpo della richiesta
+api/products/product?code={value}    -> esegue l'update del prodotto con il codice = {value}
+                                   -> esegue l'update del prodotto con il codice = {value}
 
 {
 	"product_code": "5520",
@@ -45,7 +45,7 @@ api/products/query?code={value}    -> esegue l'update del prodotto con il codice
     "saved_kg_co2":"7"
 }
 
-api/sales-orders/query?code={value}     -> esegue l'update della vendita con il codice = {value}
+api/sales-orders/order?code={value}     -> esegue l'update della vendita con il codice = {value}
                                         -> inserire uno o più elementi da modificare nel corpo della richiesta
 
 {
@@ -57,6 +57,6 @@ api/sales-orders/query?code={value}     -> esegue l'update della vendita con il 
 
 DELETE:
 
-api/products/query?code={value}     -> elimina il prodotto con il codice = {value}
+api/products/product?code={value}     -> elimina il prodotto con il codice = {value}
 
-api/sales-orders/query?code={value}     -> elimina la vendita con il codice = {value}
+api/sales-orders/order?code={value}     -> elimina la vendita con il codice = {value}

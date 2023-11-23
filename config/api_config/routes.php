@@ -45,13 +45,13 @@ return [
     ],
     "PUT" => [
         "products" => [
-            "query" => [
+            "product" => [
                 "query"=>["code"],
                 "file"=>"./product/crud/update.php"
             ]
         ],
         "sales-orders" => [
-            "query" => [
+            "order" => [
                 "query"=>["code"],
                 "file"=>"./sales-order/crud/update.php"
             ]
@@ -59,13 +59,13 @@ return [
     ],
     "DELETE" => [
         "products" => [
-            "query" => [
+            "product" => [
                 "query"=>["code"],
                 "file"=>"./product/crud/delete.php"
             ]
         ],
         "sales-orders" => [
-            "query" => [
+            "order" => [
                 "query"=>["code"],
                 "file"=>"./sales-order/crud/delete.php"
             ]
