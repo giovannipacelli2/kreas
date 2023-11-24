@@ -237,30 +237,78 @@ class ApiFunctions {
         /*---------------------------------------------------------------
         |    ..... ,                                                    |
         |    AA1015' => [                                               |
-        |        'name' => string 'hamburger, pork meat',               |
-        |        'product_code' => string '6476, 0100',                 |
         |        'sales_code' => string 'AA1015',                       |
         |        'sales_date' => string '2023-10-20 15:20:00',          |
         |        'destination' => string 'China',                       |
-        |        'saved_kg_co2' => int 11,                              |
-        |        'total_saved_co2' => string '16',                      |
-        |        'articles_num' => int 2                                |
+        |        'n_products' => int 5,                                 |
+        |        'sold_products' => [                                   |
+        |           [                                                   |
+        |               'product_code' => string '6476                  |
+        |               'n_prod' => int 3,                              |
+        |               'prod_name' => string 'Hamburger'               |
+        |           ],                                                  |
+        |           [                                                   |
+        |               'product_code' => string '0100                  |
+        |               'n_prod' => int 2,                              |
+        |               'prod_name' => string 'Pork meat'               |
+        |           ],                                                  |
+        |         ],                                                    |                                                   
+        |        'total_saved_co2' => float '33.42'                     |
         |    ],                                                         |
         |    .....                                                      |
         ---------------------------------------------------------------*/
         
         while( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ) {
 
-            if ( !isset( $tmp_arr[$row["sales_code"]] ) ){
-                $tmp_arr[$row["sales_code"]] = $row;
-            } else {
-                $tmp_arr[$row["sales_code"]] = [
-                    ...$tmp_arr[$row["sales_code"]],
-                    "name" => $tmp_arr[$row["sales_code"]]["name"] . ", " . $row["name"],
-                    "product_code" => $tmp_arr[$row["sales_code"]]["product_code"] . ", " . $row["product_code"]
-                ];
+            //var_dump($row);
+            $cur_code = $row['sales_code'];
+
+            foreach ( $row as $key=>$value ) {
+                
+                if ( ( $key != "name" ) && 
+                     ( $key != "product_code" ) && 
+                     ( $key != "saved_kg_co2" ) &&
+                     ( $key != "n_products" )
+                ) {
+                    $tmp_arr[$cur_code][ $key ] = $value;
+                }
             }
+
+            // CALCULATE TOTAL PRODUCTS
+            if ( isset( $tmp_arr[$cur_code]["total_products"] ) ) {
+
+                $tmp_arr[$cur_code]["total_products"] += (int) $row["n_products"];
+            } else {
+                $tmp_arr[$cur_code]["total_products"] = (int) $row["n_products"];
+            }
+
+            // MANAGE SOLD PRODUCTS
+
+            $tmp = [
+
+                "product_code" => $row["product_code"],
+                "n_prod" => $row["n_products"],
+                "prod_name" => $row["name"]
+            ];
+            
+            if ( isset( $tmp_arr[$cur_code]["sold_products"] ) ) {
+
+                array_push( $tmp_arr[$cur_code]["sold_products"], $tmp );
+
+            } else {
+                $tmp_arr[$cur_code]["sold_products"] = [$tmp] ;
+            }
+
+            if ( isset( $tmp_arr[$cur_code]["saved_kg_co2"] ) ) {
+
+                $tmp_arr[$cur_code]["saved_kg_co2"] += $row["saved_kg_co2"] * $row["n_products"] ;
+            } else {
+                $tmp_arr[$cur_code]["saved_kg_co2"] = $row["saved_kg_co2"] * $row["n_products"] ;
+            }
+
         }
+        //echo json_encode($tmp_arr);
+        //var_dump($tmp_arr);
 
         return $tmp_arr;
     }

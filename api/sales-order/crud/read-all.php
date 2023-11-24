@@ -40,17 +40,7 @@ function writeApi( PDOStatement $stmt ) {
 
     foreach( $tmp_arr as $row ) {
 
-        $tmp_row = [
-            "sales_code" => $row["sales_code"],
-            "sales_date" => $row["sales_date"],
-            "destination_country" => $row["destination"],
-            "sold_products" => $row["name"],
-            "product_codes" => $row["product_code"],
-            "articles_number" => $row["articles_num"],
-            "total_saved_co2" => round((float)$row["total_saved_co2"], 2)
-        ];
-
-        array_push( $result["result"]["sales_orders"], $tmp_row );
+        array_push( $result["result"]["sales_orders"], $row );
 
     }
 

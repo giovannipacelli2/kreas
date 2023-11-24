@@ -46,25 +46,16 @@ function writeApi( PDOStatement $stmt ) {
     } else {
         
         $tmp_arr = ApiFunctions::combineBySalesCode( $stmt );
-
         $key = array_key_first( $tmp_arr );
         $row = $tmp_arr[$key];
 
     
-        $result["result"] = [
-            "sales_code" => $row["sales_code"],
-            "sales_date" => $row["sales_date"],
-            "destination_country" => $row["destination"],
-            "sold_products" => $row["name"],
-            "product_codes" => $row["product_code"],
-            "articles_number" => $row["articles_num"],
-            "total_saved_co2" => round((float)$row["total_saved_co2"], 2)
-        ]; 
+        $result["result"] = $row;
 
         http_response_code(200);
     }
     
-    header("Content-Type: application/json charset=UTF-8");
+    //header("Content-Type: application/json charset=UTF-8");
     echo json_encode( $result );
 
 }

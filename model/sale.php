@@ -51,9 +51,7 @@ class Sale{
         
         try{
 
-            $q = "SELECT p.name, p.product_code, so.sales_code, so.sales_date, so.destination, p.saved_kg_co2,
-            SUM(p.saved_kg_co2) OVER ( PARTITION BY so.sales_code ) AS `total_saved_co2`,
-            COUNT(so.sales_code) OVER ( PARTITION BY so.sales_code ) AS `articles_num`
+            $q = "SELECT p.name, p.product_code, so.sales_code, so.sales_date, so.destination, p.saved_kg_co2, so.n_products
             FROM " . $this->table_join .
             " ON p.product_code = so.product_id
             ORDER BY so.sales_code;";
@@ -79,9 +77,7 @@ class Sale{
         $sales_code = htmlspecialchars( strip_tags( $sales_code ) );
         
         try{
-            $q = "SELECT p.name, p.product_code, so.sales_code, so.sales_date, so.destination, p.saved_kg_co2,
-                    SUM(p.saved_kg_co2) OVER ( PARTITION BY so.sales_code ) AS `total_saved_co2`,
-                    COUNT(so.sales_code) OVER ( PARTITION BY so.sales_code ) AS `articles_num`
+            $q = "SELECT p.name, p.product_code, so.sales_code, so.sales_date, so.destination, p.saved_kg_co2, so.n_products
                     FROM ". $this->table_join .
                     " ON p.product_code = so.product_id
                     WHERE so.sales_code = :sales_code
