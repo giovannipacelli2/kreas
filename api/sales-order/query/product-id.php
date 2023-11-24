@@ -48,7 +48,9 @@ function writeApi( PDOStatement $stmt ) {
     if ( $data ) {
         
         $result["result"] = [
-            $GLOBALS["product"] => $data
+            $GLOBALS["product"] => [
+                "total_co2_saved" => round( (float) $data["total_co2_saved"], 2 )
+            ]
         ];
 
     } else {

@@ -47,7 +47,7 @@ function writeApi( PDOStatement $stmt ) {
             "sold_products" => $row["name"],
             "product_codes" => $row["product_code"],
             "articles_number" => $row["articles_num"],
-            "total_saved_co2" => $row["total_saved_co2"]
+            "total_saved_co2" => round((float)$row["total_saved_co2"], 2)
         ];
 
         array_push( $result["result"]["sales_orders"], $tmp_row );

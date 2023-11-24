@@ -58,7 +58,7 @@ function writeApi( PDOStatement $stmt, array $date ) {
         $result["result"] = [
             "start_date" => $date["start"]->format( "Y-m-d" ),
             "end_date" => $date["end"]->format( "Y-m-d" ), 
-            ...$res
+            "co2_saved" => round( (float) $res["co2_saved"], 2 )
         ];
     } else {
         $result["result"] = [

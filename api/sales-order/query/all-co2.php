@@ -34,9 +34,12 @@ $GLOBALS["conn"] = NULL;
 
 function writeApi( PDOStatement $stmt ) {
 
+    $data = $stmt->fetch( PDO::FETCH_ASSOC );
+    $co2 = round((float)$data["total_co2_saved"], 2);
+
     $result = [];
     $result["result"] = [
-        $stmt->fetchAll( PDO::FETCH_ASSOC )
+        "total_co2_saved" => $co2
     ];
 
     header("Content-Type: application/json charset=UTF-8");

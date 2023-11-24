@@ -111,7 +111,7 @@ class Product{
 
             $stmt->bindParam( ":product_code", $this->product_code, PDO::PARAM_STR );
             $stmt->bindParam( ":name", $this->name, PDO::PARAM_STR );
-            $stmt->bindParam( ":saved_kg_co2", $this->saved_kg_co2, PDO::PARAM_INT );
+            $stmt->bindParam( ":saved_kg_co2", $this->saved_kg_co2, PDO::PARAM_STR );
 
             $stmt->execute();
 
@@ -184,7 +184,7 @@ class Product{
 
             $stmt->bindParam( ":product_code", $this->product_code, PDO::PARAM_STR );
             $stmt->bindParam( ":name", $this->name, PDO::PARAM_STR );
-            $stmt->bindParam( ":saved_kg_co2", $this->saved_kg_co2, PDO::PARAM_INT );
+            $stmt->bindParam( ":saved_kg_co2", $this->saved_kg_co2, PDO::PARAM_STR );
             $stmt->bindParam( ":code", $code, PDO::PARAM_STR );
             
             $stmt->execute();
