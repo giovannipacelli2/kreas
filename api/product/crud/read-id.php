@@ -37,8 +37,6 @@ $GLOBALS["conn"] = NULL;
 function writeApi ( PDOStatement $stmt ) {
 
     $result = [];
-    $tmp_arr = [];
-    $code = null;
 
     if ( $stmt->rowCount() == 0 ) {
 
@@ -47,23 +45,10 @@ function writeApi ( PDOStatement $stmt ) {
         ];
 
     } else {
-        
-        while ( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ) {
+
+        $data = $stmt->fetchAll( PDO::FETCH_ASSOC );
     
-            $code = $row["product_code"];
-        
-            $array_row = [
-                "name" => $row["name"],
-                "saved_kg_co2" => $row["saved_kg_co2"]
-            ];
-        
-            array_push( $tmp_arr, $array_row  );
-        
-        }
-    
-        $result["result"] = [
-            $code => $tmp_arr
-        ]; 
+        $result["result"] = $data;
 
         http_response_code(200);
     }

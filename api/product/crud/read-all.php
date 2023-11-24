@@ -36,18 +36,15 @@ function writeApi( PDOStatement $stmt ) {
 
     $result = [];
     $result["allProducts"] = [];
+
+    $data = $stmt->fetchAll( PDO::FETCH_ASSOC );
+        
+        foreach ( $data as $row ) {
+            
+            array_push( $result["allProducts"], $row );
+        
+        }
     
-    while ( $row = $stmt->fetch( PDO::FETCH_ASSOC ) ) {
-    
-        $array_row = [
-            "product_code" => $row["product_code"],
-            "name" => $row["name"],
-            "saved_kg_co2" => $row["saved_kg_co2"]
-        ];
-    
-        array_push( $result["allProducts"], $array_row );
-    
-    }
 
     header("Content-Type: application/json charset=UTF-8");
     http_response_code(200);
