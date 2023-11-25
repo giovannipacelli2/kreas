@@ -257,19 +257,14 @@ class Sale{
             }  
         }
 
-        exit();
-
         $result = [];
 
-        //$this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
-        //$this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
-        //$this->destination = htmlspecialchars( strip_tags( $this->destination ) );
+        $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
+        $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
+        $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
 
         // code by uri
         $old_sales_code = htmlspecialchars( strip_tags( $code ) );
-
-        // Extraxt values in array -> [ 0100, 1234, 4040 ]
-        $products = $this->strToArray( $this->product_id );
 
         try{
 
@@ -288,7 +283,9 @@ class Sale{
             
             // existing products
             $already_exists = array_map( function($row){
+
                 return $row["product_id"];
+
             }, $old_data );
 
             
@@ -296,15 +293,20 @@ class Sale{
             
             $to_update = [];
             $to_insert = [];
-            
-            for( $i = 0; $i < count($products); $i++ ) {
-                $exists= in_array( $products[$i], $already_exists );
+
+            foreach ( $this->products as $p ) {
+
+                $p = (array) $p;
+
+
+                $exists = in_array( $p["product_code"], $already_exists );
 
                 if ($exists) {
-                    array_push( $to_update, $products[$i] );
+                    array_push( $to_update, $p );
                 } else {
-                    array_push( $to_insert, $products[$i] );
+                    array_push( $to_insert, $p );
                 }
+
             }
             
 
@@ -316,7 +318,10 @@ class Sale{
 
                 foreach( $to_insert as $p ) {
 
-                    $stmt = $this->simple_insert( $p );
+                    $this->product_id = htmlspecialchars( strip_tags( $p["product_code"] ) );
+                    $this->n_products = htmlspecialchars( strip_tags( $p["n_prod"] ) );
+
+                    $stmt = $this->simple_insert();
 
                     if ( isset($stmt) && $stmt->rowCount() > 0 ){
                         $count += $stmt->rowCount();
@@ -333,6 +338,7 @@ class Sale{
             
             if ( $already_exists || $this->sales_code != $old_sales_code ){
 
+                $products = array_column( (array) $this->products, "product_code" );
 
                 $del_id = "'" . implode( "','", $products ) . "'";
     
@@ -364,7 +370,8 @@ class Sale{
                     "SET sales_code=:sales_code,
                         sales_date=:sales_date,
                         destination=:destination,
-                        product_id=:product_id
+                        product_id=:product_id,
+                        n_products=:n_products
                     WHERE sales_code=:old_code
                     AND product_id=:product_id;";
 
@@ -376,7 +383,8 @@ class Sale{
                     $stmt->bindParam( ":sales_date", $this->sales_date, PDO::PARAM_STR );
                     $stmt->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
 
-                    $stmt->bindParam( ":product_id", $p, PDO::PARAM_STR );
+                    $stmt->bindParam( ":product_id", $p["product_code"], PDO::PARAM_STR );
+                    $stmt->bindParam( ":n_products", $p["n_prod"], PDO::PARAM_INT );
                     $stmt->bindParam( ":old_code", $old_sales_code, PDO::PARAM_STR );
                     
                     $stmt->execute();
