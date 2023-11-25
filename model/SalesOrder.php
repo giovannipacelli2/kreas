@@ -254,6 +254,22 @@ class SalesOrder{
 
         }
 
+        /*----------------Check-----------------*/
+        /*----------------Check-if-row-already-exists----------------*/
+
+        if ( !empty($this->sales_code) && $this->sales_code != $old_sales_code ) {
+
+            $stmt = $this->checkSale( $this->sales_code );
+    
+            if ( $stmt->rowCount() > 0 ) {
+    
+                Message::writeJsonMessage("Order already exists, IMPOSSIBLE to override!");
+                exit();
+    
+            }
+        }
+                        
+
         /*----------------It-does-the-update-normally----------------*/
 
 
@@ -266,7 +282,7 @@ class SalesOrder{
                 || empty($this->products)
             ) {
         
-            $old_data = $this->read_by_code( $code )->fetchAll( PDO::FETCH_ASSOC );
+            $old_data = $this->read_by_code( $old_sales_code )->fetchAll( PDO::FETCH_ASSOC );
             
             if ( !$this->sales_code ) {
                 $this->sales_code = $old_data[0]["sales_code"];
@@ -304,7 +320,7 @@ class SalesOrder{
         try{
 
             $old_data = $check->fetchAll(PDO::FETCH_ASSOC);
-            
+
             // existing products
             $already_exists = array_map( function($row){
 
@@ -332,7 +348,6 @@ class SalesOrder{
                 }
 
             }
-            
 
             /*---------------------INSERT-NEW-VALUES----------------------*/
             
