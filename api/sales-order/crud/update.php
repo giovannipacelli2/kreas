@@ -30,10 +30,11 @@ $sales_code = $GLOBALS["PARAMS_URI"][0]["code"];
 // GET DATA FROM REQUEST
 $data = ApiFunctions::getInput();
 
-$stmt = $sale->describe();
+//$stmt = $sale->describe();
 
 // Check the correctness of data
-$data_fields = ApiFunctions::updateChecker( $data, $stmt );
+$data_fields = ApiFunctions::saleUpdateChecker( $data );
+
 
 // Inserting input data into new "product" instance
 

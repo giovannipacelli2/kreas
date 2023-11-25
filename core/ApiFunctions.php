@@ -6,7 +6,6 @@ use App\core\Connection;
 use App\core\Message;
 use DateTime, PDO, PDOStatement;
 use Exception;
-use stdClass;
 
 class ApiFunctions {
 
@@ -161,6 +160,7 @@ class ApiFunctions {
         $product_fields = [ "product_code", "n_prod" ];
 
         if ( !is_array( $products ) || count( $products ) == 0 ) return FALSE;
+        
                     
         foreach( $products as $product ) {
 
@@ -185,21 +185,26 @@ class ApiFunctions {
 
     /*--------------------CHECK-UPDATE------------------------*/
     
-    public static function updateChecker( $data, $stmt ) {
+    public static function saleUpdateChecker( $data ) {
 
-        if ( !$stmt ) exit(); 
+        //cast data in associative array;
+        $data = (array) $data;
 
         $result = [];
-
-        $describe = $stmt->fetchAll( PDO::FETCH_ASSOC );
-        
-        $fields = array_map( function($elem){
-            return $elem["Field"];
-        }, $describe );
+        $fields = [ "sales_code", "sales_date", "destination", "products" ];
 
         foreach( $data as $key=>$value ) {
             if ( in_array( $key, $fields ) ){
                 array_push( $result, $key );
+            }
+        }
+
+        if ( isset( $data["products"] ) ){
+            $check_products = ApiFunctions::productField( $data["products"] );
+
+            if ( !$check_products ) {
+                Message::writeJsonMessage("Wrong data in products array!");
+                exit();
             }
         }
 

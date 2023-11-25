@@ -225,7 +225,7 @@ class Sale{
         if ( empty($this->sales_code)
                 || empty($this->sales_code)
                 || empty($this->destination)
-                || empty($this->product_id)
+                || empty($this->products)
             ) {
         
             $old_data = $this->read_by_code( $code )->fetchAll( PDO::FETCH_ASSOC );
@@ -241,26 +241,29 @@ class Sale{
             }  
             if ( !$this->product_id ) {
 
-                $res = "";
+                $res = [];
 
                 foreach ( $old_data as $old ) {
-                    if ( $res === "" ){
-                        $res = $old["product_code"];
-                    } else {
-                        $res = $res . ", " . $old["product_code"];
-                    }
+                        
+                    $row = [
+                        "product_code" => $old["product_code"],
+                        "n_prod" => $old["n_products"],
+                        "prod_name" => $old["name"],
+                    ];
+
+                    array_push( $res, $row );
                 }
                 $this->product_id = $res;
             }  
         }
 
+        exit();
+
         $result = [];
 
-        $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
-        $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
-        $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
-        // All product codes as string -> "0100, 1234, 4040"
-        $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
+        //$this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
+        //$this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
+        //$this->destination = htmlspecialchars( strip_tags( $this->destination ) );
 
         // code by uri
         $old_sales_code = htmlspecialchars( strip_tags( $code ) );
