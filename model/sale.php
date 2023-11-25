@@ -254,7 +254,7 @@ class Sale{
 
         }
 
-        /*----------------It-does-the-insert-normally----------------*/
+        /*----------------It-does-the-update-normally----------------*/
 
 
         // This ensures that when you make the request, 
@@ -613,16 +613,6 @@ class Sale{
 
     /*-------------------------------------------OTHER-FUNCTIONS------------------------------------------*/
 
-
-    function strToArray( string $string ) : array {
-
-        $arr = explode( ",", $string );
-
-        for ( $i = 0; $i < count($arr); $i++ ) {
-            $arr[$i] = trim( $arr[$i] );
-        }
-        return $arr;
-    }
 
     function operationMessage( int $n_rows ) : string {
 
