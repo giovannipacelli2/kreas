@@ -1,6 +1,6 @@
 <?php
 
-use App\model\Sale;
+use App\model\SalesOrder;
 use App\core\ApiFunctions;
 use App\core\Message;
 
@@ -21,7 +21,7 @@ ApiFunctions::checkMethod( "POST" );
 
 $conn = ApiFunctions::getConnection( $config );
 
-$sale = new Sale( $conn );
+$sale = new SalesOrder( $conn );
 
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();

@@ -1,7 +1,7 @@
 <?php
 
 
-use App\model\Sale;
+use App\model\SalesOrder;
 use App\core\ApiFunctions;
 
 /*-----------------------INSERT-CONNECTION-HEADER----------------------*/
@@ -16,7 +16,7 @@ ApiFunctions::checkMethod( "GET" );
 
 $conn = ApiFunctions::getConnection( $config );
 
-$sales_orders = new Sale( $conn );
+$sales_orders = new SalesOrder( $conn );
 
 $stmt = $sales_orders->read();
     

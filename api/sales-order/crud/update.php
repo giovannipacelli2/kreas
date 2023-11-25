@@ -1,6 +1,6 @@
 <?php
 
-use App\model\Sale;
+use App\model\SalesOrder;
 use App\core\ApiFunctions;
 
 /*-----------------------UPDATE-CONNECTION-HEADER----------------------*/
@@ -22,7 +22,7 @@ ApiFunctions::checkMethod( "PUT" );
 
 $conn = ApiFunctions::getConnection( $config );
 
-$sale = new Sale( $conn );
+$sale = new SalesOrder( $conn );
 
 // QUERY PARAM
 $sales_code = $GLOBALS["PARAMS_URI"][0]["code"];

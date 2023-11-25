@@ -1,6 +1,6 @@
 <?php
 
-use App\model\Sale;
+use App\model\SalesOrder;
 use App\core\ApiFunctions;
 
 /*-----------------------INSERT-CONNECTION-HEADER----------------------*/
@@ -17,7 +17,7 @@ ApiFunctions::checkMethod( "GET" );
 
 $conn = ApiFunctions::getConnection( $config );
 
-$sales = new Sale( $conn );
+$sales = new SalesOrder( $conn );
 
 $stmt = $sales->read_by_code( $GLOBALS["PARAMS_URI"] );
 

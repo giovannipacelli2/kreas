@@ -1,6 +1,6 @@
 <?php
 
-use App\model\Sale;
+use App\model\SalesOrder;
 use App\core\ApiFunctions;
 
 /*-----------------------DELETE-CONNECTION-HEADER----------------------*/
@@ -22,7 +22,7 @@ ApiFunctions::checkMethod( "DELETE" );
 
 $conn = ApiFunctions::getConnection( $config );
 
-$sales = new Sale( $conn );
+$sales = new SalesOrder( $conn );
 
 // QUERY PARAM
 $sales_code = $GLOBALS["PARAMS_URI"][0]["code"];

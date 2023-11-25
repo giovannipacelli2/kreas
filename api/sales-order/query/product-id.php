@@ -1,6 +1,6 @@
 <?php
 
-use App\model\Sale;
+use App\model\SalesOrder;
 use App\core\ApiFunctions;
 
 /*-----------------------INSERT-CONNECTION-HEADER----------------------*/
@@ -20,7 +20,7 @@ if ( !$product ) exit();
 
 $conn = ApiFunctions::getConnection( $config );
 
-$sales = new Sale( $conn );
+$sales = new SalesOrder( $conn );
 
 $stmt = $sales->getCo2FromProduct( $product );
 

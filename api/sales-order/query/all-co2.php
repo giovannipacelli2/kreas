@@ -1,6 +1,6 @@
 <?php
 
-use App\model\Sale;
+use App\model\SalesOrder;
 use App\core\ApiFunctions;
 
 /*------------------------READ-CONNECTION-HEADER-----------------------*/
@@ -17,7 +17,7 @@ ApiFunctions::checkMethod( "GET" );
 
 $conn = ApiFunctions::getConnection( $config );
 
-$sale = new Sale( $conn );
+$sale = new SalesOrder( $conn );
 
 $stmt = $sale->getCo2FromOrders();
 

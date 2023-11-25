@@ -7,7 +7,7 @@ use DateTime;
 use PDO;
 use PDOException;
 
-class Sale{
+class SalesOrder{
 
     public $sales_code, $sales_date, $destination, $products, $product_id, $n_products;
 
