@@ -223,7 +223,7 @@ class Sale{
         // you can change one or more values leaving the old values unchanged.
         
         if ( empty($this->sales_code)
-                || empty($this->sales_code)
+                || empty($this->sales_date)
                 || empty($this->destination)
                 || empty($this->products)
             ) {
@@ -239,7 +239,7 @@ class Sale{
             if ( !$this->destination ) {
                 $this->destination = $old_data[0]["destination"];
             }  
-            if ( !$this->product_id ) {
+            if ( !$this->products ) {
 
                 $res = [];
 
@@ -253,7 +253,7 @@ class Sale{
 
                     array_push( $res, $row );
                 }
-                $this->product_id = $res;
+                $this->products = $res;
             }  
         }
 
