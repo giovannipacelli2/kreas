@@ -254,8 +254,8 @@ class SalesOrder{
 
         }
 
-        /*----------------Check-----------------*/
-        /*----------------Check-if-row-already-exists----------------*/
+        //------If you want to change the order code, you need --------
+        //------to check whether the entered value already exists------
 
         if ( !empty($this->sales_code) && $this->sales_code != $old_sales_code ) {
 
