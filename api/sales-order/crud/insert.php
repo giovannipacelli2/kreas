@@ -2,6 +2,7 @@
 
 use App\model\Sale;
 use App\core\ApiFunctions;
+use App\core\Message;
 
 /*-----------------------INSERT-CONNECTION-HEADER----------------------*/
 
@@ -25,13 +26,16 @@ $sale = new Sale( $conn );
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
 
-$stmt = $sale->describe();
+//$stmt = $sale->describe();
 
 // Check the correctness of data
-ApiFunctions::inputChecker( $data, $stmt );
+$check = ApiFunctions::saleInsertChecker( $data );
 
+if ( !$check ) {            
+    Message::writeJsonMessage("Uncomplete or wrong data!");
+    exit();
+}
 // inserting input data into new "sale" instance
-
 foreach( $data as $key=>$value ) {
     $sale->$key = $value;
 }

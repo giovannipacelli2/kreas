@@ -43,7 +43,7 @@ class ApiFunctions {
 
     /*-----------------------------------------RECEIVED-DATA----------------------------------------*/
 
-    public static function getInput() : stdClass {
+    public static function getInput() {
         $data = file_get_contents("php://input") 
                     ? file_get_contents("php://input") 
                     : $_POST;
@@ -116,6 +116,71 @@ class ApiFunctions {
         }
 
         return $check;
+    }
+     /*------------------CHECK-SALE-INSERT---------------------*/
+    
+     public static function saleInsertChecker( $data ) {
+
+        //cast data in associative array;
+        $data = (array) $data;
+
+        $fields = [ "sales_code", "sales_date", "destination", "products" ];
+
+        $check = TRUE;
+
+        // check input data integrity
+
+        foreach( $fields as $field ){
+
+            // $field = a NOT NULL field from existing table
+            // $data = associative array with sended data
+            $exists = array_key_exists( $field, $data );
+
+            // Check the array "products"
+
+            if ( $exists && $field == "products" ) {
+
+                if ( !ApiFunctions::productField( $data[$field] ) ) return FALSE;
+            }
+
+            // if param NOT EXISTS or an param has empty string
+
+            if( !$exists || $data[$field] == "" ) {
+                return FALSE;
+            }
+
+        }
+
+        return $check;
+     }
+
+    /*----------------CHECK-PRODUCT-FIELDs--------------------*/
+    
+    private static function productField( $products ) {
+
+        $product_fields = [ "product_code", "n_prod" ];
+
+        if ( !is_array( $products ) || count( $products ) == 0 ) return FALSE;
+                    
+        foreach( $products as $product ) {
+
+            $product = (array) $product;
+
+            foreach ( $product_fields as $f ) {
+                $exts = array_key_exists( $f, $product );
+
+                if( !$exts || $product[$f] == "" ) {
+                    return FALSE;
+                } 
+                        
+                // Check n_prod not be text or less than zero
+                else if ( $exts && (!is_int( $product["n_prod"] ) || !$product["n_prod"]>0 ) ) {
+                    return FALSE;
+                }
+            }
+        }
+
+        return TRUE;
     }
 
     /*--------------------CHECK-UPDATE------------------------*/

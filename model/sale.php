@@ -9,7 +9,7 @@ use PDOException;
 
 class Sale{
 
-    public $sales_code, $sales_date, $destination, $product_id;
+    public $sales_code, $sales_date, $destination, $products, $product_id, $n_products;
 
     private $conn;
     private $table_name = "sales_orders" ;
@@ -108,9 +108,6 @@ class Sale{
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
         $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
-        $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
-
-        $products = $this->strToArray( $this->product_id );
 
         try{
 
@@ -129,9 +126,15 @@ class Sale{
 
             if ( $check->rowCount() == 0 ) {
 
-                for ( $i = 0; $i < count($products); $i++ ){
-                
-                    $stmt = $this->simple_insert( $products[$i] );
+                foreach( $this->products as $prod ) {
+
+                    $prod = (array) $prod;
+
+                    $this->product_id = $prod["product_code"];
+                    $this->n_products = (int) $prod["n_prod"];
+
+                    $stmt = $this->simple_insert();
+
 
                     // Returns affected rows
                     if ( isset($stmt) && $stmt->rowCount() > 0 ){
@@ -170,17 +173,19 @@ class Sale{
         }
     }
 
-    function simple_insert( $single_product ){
+    function simple_insert( ){
 
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
         $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
-
+        $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
+        $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
+        
         try{
 
             $q = "INSERT INTO " . $this->table_name . " " .
-                    "( sales_code, sales_date, destination, product_id ) VALUES(
-                        :sales_code, :sales_date, :destination, :product_id
+                    "( sales_code, sales_date, destination, product_id, n_products ) VALUES(
+                        :sales_code, :sales_date, :destination, :product_id, :n_products
                     )";
     
             /*----------------------Query-Insert-------------------------*/
@@ -191,7 +196,8 @@ class Sale{
             $stmt->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
             $stmt->bindParam( ":sales_date", $this->sales_date, PDO::PARAM_STR );
             $stmt->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
-            $stmt->bindParam( ":product_id", $single_product, PDO::PARAM_STR );
+            $stmt->bindParam( ":product_id", $this->product_id, PDO::PARAM_STR );
+            $stmt->bindParam( ":n_products", $this->n_products, PDO::PARAM_INT );
         
             $stmt->execute();
                     
