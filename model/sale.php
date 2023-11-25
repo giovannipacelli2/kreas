@@ -458,9 +458,9 @@ class Sale{
 
         try{
 
-            $q = "SELECT SUM(j.saved_kg_co2) AS `total_co2_saved`
+            $q = "SELECT SUM(j.tot_co2_prod) AS `total_co2_saved`
                     FROM (
-                            SELECT p.saved_kg_co2
+                            SELECT ( p.saved_kg_co2 * so.n_products ) as `tot_co2_prod`
                             FROM  " . $this->table_join .
                             " ON p.product_code = so.product_id
                         ) AS j;";
@@ -490,10 +490,10 @@ class Sale{
 
         try{
 
-            $q = "SELECT SUM(j.saved_kg_co2) AS `co2_saved`
+            $q = "SELECT SUM(j.tot_co2_prod) AS `co2_saved`
                     
                     FROM (
-                            SELECT *
+                            SELECT so.sales_date, ( p.saved_kg_co2 * so.n_products ) as `tot_co2_prod`
                             FROM " . $this->table_join .
                             " ON p.product_code = so.product_id
                         ) AS j
@@ -528,9 +528,9 @@ class Sale{
 
         try{
 
-            $q = "SELECT SUM(j.saved_kg_co2) AS `total_co2_saved`
+            $q = "SELECT SUM(j.tot_co2_prod) AS `total_co2_saved`
                     FROM (
-                            SELECT p.saved_kg_co2
+                            SELECT ( p.saved_kg_co2 * so.n_products ) as `tot_co2_prod`
                             FROM " . $this->table_join . 
                             " ON p.product_code = so.product_id
                             WHERE so.destination = :destination
@@ -561,9 +561,9 @@ class Sale{
         
         try{
 
-            $q = "SELECT SUM(j.saved_kg_co2) AS `total_co2_saved`
+            $q = "SELECT SUM(j.tot_co2_prod) AS `total_co2_saved`
                     FROM (
-                            SELECT p.saved_kg_co2
+                            SELECT ( p.saved_kg_co2 * so.n_products ) as `tot_co2_prod`
                             FROM " . $this->table_join .
                             " ON p.product_code = so.product_id
                             WHERE p.product_code = :product_id
