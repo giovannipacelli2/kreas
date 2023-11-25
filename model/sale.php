@@ -23,6 +23,7 @@ class Sale{
     /*------------------------------DESCRIBE-------------------------------*/
         
     public function describe() {
+    
             
         try{
             
@@ -41,7 +42,34 @@ class Sale{
 
         }
             
+    }
+
+    /*-------------------------CHECK-BY-SALES-CODE-------------------------*/
+        
+    public function checkSale( $sales_code ) {
+
+        try{
+            $q_check = "SELECT * FROM " . $this->table_name . " " .
+                            "WHERE sales_code=:sales_code";
+    
+            $check = $this->conn->prepare($q_check);
+                            
+            $check->bindParam( ":sales_code", $sales_code, PDO::PARAM_STR );
+                            
+            $check->execute();
+
+            return $check;
+
+        } catch( PDOException $e ) {
+
+            exceptionHandler( $e );
+
+            Message::errorMessage( $e );
+
         }
+
+
+    }
     
 /*--------------------------------------------CRUD-METHODS--------------------------------------------*/
     
@@ -112,15 +140,8 @@ class Sale{
         try{
 
             /*----------------Check-if-row-already-exists----------------*/
-
-            $q_check = "SELECT * FROM " . $this->table_name . " " .
-                        "WHERE sales_code=:sales_code";
-
-            $check = $this->conn->prepare($q_check);
                         
-            $check->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
-                        
-            $check->execute();
+            $check = $this->checkSale( $this->sales_code );
 
             /*----------------It-does-the-insert-normally----------------*/
 
@@ -219,6 +240,23 @@ class Sale{
 
     function update( string $code ){
 
+        // code by uri
+        $old_sales_code = htmlspecialchars( strip_tags( $code ) );
+
+        /*----------------Check-if-row-already-exists----------------*/
+                        
+        $check = $this->checkSale( $old_sales_code );
+
+        if ( $check->rowCount() == 0 ) {
+
+            Message::writeJsonMessage("The searched 'SALES CODE' not exists!");
+            exit();
+
+        }
+
+        /*----------------It-does-the-insert-normally----------------*/
+
+
         // This ensures that when you make the request, 
         // you can change one or more values leaving the old values unchanged.
         
@@ -263,21 +301,7 @@ class Sale{
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
         $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
 
-        // code by uri
-        $old_sales_code = htmlspecialchars( strip_tags( $code ) );
-
         try{
-
-            $q_check = "SELECT * FROM " . $this->table_name . " " .
-                        "WHERE sales_code=:code;";
-
-            /*--extrapolate which products are linked to the sales order--*/
-                
-            $check = $this->conn->prepare($q_check);
-
-            $check->bindParam( ":code", $old_sales_code, PDO::PARAM_STR );
-            
-            $check->execute();
 
             $old_data = $check->fetchAll(PDO::FETCH_ASSOC);
             
