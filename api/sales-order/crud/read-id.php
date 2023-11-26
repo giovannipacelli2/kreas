@@ -19,7 +19,7 @@ $conn = ApiFunctions::getConnection( $config );
 
 $sales = new SalesOrder( $conn );
 
-$stmt = $sales->read_by_code( $GLOBALS["PARAMS_URI"] );
+$stmt = $sales->readOrderByCode( $GLOBALS["PARAMS_URI"] );
 
 if ( $stmt ) {
     writeApi($stmt);

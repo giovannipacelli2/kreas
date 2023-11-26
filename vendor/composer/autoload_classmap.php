@@ -11,6 +11,7 @@ return array(
     'App\\core\\Message' => $baseDir . '/core/Message.php',
     'App\\core\\UriBuilder' => $baseDir . '/core/UriBuilder.php',
     'App\\model\\Product' => $baseDir . '/model/Product.php',
+    'App\\model\\Sales' => $baseDir . '/model/Sales.php',
     'App\\model\\SalesOrder' => $baseDir . '/model/SalesOrder.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'ComposerAutoloaderInite26fbaf1633b4649105edb686f538c0f' => $vendorDir . '/composer/autoload_real.php',

@@ -27,7 +27,7 @@ $sales = new SalesOrder( $conn );
 // QUERY PARAM
 $sales_code = $GLOBALS["PARAMS_URI"][0]["code"];
 
-$stmt = $sales->delete( $sales_code );
+$stmt = $sales->deleteOrder( $sales_code );
 
 if ( $stmt ) {
     writeApi( $stmt->rowCount() );

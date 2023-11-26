@@ -66,6 +66,7 @@ class ComposerStaticInite26fbaf1633b4649105edb686f538c0f
         'App\\core\\Message' => __DIR__ . '/../..' . '/core/Message.php',
         'App\\core\\UriBuilder' => __DIR__ . '/../..' . '/core/UriBuilder.php',
         'App\\model\\Product' => __DIR__ . '/../..' . '/model/Product.php',
+        'App\\model\\Sales' => __DIR__ . '/../..' . '/model/Sales.php',
         'App\\model\\SalesOrder' => __DIR__ . '/../..' . '/model/SalesOrder.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'ComposerAutoloaderInite26fbaf1633b4649105edb686f538c0f' => __DIR__ . '/..' . '/composer/autoload_real.php',

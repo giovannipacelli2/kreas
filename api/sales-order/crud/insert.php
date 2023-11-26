@@ -40,7 +40,7 @@ foreach( $data as $key=>$value ) {
     $sale->$key = $value;
 }
 
-$affected_rows = $sale->insert();
+$affected_rows = $sale->insertOrder();
 
 if ( !is_null( $affected_rows ) ) {
     writeApi( $affected_rows );

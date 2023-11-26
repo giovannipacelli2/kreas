@@ -45,7 +45,7 @@ foreach( $data as $key=>$value ) {
 
 }
 
-$res = $sale->update( $sales_code );
+$res = $sale->updateOrder( $sales_code );
 
 writeApi( $res );
 
