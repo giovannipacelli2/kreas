@@ -18,7 +18,7 @@ function fileRenderer( $uri ) {
 
     if (!$request && $method=="GET" ) return FALSE;
     
-    if ($request && $method=="POST" ) return FALSE;
+    //if ($request && $method=="POST" ) return FALSE;
 
     // example: GET -> /products/all
 

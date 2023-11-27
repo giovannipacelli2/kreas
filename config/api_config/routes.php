@@ -11,6 +11,13 @@ return [
                 ]
         ],
 
+        "sales" => [
+            "sale-product" => [
+                "query" => ["code", "prod"],
+                "file" => "./sale/query/read-sales-prod.php",
+            ]
+        ],
+
         "sales-orders" => [
                 "all" => [
                     "file" => "./sales-order/crud/read-all.php",
@@ -38,6 +45,12 @@ return [
     "POST" => [
         "products" => [
             "file"=>"./product/crud/insert.php",
+        ],
+        "sales" => [
+            "sale-product" => [
+                "query" => ["code"],
+                "file" => "./sale/crud/insert.php",
+            ]
         ],
         "sales-orders" => [
             "file"=>"./sales-order/crud/insert.php",

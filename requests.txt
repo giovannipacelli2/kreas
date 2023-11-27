@@ -15,6 +15,8 @@ api/sales-orders/destination-co2?country={country}            -> Restituisce tut
 
 api/sales-orders/product-co2?product={id}               -> restituisce il totale della co2 risparmiata dalle vendite di un determinato prodotto
 
+api/sales/sale-product?code={code}&prod={prod}      -> restituisce l'ordine con il prodotto /////////////////
+
 POST:  
 
 api/products   ->  inserire nel corpo della richiesta i dati del prodotto da inserire.
@@ -32,6 +34,13 @@ api/sales-orders        ->  inserire nel corpo della richiesta i dati della vend
     "sales_date": "2023-11-13 09:36:20",
     "destination": "Italy",
     "product_id": "5520, 0100"
+}
+
+api/sales/sale-product?code={code}        ->  inserire nel corpo della richiesta il prodotto da inserire nella vendita.
+
+{     
+    "product_id": "5520",        ////////////////////////////
+    "n_prod" : 4
 }
 
 PUT:
