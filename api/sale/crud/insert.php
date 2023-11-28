@@ -35,44 +35,50 @@ $sales = new Sales( $conn );
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
 
-// Check the correctness of data
+// Check the correctness of REQUEST
 
 $data_keys = array_keys( $data );
 
-foreach ( $data_keys as $key ) {
+$check_data = ApiFunctions::validateParams( $data_keys, [ "product_id", "n_prod" ] );
 
-    if( $key != "product_id" && $key != "n_prod" ){
-        Message::writeJsonMessage( "bad request" );
-        http_response_code(400);
-        exit();
-    }
+if ( !$check_data ) {
+
+    Message::writeJsonMessage( "Bad request" );
+    http_response_code(400);
+    exit();
 }
 
-$check = $sales->checkSale( $params["code"] );
+// Check if the ORDER EXISTS
 
-if ( $check->rowCount() == 0 ) {
+$check_order = $sales->checkSale( $params["code"] );
+
+if ( $check_order->rowCount() == 0 ) {
 
     Message::writeJsonMessage( "Order Not Found!" );
     exit();
 }
-exit();
 
-$stmt = $check->fetch( PDO::FETCH_ASSOC );
+// Check if INSERTED PRODUCT already exists in that ORDER
+
+$check_product = $sales->readByProduct( $params["code"], $data["product_id"] );
+
+if ( $check_product->rowCount() > 0 ) {
+
+    Message::writeJsonMessage( "Product inserted already exists!" );
+    exit();
+}
+
+// INSERT data in SALES intance
+
+$stmt = $check_order->fetch( PDO::FETCH_ASSOC );
 
 $sales->sales_code = $stmt["sales_code"];
 $sales->sales_date = $stmt["sales_date"];
 $sales->destination = $stmt["destination"];
-$sales->product_id = $stmt[""];
-$sales->n_products = $stmt[""];
+$sales->product_id = $data["product_id"];
+$sales->n_products = $data["n_prod"];
 
-var_dump($data_keys);
-exit();
-
-// inserting input data into new "sales" instance
-
-foreach( $data as $key=>$value ) {
-    $sales->$key = $value;
-}
+// RUN INSERT 
 
 $stmt = $sales->insert();
 

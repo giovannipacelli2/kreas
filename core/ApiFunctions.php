@@ -67,7 +67,9 @@ class ApiFunctions {
 
         $describe = $stmt->fetchAll( PDO::FETCH_ASSOC );
 
-        if ( !ApiFunctions::dataController( $data, $describe ) ) {
+        $data_checker = ApiFunctions::getDataFromTable( $describe );
+
+        if ( !ApiFunctions::existsAllParams( $data, $data_checker ) ) {
             
             Message::writeJsonMessage("Uncomplete data!");
             exit();
@@ -75,25 +77,30 @@ class ApiFunctions {
 
     }
 
-    // check NOT NULL fields
-
-    public static function dataController( $data, $describe ) {
+    public static function getDataFromTable( $describe ) {
 
         // array containing the list of the NOT NULL fields
         $data_checker= [];
-
+    
         // Push in $data_checker all NOT NULL fields
         foreach( $describe as $row ){
-
+    
             $extra = isset($row["Extra"]) ? $row["Extra"] : "";
-
+    
             if ( $row["Null"] == "NO" && !preg_match( "/auto_increment/", $extra ) ){
                 array_push( $data_checker, $row["Field"] );
             }
-
+    
         }
 
-        //cast data in associative array;
+        return $data_checker;
+    }
+
+    // check NOT NULL fields
+
+    public static function existsAllParams( $data, $data_checker ) {
+
+        //cast sended data in associative array;
         $data = (array) $data;
 
         $check = TRUE;
@@ -103,7 +110,7 @@ class ApiFunctions {
         foreach( $data_checker as $param ){
 
             // $param = a NOT NULL field from existing table
-            // $data = associative array with sended data
+            // $data_checker = array with exists field
             $exists = array_key_exists( $param, $data );
 
             // if param NOT EXISTS or an param has empty string
@@ -116,6 +123,33 @@ class ApiFunctions {
 
         return $check;
     }
+
+    public static function validateParams( $data, $data_checker ) {
+
+        //cast sended data in associative array;
+        $data = (array) $data;
+
+        $check = TRUE;
+
+        // check input data integrity
+
+        foreach( $data as $param ){
+
+            // $param = key of sended data
+            // $data_checker = array with necessary field
+            $exists = in_array( $param, $data_checker );
+
+            // if param NOT EXISTS
+
+            if( !$exists ) {
+                $check = false;
+            }
+
+        }
+
+        return $check;
+    }
+
      /*------------------CHECK-SALE-INSERT---------------------*/
     
      public static function saleInsertChecker( $data ) {

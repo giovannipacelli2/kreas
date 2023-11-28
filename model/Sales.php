@@ -140,6 +140,15 @@ class Sales{
 
             exceptionHandler( $e );
 
+            if ( $e->getCode() == 23000 ) {
+
+                $specific_message = "Inserted product not exists in PRODUCTS LIST!";
+
+                Message::errorMessage( $e, $specific_message );
+                exit();
+            }
+
+
             Message::errorMessage( $e );
             exit();
 
