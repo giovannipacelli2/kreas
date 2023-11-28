@@ -2,6 +2,7 @@
 
 use App\model\Product;
 use App\core\ApiFunctions;
+use App\core\Message;
 
 /*-----------------------UPDATE-CONNECTION-HEADER----------------------*/
 
@@ -23,23 +24,58 @@ $conn = ApiFunctions::getConnection( $config );
 
 $product = new Product( $conn );
 
-// QUERY PARAM
+// QUERY PARAM - OLD CODE
 $product_code = $GLOBALS["PARAMS_URI"][0]["code"];
 
 // GET DATA FROM REQUEST
-$data = ApiFunctions::getInput();
+$data = (array) ApiFunctions::getInput();
 
 $stmt = $product->describe();
 
 // Check the correctness of data
-$data_fields = ApiFunctions::updateChecker( $data, $stmt );
+
+$data_keys = array_keys( $data );
+$data_fields = [ "product_code", "name", "saved_kg_co2" ];
+
+$validation = ApiFunctions::validateParams( $data_keys, $data_fields );
+
+if ( !$validation ) {
+    Message::writeJsonMessage( "Bad request!" );
+    http_response_code(400);
+    exit();
+}
+
+
+
+$old_data = [];
+
+if ( count( $data ) < count( $data_fields ) ) {
+
+    $old_data = $product->read_by_code( $product_code );
+    
+    if ( $old_data->rowCount() == 0 ) {
+    
+        Message::writeJsonMessage( "Product code not found" );
+        exit();
+    }
+
+    $old_data = $old_data->fetch( PDO::FETCH_ASSOC );
+
+}
 
 // Inserting input data into new "product" instance
 
-foreach( $data as $key=>$value ) {
-    if ( in_array( $key, $data_fields ) ){
-        $product->$key = $value;
-    } 
+
+foreach( $data_fields as $key ) {
+
+    if ( array_key_exists( $key, $data ) ){
+        $product->$key = $data[$key];
+
+    } else {
+        $product->$key = isset( $old_data[$key] ) 
+                            ? $old_data[$key] 
+                            : null;
+    }
 
 }
 
