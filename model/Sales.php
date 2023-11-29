@@ -158,7 +158,7 @@ class Sales{
 
     /*-------------------------------UPDATE--------------------------------*/
 
-    function update( $sales_to_update ){
+    function updateByProduct( $sales_to_update, $product_to_update ){
 
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
@@ -167,6 +167,7 @@ class Sales{
         $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
 
         $sales_to_update = htmlspecialchars( strip_tags( $sales_to_update ) );
+        $product_to_update = htmlspecialchars( strip_tags( $product_to_update ) );
         
         try{
 
@@ -177,7 +178,7 @@ class Sales{
                         product_id=:product_id,
                         n_products=:n_products
                     WHERE sales_code=:old_code
-                    AND product_id=:product_id;";
+                    AND product_id=:old_prod;";
     
             /*----------------------Query-Update-------------------------*/
             
@@ -192,6 +193,7 @@ class Sales{
             $stmt->bindParam( ":n_products", $this->n_products, PDO::PARAM_INT );
 
             $stmt->bindParam( ":old_code", $sales_to_update, PDO::PARAM_STR );
+            $stmt->bindParam( ":old_prod", $product_to_update, PDO::PARAM_STR );
                     
             $stmt->execute();
                     

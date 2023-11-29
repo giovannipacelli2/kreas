@@ -80,7 +80,7 @@ class ApiFunctions {
     public static function getDataFromTable( $describe ) {
 
         // array containing the list of the NOT NULL fields
-        $data_checker= [];
+        $data_fields= [];
     
         // Push in $data_checker all NOT NULL fields
         foreach( $describe as $row ){
@@ -88,12 +88,12 @@ class ApiFunctions {
             $extra = isset($row["Extra"]) ? $row["Extra"] : "";
     
             if ( $row["Null"] == "NO" && !preg_match( "/auto_increment/", $extra ) ){
-                array_push( $data_checker, $row["Field"] );
+                array_push( $data_fields, $row["Field"] );
             }
     
         }
 
-        return $data_checker;
+        return $data_fields;
     }
 
     // check NOT NULL fields

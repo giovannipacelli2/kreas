@@ -63,6 +63,12 @@ return [
                 "file"=>"./product/crud/update.php"
             ]
         ],
+        "sales" => [
+            "sale-product" => [
+                "query" => ["code", "prod"],
+                "file" => "./sale/crud/update.php",
+            ]
+        ],
         "sales-orders" => [
             "order" => [
                 "query"=>["code"],

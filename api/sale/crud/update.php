@@ -7,24 +7,26 @@ use App\core\Message;
 /*-----------------------INSERT-CONNECTION-HEADER----------------------*/
 
 header("Acces-Control-Allow-Origin: *");
-header("Acces-Control-Allow-Methods: POST");
+header("Acces-Control-Allow-Methods: PUT");
 
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 
-ApiFunctions::checkMethod( "POST" );
+ApiFunctions::checkMethod( "PUT" );
 
 
 /*---------------------------START-CONNECTION--------------------------*/
 
 
 extract($GLOBALS["PARAMS_URI"][0]);
+extract($GLOBALS["PARAMS_URI"][1]);
 
 $GLOBALS["PARAMS_URI"] = NULL;
 
 $params = [
-    "code" => $code
+    "code" => $code,
+    "prod" => $prod
 ];
 
 
@@ -49,15 +51,17 @@ if ( !$validation ) {
     exit();
 }
 
-// Check if the ORDER EXISTS
+// Check if ORDER and PRODUCT of the request exist
 
-$check_order = $sales->checkSale( $params["code"] );
+$check_product = $sales->readByProduct( $params["code"], $params["prod"] );
 
-if ( $check_order->rowCount() == 0 ) {
+if ( $check_product->rowCount() == 0 ) {
 
-    Message::writeJsonMessage( "Order Not Found!" );
+    Message::writeJsonMessage( "Product or order not exists!" );
     exit();
 }
+
+$old_data = $check_product->fetch( PDO::FETCH_ASSOC );
 
 // Check if INSERTED PRODUCT already exists in that ORDER
 
@@ -65,23 +69,34 @@ $check_product = $sales->readByProduct( $params["code"], $data["product_id"] );
 
 if ( $check_product->rowCount() > 0 ) {
 
-    Message::writeJsonMessage( "Product inserted already exists!" );
+    Message::writeJsonMessage( "Product inserted already exists in that order!" );
     exit();
 }
 
-// INSERT data in SALES intance
+// Inserting input data into new "sales" instance
 
-$stmt = $check_order->fetch( PDO::FETCH_ASSOC );
 
-$sales->sales_code = $stmt["sales_code"];
-$sales->sales_date = $stmt["sales_date"];
-$sales->destination = $stmt["destination"];
-$sales->product_id = $data["product_id"];
-$sales->n_products = $data["n_prod"];
+foreach( $old_data as $key=>$value ) {
 
-// RUN INSERT 
+    if ( $key != "id" ) {
 
-$stmt = $sales->insert();
+        if ( array_key_exists( $key, $data ) ){
+            
+            $sales->$key = $data[$key];
+    
+        } else {
+            $sales->$key = isset( $old_data[$key] ) 
+                                ? $old_data[$key] 
+                                : null;
+        }
+    }
+
+
+}
+
+// RUN UPDATE
+
+$stmt = $sales->updateByProduct( $params["code"], $params["prod"] );
 
 if ( $stmt ) {
     writeApi( $stmt->rowCount() );
@@ -103,14 +118,14 @@ function writeApi ( int $affected_rows ) {
     if ( $affected_rows > 0 ){
 
         $result["result"] = [
-            "message" => "inserted successfully!"
+            "message" => "Update successfully!"
         ]; 
 
         http_response_code(200);
 
     } else {
         $result["result"] = [
-            "message" => "Insert unsuccessful"
+            "message" => "Update unsuccessful"
         ]; 
     }
     

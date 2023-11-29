@@ -30,8 +30,6 @@ $product_code = $GLOBALS["PARAMS_URI"][0]["code"];
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
 
-$stmt = $product->describe();
-
 // Check the correctness of data
 
 $data_keys = array_keys( $data );
@@ -44,8 +42,6 @@ if ( !$validation ) {
     http_response_code(400);
     exit();
 }
-
-
 
 $old_data = [];
 
