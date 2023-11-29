@@ -11,7 +11,7 @@ class Sales{
     public $sales_code, $sales_date, $destination, $product_id, $n_products;
 
     protected $conn;
-    protected $table_name = "sales_orders" ;
+    protected $table_name = "sales" ;
 
     public function __construct(PDO $conn)
     {
@@ -78,7 +78,7 @@ class Sales{
 
     /*--------------------------READ-BY-SALES-CODE-------------------------*/
         
-    public function checkSale( $sales_code ) {
+    public function readByOrder( $sales_code ) {
 
         try{
             $q_check = "SELECT * FROM " . $this->table_name . " " .
@@ -110,14 +110,12 @@ class Sales{
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
         $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
-        $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
-        $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
         
         try{
 
             $q = "INSERT INTO " . $this->table_name . " " .
                     "( sales_code, sales_date, destination, product_id, n_products ) VALUES(
-                        :sales_code, :sales_date, :destination, :product_id, :n_products
+                        :sales_code, :sales_date, :destination
                     )";
     
             /*----------------------Query-Insert-------------------------*/
@@ -128,8 +126,6 @@ class Sales{
             $stmt->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
             $stmt->bindParam( ":sales_date", $this->sales_date, PDO::PARAM_STR );
             $stmt->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
-            $stmt->bindParam( ":product_id", $this->product_id, PDO::PARAM_STR );
-            $stmt->bindParam( ":n_products", $this->n_products, PDO::PARAM_INT );
         
             $stmt->execute();
                     

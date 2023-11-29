@@ -11,7 +11,7 @@
 
     return [
         "database" => [
-            "name" => "kreas",
+            "name" => "kreas2",
             "username" => $_ENV["DB_USER"],
             "password" => $_ENV["DB_PASSWORD"],
             "connection" => "mysql:host=" . $_ENV["DB_HOST"],

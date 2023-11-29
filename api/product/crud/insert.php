@@ -18,9 +18,6 @@ ApiFunctions::checkMethod( "POST" );
 /*---------------------------START-CONNECTION--------------------------*/
 
 
-
-
-
 $conn = ApiFunctions::getConnection( $config );
 
 $product = new Product( $conn );
