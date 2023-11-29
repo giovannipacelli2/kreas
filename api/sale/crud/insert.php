@@ -19,14 +19,6 @@ ApiFunctions::checkMethod( "POST" );
 /*---------------------------START-CONNECTION--------------------------*/
 
 
-extract($GLOBALS["PARAMS_URI"][0]);
-
-$GLOBALS["PARAMS_URI"] = NULL;
-
-$params = [
-    "code" => $code
-];
-
 
 $conn = ApiFunctions::getConnection( $config );
 
@@ -34,20 +26,16 @@ $sales = new Sales( $conn );
 
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
+$describe = $sales->describe();
 
 // Check the correctness of REQUEST
 
-$data_keys = array_keys( $data );
-$data_fields = [ "product_id", "n_products" ];
+ApiFunctions::inputChecker( $data, $describe );
 
-$validation = ApiFunctions::validateParams( $data_keys, $data_fields );
 
-if ( !$validation ) {
+exit();
 
-    Message::writeJsonMessage( "Bad request" );
-    http_response_code(400);
-    exit();
-}
+
 
 // Check if the ORDER EXISTS
 

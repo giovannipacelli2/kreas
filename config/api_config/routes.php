@@ -47,10 +47,7 @@ return [
             "file"=>"./product/crud/insert.php",
         ],
         "sales" => [
-            "sale-product" => [
-                "query" => ["code"],
-                "file" => "./sale/crud/insert.php",
-            ]
+            "file" => "./sale/crud/insert.php",
         ],
         "sales-orders" => [
             "file"=>"./sales-order/crud/insert.php",

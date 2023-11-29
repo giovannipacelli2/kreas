@@ -241,7 +241,7 @@ class Sales{
         $code = htmlspecialchars( strip_tags( $code ) );
         $product = htmlspecialchars( strip_tags( $product ) );
 
-        $check = $this->checkSale( $code );
+        $check = $this->readByOrder( $code );
 
         if ( $check->rowCount() > 1 ) {
             Message::writeJsonMessage( 

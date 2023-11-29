@@ -67,11 +67,14 @@ class ApiFunctions {
 
         $describe = $stmt->fetchAll( PDO::FETCH_ASSOC );
 
-        $data_checker = ApiFunctions::getDataFromTable( $describe );
+        $data_fields = ApiFunctions::getDataFromTable( $describe );
 
-        if ( !ApiFunctions::existsAllParams( $data, $data_checker ) ) {
-            
-            Message::writeJsonMessage("Uncomplete data!");
+        $validation = ApiFunctions::existsAllParams( $data, $data_fields );
+
+        if ( !$validation ) {
+
+            Message::writeJsonMessage( "Bad request" );
+            http_response_code(400);
             exit();
         }
 
@@ -98,7 +101,8 @@ class ApiFunctions {
 
     // check NOT NULL fields
 
-    public static function existsAllParams( $data, $data_checker ) {
+    // Wants data as key=>value and fields as array of string
+    public static function existsAllParams( $data, $data_fields ) {
 
         //cast sended data in associative array;
         $data = (array) $data;
@@ -107,7 +111,7 @@ class ApiFunctions {
 
         // check input data integrity
 
-        foreach( $data_checker as $param ){
+        foreach( $data_fields as $param ){
 
             // $param = a NOT NULL field from existing table
             // $data_checker = array with exists field
@@ -124,6 +128,7 @@ class ApiFunctions {
         return $check;
     }
 
+    // Wants data and fields as array of string
     public static function validateParams( $data, $data_checker ) {
 
         //cast sended data in associative array;
