@@ -33,41 +33,13 @@ $describe = $sales->describe();
 ApiFunctions::inputChecker( $data, $describe );
 
 
-exit();
-
-
-
-// Check if the ORDER EXISTS
-
-$check_order = $sales->checkSale( $params["code"] );
-
-if ( $check_order->rowCount() == 0 ) {
-
-    Message::writeJsonMessage( "Order Not Found!" );
-    exit();
-}
-
-// Check if INSERTED PRODUCT already exists in that ORDER
-
-$check_product = $sales->readByProduct( $params["code"], $data["product_id"] );
-
-if ( $check_product->rowCount() > 0 ) {
-
-    Message::writeJsonMessage( "Product inserted already exists!" );
-    exit();
-}
 
 // INSERT data in SALES intance
 
-$stmt = $check_order->fetch( PDO::FETCH_ASSOC );
-
-$sales->sales_code = $stmt["sales_code"];
-$sales->sales_date = $stmt["sales_date"];
-$sales->destination = $stmt["destination"];
-$sales->product_id = $data["product_id"];
-$sales->n_products = $data["n_prod"];
-
-// RUN INSERT 
+foreach ( $data as $key=>$value ) {
+    
+    $sales->$key = $value;
+}
 
 $stmt = $sales->insert();
 

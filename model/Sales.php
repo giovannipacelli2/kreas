@@ -8,7 +8,7 @@ use PDOException;
 
 class Sales{
 
-    public $sales_code, $sales_date, $destination, $product_id, $n_products;
+    public $sales_code, $sales_date, $destination;
 
     protected $conn;
     protected $table_name = "sales" ;
@@ -114,7 +114,7 @@ class Sales{
         try{
 
             $q = "INSERT INTO " . $this->table_name . " " .
-                    "( sales_code, sales_date, destination, product_id, n_products ) VALUES(
+                    "( sales_code, sales_date, destination ) VALUES(
                         :sales_code, :sales_date, :destination
                     )";
     
@@ -138,7 +138,7 @@ class Sales{
 
             if ( $e->getCode() == 23000 ) {
 
-                $specific_message = "Inserted product not exists in PRODUCTS LIST!";
+                $specific_message = "This order already exists!";
 
                 Message::errorMessage( $e, $specific_message );
                 exit();
@@ -159,8 +159,6 @@ class Sales{
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
         $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
-        $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
-        $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
 
         $sales_to_update = htmlspecialchars( strip_tags( $sales_to_update ) );
         $product_to_update = htmlspecialchars( strip_tags( $product_to_update ) );
@@ -184,9 +182,6 @@ class Sales{
             $stmt->bindParam( ":sales_code", $this->sales_code, PDO::PARAM_STR );
             $stmt->bindParam( ":sales_date", $this->sales_date, PDO::PARAM_STR );
             $stmt->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
-
-            $stmt->bindParam( ":product_id", $this->product_id, PDO::PARAM_STR );
-            $stmt->bindParam( ":n_products", $this->n_products, PDO::PARAM_INT );
 
             $stmt->bindParam( ":old_code", $sales_to_update, PDO::PARAM_STR );
             $stmt->bindParam( ":old_prod", $product_to_update, PDO::PARAM_STR );
