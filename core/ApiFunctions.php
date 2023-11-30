@@ -50,6 +50,7 @@ class ApiFunctions {
         if (!$data) {
 
             Message::writeJsonMessage("No data");
+            http_response_code(400);
             exit();
         }
 
@@ -155,104 +156,37 @@ class ApiFunctions {
         return $check;
     }
 
-     /*------------------CHECK-SALE-INSERT---------------------*/
-    
-     public static function saleInsertChecker( $data ) {
 
-        //cast data in associative array;
-        $data = (array) $data;
-
-        $fields = [ "sales_code", "sales_date", "destination", "products" ];
-
-        $check = TRUE;
-
-        // check input data integrity
-
-        foreach( $fields as $field ){
-
-            // $field = a NOT NULL field from existing table
-            // $data = associative array with sended data
-            $exists = array_key_exists( $field, $data );
-
-            // Check the array "products"
-
-            if ( $exists && $field == "products" ) {
-
-                if ( !ApiFunctions::productField( $data[$field] ) ) return FALSE;
-            }
-
-            // if param NOT EXISTS or an param has empty string
-
-            if( !$exists || $data[$field] == "" ) {
-                return FALSE;
-            }
-
-        }
-
-        return $check;
-     }
-
-    /*----------------CHECK-PRODUCT-FIELDs--------------------*/
-    
-    private static function productField( $products ) {
-
-        $product_fields = [ "product_code", "n_prod" ];
-
-        if ( !is_array( $products ) || count( $products ) == 0 ) return FALSE;
-        
-                    
-        foreach( $products as $product ) {
-
-            $product = (array) $product;
-
-            foreach ( $product_fields as $f ) {
-                $exts = array_key_exists( $f, $product );
-
-                if( !$exts || $product[$f] == "" ) {
-                    return FALSE;
-                } 
-                        
-                // Check n_prod not be text or less than zero
-                else if ( $exts && (!is_int( $product["n_prod"] ) || !$product["n_prod"]>0 ) ) {
-                    return FALSE;
-                }
-            }
-        }
-
-        return TRUE;
-    }
 
     /*--------------------CHECK-UPDATE------------------------*/
     
-    public static function saleUpdateChecker( $data ) {
+    // Return empty array if there are all fields
+    // Return "data_fields" if there are some of necessary fields
 
-        //cast data in associative array;
-        $data = (array) $data;
+    public static function updateChecker( $data, $stmt ) {
 
-        $result = [];
-        $fields = [ "sales_code", "sales_date", "destination", "products" ];
+        if ( !$stmt ) exit(); 
+    
+        $describe = $stmt->fetchAll( PDO::FETCH_ASSOC );
+    
+        $data_fields = ApiFunctions::getDataFromTable( $describe );
+    
+        $validation = ApiFunctions::existsAllParams( $data, $data_fields );
+    
+        if ( !$validation ) {
 
-        foreach( $data as $key=>$value ) {
-            if ( in_array( $key, $fields ) ){
-                array_push( $result, $key );
-            }
-        }
+            $validation = ApiFunctions::validateParams( array_keys( $data ), $data_fields );
 
-        if ( isset( $data["products"] ) ){
-            $check_products = ApiFunctions::productField( $data["products"] );
+            return $data_fields;
 
-            if ( !$check_products ) {
-                Message::writeJsonMessage("Wrong data in products array!");
+            if ( !$validation ) {
+                Message::writeJsonMessage( "Bad request" );
+                http_response_code(400);
                 exit();
             }
         }
 
-        if ( !$result ) {
-            Message::writeJsonMessage("Wrong data");
-            exit();
-        }
-
-        return $result;
+        return [];
 
     }
 

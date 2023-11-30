@@ -62,7 +62,7 @@ return [
         ],
         "sales" => [
             "sale-product" => [
-                "query" => ["code", "prod"],
+                "query" => ["code"],
                 "file" => "./sale/crud/update.php",
             ]
         ],

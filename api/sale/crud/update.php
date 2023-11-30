@@ -18,17 +18,11 @@ ApiFunctions::checkMethod( "PUT" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
+$code = isset($GLOBALS["PARAMS_URI"][0]["code"] )
+            ? $GLOBALS["PARAMS_URI"][0]["code"] 
+            : NULL;
 
-extract($GLOBALS["PARAMS_URI"][0]);
-extract($GLOBALS["PARAMS_URI"][1]);
-
-$GLOBALS["PARAMS_URI"] = NULL;
-
-$params = [
-    "code" => $code,
-    "prod" => $prod
-];
-
+if ( !$code ) exit();
 
 $conn = ApiFunctions::getConnection( $config );
 
@@ -37,66 +31,48 @@ $sales = new Sales( $conn );
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
 
+$describe = $sales->describe();
+
 // Check the correctness of REQUEST
+$allParams = (array) ApiFunctions::updateChecker( $data, $describe );
 
-$data_keys = array_keys( $data );
-$data_fields = [ "product_id", "n_products" ];
+$old_data = [];
 
-$validation = ApiFunctions::validateParams( $data_keys, $data_fields );
-
-if ( !$validation ) {
-
-    Message::writeJsonMessage( "Bad request" );
-    http_response_code(400);
-    exit();
-}
-
-// Check if ORDER and PRODUCT of the request exist
-
-$check_product = $sales->readByProduct( $params["code"], $params["prod"] );
-
-if ( $check_product->rowCount() == 0 ) {
-
-    Message::writeJsonMessage( "Product or order not exists!" );
-    exit();
-}
-
-$old_data = $check_product->fetch( PDO::FETCH_ASSOC );
-
-// Check if INSERTED PRODUCT already exists in that ORDER
-
-$check_product = $sales->readByProduct( $params["code"], $data["product_id"] );
-
-if ( $check_product->rowCount() > 0 ) {
-
-    Message::writeJsonMessage( "Product inserted already exists in that order!" );
-    exit();
-}
-
-// Inserting input data into new "sales" instance
-
-
-foreach( $old_data as $key=>$value ) {
-
-    if ( $key != "id" ) {
-
-        if ( array_key_exists( $key, $data ) ){
-            
-            $sales->$key = $data[$key];
+if ( count( $allParams ) != 0 ){ 
     
-        } else {
-            $sales->$key = isset( $old_data[$key] ) 
-                                ? $old_data[$key] 
-                                : null;
-        }
+    $old_data = $sales->readByOrder( $code );
+
+    if ( $old_data->rowCount() == 0 ) {
+        Message::writeJsonMessage( "Order not found" );
+        exit();
     }
 
+    $old_data = $old_data->fetch( PDO::FETCH_ASSOC );
+
+} else {
+    
+    $allParams = array_keys( $data );
+    
+}
+
+// INSERT data in SALES intance
+
+foreach( $allParams as $field ) {
+
+    if ( array_key_exists( $field, $data ) ){
+        $sales->$field = $data[$field];
+
+    } else {
+        $sales->$field = isset( $old_data[$field] ) 
+                            ? $old_data[$field] 
+                            : null;
+    }
 
 }
 
 // RUN UPDATE
 
-$stmt = $sales->updateByProduct( $params["code"], $params["prod"] );
+$stmt = $sales->update( $code );
 
 if ( $stmt ) {
     writeApi( $stmt->rowCount() );

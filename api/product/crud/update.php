@@ -18,64 +18,64 @@ ApiFunctions::checkMethod( "PUT" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
-// $GLOBALS["PARAMS_URI"] = [ query => value ]
+// QUERY PARAM - OLD CODE
+
+$code = isset($GLOBALS["PARAMS_URI"][0]["code"] )
+            ? $GLOBALS["PARAMS_URI"][0]["code"] 
+            : NULL;
+
+if ( !$code ) exit();
 
 $conn = ApiFunctions::getConnection( $config );
 
 $product = new Product( $conn );
 
-// QUERY PARAM - OLD CODE
-$product_code = $GLOBALS["PARAMS_URI"][0]["code"];
 
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
 
 // Check the correctness of data
 
-$data_keys = array_keys( $data );
-$data_fields = [ "product_code", "name", "saved_kg_co2" ];
+$describe = $product->describe();
 
-$validation = ApiFunctions::validateParams( $data_keys, $data_fields );
-
-if ( !$validation ) {
-    Message::writeJsonMessage( "Bad request!" );
-    http_response_code(400);
-    exit();
-}
+// Check the correctness of REQUEST
+$allParams = (array) ApiFunctions::updateChecker( $data, $describe );
 
 $old_data = [];
 
-if ( count( $data ) < count( $data_fields ) ) {
+if ( count( $allParams ) != 0 ){ 
+    
+    $old_data = $product->read_by_code( $code );
 
-    $old_data = $product->read_by_code( $product_code );
-    
     if ( $old_data->rowCount() == 0 ) {
-    
-        Message::writeJsonMessage( "Product code not found" );
+        Message::writeJsonMessage( "Order not found" );
         exit();
     }
 
     $old_data = $old_data->fetch( PDO::FETCH_ASSOC );
 
+} else {
+    
+    $allParams = array_keys( $data );
+    
 }
 
 // Inserting input data into new "product" instance
 
+foreach( $allParams as $field ) {
 
-foreach( $data_fields as $key ) {
-
-    if ( array_key_exists( $key, $data ) ){
-        $product->$key = $data[$key];
+    if ( array_key_exists( $field, $data ) ){
+        $product->$field = $data[$field];
 
     } else {
-        $product->$key = isset( $old_data[$key] ) 
-                            ? $old_data[$key] 
+        $product->$field = isset( $old_data[$field] ) 
+                            ? $old_data[$field] 
                             : null;
     }
 
 }
 
-$stmt = $product->update( $product_code );
+$stmt = $product->update( $code );
 
 if ( $stmt ) {
     writeApi( $stmt->rowCount() );

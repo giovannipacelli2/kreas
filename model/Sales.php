@@ -154,25 +154,21 @@ class Sales{
 
     /*-------------------------------UPDATE--------------------------------*/
 
-    function updateByProduct( $sales_to_update, $product_to_update ){
+    function update( $sales_to_update ){
 
         $this->sales_code = htmlspecialchars( strip_tags( $this->sales_code ) );
         $this->sales_date = htmlspecialchars( strip_tags( $this->sales_date ) );
         $this->destination = htmlspecialchars( strip_tags( $this->destination ) );
 
         $sales_to_update = htmlspecialchars( strip_tags( $sales_to_update ) );
-        $product_to_update = htmlspecialchars( strip_tags( $product_to_update ) );
         
         try{
 
             $q = "UPDATE " . $this->table_name . " " .
                     "SET sales_code=:sales_code,
                         sales_date=:sales_date,
-                        destination=:destination,
-                        product_id=:product_id,
-                        n_products=:n_products
-                    WHERE sales_code=:old_code
-                    AND product_id=:old_prod;";
+                        destination=:destination
+                    WHERE sales_code=:old_code;";
     
             /*----------------------Query-Update-------------------------*/
             
@@ -184,7 +180,6 @@ class Sales{
             $stmt->bindParam( ":destination", $this->destination, PDO::PARAM_STR );
 
             $stmt->bindParam( ":old_code", $sales_to_update, PDO::PARAM_STR );
-            $stmt->bindParam( ":old_prod", $product_to_update, PDO::PARAM_STR );
                     
             $stmt->execute();
                     
