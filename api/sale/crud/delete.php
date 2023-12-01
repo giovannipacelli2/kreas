@@ -1,6 +1,6 @@
 <?php
 
-use App\model\Product;
+use App\model\Sales;
 use App\core\ApiFunctions;
 
 /*-----------------------DELETE-CONNECTION-HEADER----------------------*/
@@ -18,16 +18,20 @@ ApiFunctions::checkMethod( "DELETE" );
 /*---------------------------START-CONNECTION--------------------------*/
 
 
-// $GLOBALS["PARAMS_URI"] = [ query => value ]
+$code = isset($GLOBALS["PARAMS_URI"][0]["code"] )
+            ? $GLOBALS["PARAMS_URI"][0]["code"] 
+            : NULL;
+
+if ( !$code ) exit();
 
 $conn = ApiFunctions::getConnection( $config );
 
-$product = new Product( $conn );
+$sales = new Sales( $conn );
 
 // QUERY PARAM
-$product_code = $GLOBALS["PARAMS_URI"][0]["code"];
+$code = $GLOBALS["PARAMS_URI"][0]["code"];
 
-$stmt = $product->delete( $product_code );
+$stmt = $sales->delete( $code );
 
 if ( $stmt ) {
     writeApi( $stmt->rowCount() );

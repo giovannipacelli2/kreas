@@ -12,6 +12,12 @@ return [
         ],
 
         "sales" => [
+            "all" => [
+                "file" => "./sale/crud/read-all.php",
+            ],
+            "{id}" => [
+                "file" => "./sale/crud/read-id.php",
+            ],
             "sale-product" => [
                 "query" => ["code", "prod"],
                 "file" => "./sale/query/read-sales-prod.php",
@@ -61,7 +67,7 @@ return [
             ]
         ],
         "sales" => [
-            "sale-product" => [
+            "sale" => [
                 "query" => ["code"],
                 "file" => "./sale/crud/update.php",
             ]
@@ -78,6 +84,12 @@ return [
             "product" => [
                 "query"=>["code"],
                 "file"=>"./product/crud/delete.php"
+            ]
+        ],
+        "sales" => [
+            "sale" => [
+                "query" => ["code"],
+                "file" => "./sale/crud/delete.php",
             ]
         ],
         "sales-orders" => [

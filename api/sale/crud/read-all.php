@@ -1,6 +1,6 @@
 <?php
 
-use App\model\Product;
+use App\model\Sales;
 use App\core\ApiFunctions;
 
 /*------------------------READ-CONNECTION-HEADER-----------------------*/
@@ -17,9 +17,9 @@ ApiFunctions::checkMethod( "GET" );
 
 $conn = ApiFunctions::getConnection( $config );
 
-$product = new Product( $conn );
+$sales = new Sales( $conn );
 
-$stmt = $product->read_by_code( $GLOBALS["PARAMS_URI"] );
+$stmt = $sales->read();
 
 if ( $stmt ) {
     writeApi($stmt);
@@ -29,32 +29,28 @@ $GLOBALS["stmt"] = NULL;
 $GLOBALS["db"] = NULL;
 $GLOBALS["conn"] = NULL;
 
-
-
 /*-------------------------------FUNCTIONS-----------------------------*/
 
 
-function writeApi ( PDOStatement $stmt ) {
+function writeApi( PDOStatement $stmt ) {
 
     $result = [];
+    $result["allOrders"] = [];
 
-    if ( $stmt->rowCount() == 0 ) {
-
-        $result["result"] = [
-            "message" => "Product Not Found"
-        ];
-
-    } else {
-
-        $data = $stmt->fetchAll( PDO::FETCH_ASSOC );
+    $data = $stmt->fetchAll( PDO::FETCH_ASSOC );
+        
+        foreach ( $data as $row ) {
+            
+            array_push( $result["allOrders"], $row );
+        
+        }
     
-        $result["result"] = $data;
 
-        http_response_code(200);
-    }
     header("Content-Type: application/json charset=UTF-8");
+    http_response_code(200);
     echo json_encode( $result );
 
 }
+
 
 ?>

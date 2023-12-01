@@ -1,6 +1,6 @@
 <?php
 
-use App\model\Product;
+use App\model\Sales;
 use App\core\ApiFunctions;
 
 /*------------------------READ-CONNECTION-HEADER-----------------------*/
@@ -14,12 +14,17 @@ ApiFunctions::checkMethod( "GET" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
+$code = isset($GLOBALS["PARAMS_URI"] )
+            ? $GLOBALS["PARAMS_URI"] 
+            : NULL;
+
+if ( !$code ) exit();
 
 $conn = ApiFunctions::getConnection( $config );
 
-$product = new Product( $conn );
+$sales = new Sales( $conn );
 
-$stmt = $product->read_by_code( $GLOBALS["PARAMS_URI"] );
+$stmt = $sales->readByOrder( $code );
 
 if ( $stmt ) {
     writeApi($stmt);
@@ -28,8 +33,6 @@ if ( $stmt ) {
 $GLOBALS["stmt"] = NULL;
 $GLOBALS["db"] = NULL;
 $GLOBALS["conn"] = NULL;
-
-
 
 /*-------------------------------FUNCTIONS-----------------------------*/
 
@@ -41,7 +44,7 @@ function writeApi ( PDOStatement $stmt ) {
     if ( $stmt->rowCount() == 0 ) {
 
         $result["result"] = [
-            "message" => "Product Not Found"
+            "message" => "Order Not Found"
         ];
 
     } else {
@@ -56,5 +59,6 @@ function writeApi ( PDOStatement $stmt ) {
     echo json_encode( $result );
 
 }
+
 
 ?>

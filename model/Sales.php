@@ -47,21 +47,13 @@ class Sales{
     
     /*--------------------------------READ---------------------------------*/
 
-    function readByProduct( string $code, string $product ){
-        // code by uri
-        $code = htmlspecialchars( strip_tags( $code ) );
+    function read(){
         
         try{
 
-            $q = "SELECT * FROM " . $this->table_name .
-            " WHERE sales_code = :code " . 
-            "AND product_id = :product" .
-            " ORDER BY sales_code;";
+            $q = "SELECT * FROM " . $this->table_name .";";
 
             $stmt = $this->conn->prepare( $q );
-
-            $stmt->bindParam( ":code", $code, PDO::PARAM_STR );
-            $stmt->bindParam( ":product", $product, PDO::PARAM_STR );
 
             $stmt->execute();
 
@@ -79,6 +71,8 @@ class Sales{
     /*--------------------------READ-BY-SALES-CODE-------------------------*/
         
     public function readByOrder( $sales_code ) {
+
+        $sales_code = htmlspecialchars( strip_tags( $sales_code ) );
 
         try{
             $q_check = "SELECT * FROM " . $this->table_name . " " .
@@ -199,7 +193,7 @@ class Sales{
     
     /*-------------------------------DELETE--------------------------------*/
 
-    function deleteOrder( string $code ){
+    function delete( string $code ){
         // code by uri
         $code = htmlspecialchars( strip_tags( $code ) );
         
