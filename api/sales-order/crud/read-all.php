@@ -18,7 +18,7 @@ $conn = ApiFunctions::getConnection( $config );
 
 $sales_orders = new SalesOrder( $conn );
 
-$stmt = $sales_orders->readOrders();
+$stmt = $sales_orders->read_all();
     
 if ( $stmt ) {
     writeApi($stmt);

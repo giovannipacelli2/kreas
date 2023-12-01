@@ -14,12 +14,18 @@ ApiFunctions::checkMethod( "GET" );
 
 /*---------------------------START-CONNECTION--------------------------*/
 
+$code = isset($GLOBALS["PARAMS_URI"] )
+            ? $GLOBALS["PARAMS_URI"] 
+            : NULL;
+
+if ( !$code ) exit();
+
 
 $conn = ApiFunctions::getConnection( $config );
 
 $sales = new SalesOrder( $conn );
 
-$stmt = $sales->readOrderByCode( $GLOBALS["PARAMS_URI"] );
+$stmt = $sales->read_id( $code );
 
 if ( $stmt ) {
     writeApi($stmt);

@@ -309,7 +309,7 @@ class ApiFunctions {
             foreach ( $row as $key=>$value ) {
                 
                 if ( ( $key != "name" ) && 
-                     ( $key != "product_code" ) && 
+                     ( $key != "product_id" ) && 
                      ( $key != "saved_kg_co2" ) &&
                      ( $key != "n_products" )
                 ) {
@@ -329,7 +329,7 @@ class ApiFunctions {
 
             $tmp = [
 
-                "product_code" => $row["product_code"],
+                "product_id" => $row["product_id"],
                 "n_prod" => $row["n_products"],
                 "prod_name" => $row["name"]
             ];
