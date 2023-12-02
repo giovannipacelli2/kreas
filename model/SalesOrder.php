@@ -2,41 +2,31 @@
 
 namespace App\model;
 
-use App\model\Sales;
-
 use App\core\Message;
 use DateTime;
 use PDO;
 use PDOException;
 
-class SalesOrder extends Sales{
+class SalesOrder {
     
-    public $products;
+    public $conn;
+    public $product_id, $n_products, $sales_id;
+
+    protected $table_name = "sales_orders";
     
     protected $table_join = "products AS p JOIN (".
         "SELECT * FROM ".
         "sales as s JOIN sales_orders as o ".
         "ON s.sales_code = o.sales_id".
     ") AS so";
+
+    public function __construct(PDO $conn)
+    {
+        $this->conn = $conn;
+    }
     
 /*--------------------------------------------CRUD-METHODS--------------------------------------------*/
     
-function crud( string $code ){
-
-    try{
-
-        
-
-    } catch( PDOException $e ) {
-
-        exceptionHandler( $e );
-
-        Message::errorMessage( $e );
-
-    }
-
-}
-
     /*------------------------------READ-ALL-------------------------------*/
 
     function read_all(){
@@ -101,12 +91,42 @@ function crud( string $code ){
     
     /*-------------------------------INSERT--------------------------------*/
 
+    function insert(){
 
+        $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
+        $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
+        $this->sales_id = htmlspecialchars( strip_tags( $this->sales_id ) );
+
+        try{
+    
+            $q = "INSERT INTO 
+            " . $this->table_name . " ( product_id, n_products, sales_id ) VALUES( ".
+            ":product_id, :n_products, :sales_id )";
+
+            $stmt = $this->conn->prepare( $q );
+
+            $stmt->bindParam( ":product_id", $this->product_id, PDO::PARAM_STR );
+            $stmt->bindParam( ":n_products", $this->n_products, PDO::PARAM_INT );
+            $stmt->bindParam( ":sales_id", $this->sales_id, PDO::PARAM_STR );
+
+            $stmt->execute();
+
+            return $stmt;
+    
+        } catch( PDOException $e ) {
+    
+            exceptionHandler( $e );
+    
+            Message::errorMessage( $e );
+    
+        }
+    
+    }
 
 
     /*-------------------------------DELETE--------------------------------*/
 
-    function notInDelete( $old_sales_code ) {
+/*     function notInDelete( $old_sales_code ) {
 
         $old_sales_code = htmlspecialchars( strip_tags( $old_sales_code ) );
         
@@ -154,7 +174,7 @@ function crud( string $code ){
             Message::errorMessage( $e );
 
         }
-    }
+    } */
     
     /*-----------------------------------------------QUERY------------------------------------------------*/
 

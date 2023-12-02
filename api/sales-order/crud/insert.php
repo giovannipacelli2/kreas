@@ -1,5 +1,6 @@
 <?php
 
+use App\model\Sales;
 use App\model\SalesOrder;
 use App\core\ApiFunctions;
 use App\core\Message;
@@ -21,29 +22,72 @@ ApiFunctions::checkMethod( "POST" );
 
 $conn = ApiFunctions::getConnection( $config );
 
-$sale = new SalesOrder( $conn );
+$sales = new Sales( $conn );
 
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
 
-//$stmt = $sale->describe();
+// Validation of data in input
 
-// Check the correctness of data
-$check = ApiFunctions::saleInsertChecker( $data );
+// Necessary fields
+$data_fields = [ "sales_code", "sales_date", "destination", "products" ];
 
-if ( !$check ) {            
-    Message::writeJsonMessage("Uncomplete or wrong data!");
-    exit();
+validate( $data, $data_fields );
+
+// Necessary fields in "products"
+$product_fields = [ "product_id", "n_products" ];
+
+foreach( $data["products"] as $product ) {
+
+    $product = (array) $product;
+    
+    validate( $product, $product_fields );
+
 }
+
+$res = [];
+// Inserting product in Order 
+
+$sales->sales_code = $data["sales_code"];
+$sales->sales_date = $data["sales_date"];
+$sales->destination = $data["destination"];
+
+$stmt = $sales->insert();
+
+if ( $stmt->rowCount() > 0 ) {
+
+    $sales_order = new SalesOrder( $conn );
+
+    $res["order"] = "Inserted " . $stmt->rowCount() . " order" . isPlural( $stmt->rowCount() );
+    $inserted_product = 0;
+
+    foreach ( $data["products"] as $product ) {
+
+        $product = (array) $product;
+
+        $sales_order->sales_id = $data["sales_code"];
+        $sales_order->product_id = $product["product_id"];
+        $sales_order->n_products = $product["n_products"];
+
+        $stmt = $sales_order->insert();
+
+        if( $stmt->rowCount() == 0 ) {
+            Message::writeJsonMessage( "Error!" );
+            exit();
+        } else {
+            $inserted_product++;
+        }
+
+    }
+
+    $res["product"] = "Inserted " . $inserted_product . " product" . isPlural( $inserted_product );
+}
+
+
 // inserting input data into new "sale" instance
-foreach( $data as $key=>$value ) {
-    $sale->$key = $value;
-}
 
-$affected_rows = $sale->insertOrder();
-
-if ( !is_null( $affected_rows ) ) {
-    writeApi( $affected_rows );
+if ( $stmt ) {
+    writeApi( $res );
 }
 
 $GLOBALS["stmt"] = NULL;
@@ -55,21 +99,19 @@ $GLOBALS["conn"] = NULL;
 /*-------------------------------FUNCTIONS-----------------------------*/
 
 
-function writeApi ( int $affected_rows ) {
+function writeApi ( $res ) {
 
     $result = [];
     
-    if ( $affected_rows > 0 ){
+    if ( count( $res ) > 0 ){
 
-        $s = $affected_rows == 1 ? "" : "s";
 
-        $result["result"] = [
-            "message" => "inserted " . $affected_rows . " row" . $s
-        ]; 
+        $result["result"] = $res;
 
         http_response_code(200);
 
-    } else {
+    }
+    else {
         
         $result["result"] = [
             "message" => "Insert unsuccessful"
@@ -79,6 +121,27 @@ function writeApi ( int $affected_rows ) {
     header("Content-Type: application/json charset=UTF-8");
     echo json_encode( $result );
 
+}
+
+function validate( $data, $fields ) {
+
+    // Check the correctness of data
+    $validation = ApiFunctions::existsAllParams( $data, $fields );
+
+    if ( !$validation ) {
+
+        Message::writeJsonMessage( "Bad request" );
+        http_response_code(400);
+        exit();
+    }
+
+    return $validation;
+}
+
+function isPlural( int $num ) {
+
+    $s = $num == 1 ? "" : "s";
+    return $s;
 }
 
 ?>
