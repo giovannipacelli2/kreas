@@ -25,6 +25,7 @@ $code = isset($GLOBALS["PARAMS_URI"][0]["code"] )
 : NULL;
 
 $new_code = NULL;
+$res = [];
 
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
@@ -120,11 +121,23 @@ if ( count( $order ) != 0 ) {
     
     }
 
-    // Update ORDER
+/*------------------UPDATE-ORDER-WHEN-PRODUCTS-NOT-ARE-INSERTED------------------*/
     
     if ( !$products ) {
-        $sales->update( $code );
-        $new_code = $sales->sales_code;
+
+        $stmt = $sales->update( $code );
+
+        $affected_rows = $stmt ? $stmt->rowCount() : FALSE;
+
+        if ( $affected_rows > 0 ) {
+
+            $res["order"] = "Updated " . $affected_rows . " order" . isPlural( $affected_rows );
+
+            $new_code = $sales->sales_code;
+
+        } else if ( $affected_rows === FALSE ) {
+            exit();
+        }
     }
 
 } else {
@@ -177,11 +190,24 @@ if ( count( $products ) != 0 ) {
         }
     }
 
-    if ( $order ) {
-            // Do the update of ORDER
-        $sales->update( $code );
+    /*--------------------UPDATE-ORDER-WHEN-PRODUCTS-ARE-INSERT----------------------*/
 
-        $new_code = $sales->sales_code;
+    if ( $order ) {
+
+        $stmt = $sales->update( $code );
+
+        $affected_rows = $stmt ? $stmt->rowCount() : FALSE;
+
+        if ( $affected_rows > 0 ) {
+
+            $res["order"] = "Updated " . $affected_rows . " order" . isPlural( $affected_rows );
+
+            $new_code = $sales->sales_code;
+
+        } else if ( $affected_rows === FALSE ) {
+            exit();
+        }
+
     }
 
     
@@ -193,7 +219,22 @@ if ( count( $products ) != 0 ) {
                 
                 $sales_order->n_products = $p["n_products"];
 
-                $sales_order->updateProduct( $p["product_id"], $new_code );
+    /*----------------------------UPDATE-SALES-ORDER---------------------------------*/
+
+                $stmt = $sales_order->updateProduct( $p["product_id"], $new_code );
+
+                $affected_rows = $stmt ? $stmt->rowCount() : FALSE;
+
+                if ( $affected_rows > 0 ) {
+
+                    $res["product"]["updated"]= $affected_rows . " product" . isPlural( $affected_rows );
+        
+                    //$new_code = $sales->sales_code;
+
+                } else if ( $affected_rows === FALSE ) {
+                    exit();
+                }
+
             }    
         }
 
@@ -210,7 +251,21 @@ if ( count( $products ) != 0 ) {
                 $sales_order->product_id = $p["product_id"];
                 $sales_order->n_products = $p["n_products"];
 
-                $sales_order->insert();
+    /*----------------------INSERT-NEW-PRODUCT-IN-SALES-ORDER------------------------*/
+
+                $stmt = $sales_order->insert();
+
+                $affected_rows = $stmt ? $stmt->rowCount() : FALSE;
+
+                if ( $affected_rows > 0 ) {
+
+                    $res["product"]["inserted"]= $affected_rows . " product" . isPlural( $affected_rows );
+
+                    //$new_code = $sales->sales_code;
+
+                } else if ( $affected_rows === FALSE ) {
+                    exit();
+                }
             }            
         }
 
@@ -218,17 +273,23 @@ if ( count( $products ) != 0 ) {
 
     if ( $products ) {
         
-        $sales_order->notInDelete( $new_products, $new_code );
+    /*---------------------DELETE-OLD-PRODUCTS-IN-SALES-ORDER------------------------*/
+
+        $stmt = $sales_order->notInDelete( $new_products, $new_code );
+
+        $affected_rows = $stmt ? $stmt->rowCount() : FALSE;
+
+        if ( $affected_rows > 0 ) {
+
+            $res["product"]["deleted"]= $affected_rows . " product" . isPlural( $affected_rows );
+
+        } else if ( $affected_rows === FALSE ) {
+            exit();
+        }
     }
 
 
 }
-
-
-
-    
-
-exit();
 
 
 writeApi( $res );
@@ -251,14 +312,14 @@ function writeApi ( mixed $res ) {
         
         $result["result"] = $res;
 
-        http_response_code(200);
-
+        
     } else {
         $result["result"] = [
             "message" => "Update unsuccessful"
         ]; 
     }
     
+    http_response_code(200);
     header("Content-Type: application/json charset=UTF-8");
     echo json_encode( $result );
 
@@ -277,6 +338,12 @@ function validate( $data, $fields ) {
     }
 
     return $validation;
+}
+
+function isPlural( int $num ) {
+
+    $s = $num == 1 ? "" : "s";
+    return $s;
 }
 
 ?>
