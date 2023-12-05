@@ -61,8 +61,18 @@ foreach ( $data as $key=>$value ) {
 
         foreach ( $data[$key] as $p ) {
             $p = (array) $p;
+
+            // Check n_products--> can't be ZERO
+            if ( $p["n_products"] == 0 ) {
+                
+                Message::writeJsonMessage( "n_products can't be ZERO!" );
+                http_response_code(400);
+                exit();
+            }
+
             array_push( $products, $p );
         }
+
     } else {
         $order[$key] = $value;
     }

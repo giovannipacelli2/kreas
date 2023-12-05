@@ -40,6 +40,14 @@ $product_fields = [ "product_id", "n_products" ];
 foreach( $data["products"] as $product ) {
 
     $product = (array) $product;
+
+    // Check n_products--> can't be ZERO
+    if ( $p["n_products"] == 0 ) {
+                
+        Message::writeJsonMessage( "n_products can't be ZERO!" );
+        http_response_code(400);
+        exit();
+    }
     
     validate( $product, $product_fields );
 
