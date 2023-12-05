@@ -110,6 +110,38 @@ class SalesOrder {
     
     }
 
+    /*------------------------READ-PRODUCT-IN-ORDER------------------------*/
+
+    function read_product( string $product_code, string $sales_code ){
+
+        $sales_code = htmlspecialchars( strip_tags( $sales_code ) );
+        $product_code = htmlspecialchars( strip_tags( $product_code ) );
+
+        try{
+    
+            $q = " SELECT product_id, n_products, sales_id" .
+                    " FROM " . $this->table_name .
+                    " WHERE sales_id = :sales_code " . 
+                    "AND product_id=:product_code;";
+
+            $stmt = $this->conn->prepare( $q );
+
+            $stmt->bindParam( ":sales_code", $sales_code, PDO::PARAM_STR );
+            $stmt->bindParam( ":product_code", $product_code, PDO::PARAM_STR );
+
+            $stmt->execute();
+
+            return $stmt;
+    
+        } catch( PDOException $e ) {
+    
+            exceptionHandler( $e );
+    
+            Message::errorMessage( $e );
+    
+        }
+    
+    }
     /*-----------------------------READ-ORDER------------------------------*/
 
     function read_order( string $sales_code ){
@@ -263,6 +295,35 @@ class SalesOrder {
 
 
     /*-------------------------------DELETE--------------------------------*/
+
+    function deleteProduct( $product_id, $sales_id ) {
+
+        $product_id = htmlspecialchars( strip_tags( $product_id ) );
+        $sales_id = htmlspecialchars( strip_tags( $sales_id  ) );
+
+        try{
+    
+            $q_delete = "DELETE FROM " . $this->table_name .
+            " WHERE sales_id = :sales_id 
+            AND product_id=:product_id ;";
+            
+            $stmt = $this->conn->prepare( $q_delete );
+            
+            $stmt->bindParam( ":product_id", $product_id, PDO::PARAM_STR );
+            $stmt->bindParam( ":sales_id", $sales_id, PDO::PARAM_STR );
+            
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch( PDOException $e ) {
+
+            exceptionHandler( $e );
+
+            Message::errorMessage( $e );
+
+        }
+    }
 
     function notInDelete( $products, $old_sales_code ) {
 

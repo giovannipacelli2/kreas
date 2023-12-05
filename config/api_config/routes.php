@@ -93,8 +93,8 @@ return [
             ]
         ],
         "sales-orders" => [
-            "order" => [
-                "query"=>["code"],
+            "sale" => [
+                "query"=>["product", "order"],
                 "file"=>"./sales-order/crud/delete.php"
             ]
         ]
