@@ -42,7 +42,7 @@ foreach( $data["products"] as $product ) {
     $product = (array) $product;
 
     // Check n_products--> can't be ZERO
-    if ( $p["n_products"] == 0 ) {
+    if ( $product["n_products"] == 0 ) {
                 
         Message::writeJsonMessage( "n_products can't be ZERO!" );
         http_response_code(400);
