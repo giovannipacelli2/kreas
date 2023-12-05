@@ -24,8 +24,62 @@ class SalesOrder {
     {
         $this->conn = $conn;
     }
+
+    /*------------------------------DESCRIBE-------------------------------*/
+        
+    public function describe() {
+    
+            
+        try{
+            
+            $q = "DESCRIBE " . $this->table_name . ";";
+            $stmt = $this->conn->prepare( $q );
+            
+            $stmt->execute();
+            
+            return $stmt;
+            
+        } catch( PDOException $e ) {
+
+            exceptionHandler( $e );
+
+            Message::errorMessage( $e );
+
+        }
+            
+    }
     
 /*--------------------------------------------CRUD-METHODS--------------------------------------------*/
+
+    /*-------------------------------READ-ID-------------------------------*/
+
+    function read_id( string $sales_code ){
+
+        $sales_code = htmlspecialchars( strip_tags( $sales_code ) );
+
+        try{
+    
+            $q = " SELECT product_id, n_products, sales_id" .
+                    " FROM " . $this->table_name .
+                    " WHERE sales_id = :sales_code;";
+
+            $stmt = $this->conn->prepare( $q );
+
+            $stmt->bindParam( ":sales_code", $sales_code, PDO::PARAM_STR );
+
+            $stmt->execute();
+
+            return $stmt;
+    
+        } catch( PDOException $e ) {
+    
+            exceptionHandler( $e );
+    
+            Message::errorMessage( $e );
+    
+        }
+    
+    }
     
     /*------------------------------READ-ALL-------------------------------*/
 
@@ -56,9 +110,9 @@ class SalesOrder {
     
     }
 
-    /*-------------------------------READ-ID-------------------------------*/
+    /*-----------------------------READ-ORDER------------------------------*/
 
-    function read_id( string $sales_code ){
+    function read_order( string $sales_code ){
 
         $sales_code = htmlspecialchars( strip_tags( $sales_code ) );
 
@@ -123,18 +177,101 @@ class SalesOrder {
     
     }
 
+        /*-------------------------------UPDATE--------------------------------*/
+
+        function update( $sales_to_update ){
+
+            $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
+            $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
+            $this->sales_id = htmlspecialchars( strip_tags( $this->sales_id ) );
+    
+            $sales_to_update = htmlspecialchars( strip_tags( $sales_to_update ) );
+            
+            try{
+    
+                $q = "UPDATE " . $this->table_name . " " .
+                        "SET product_id=:product_id,
+                            n_products=:n_products,
+                            sales_id=:sales_id
+                        WHERE sales_id=:code;";
+        
+                /*----------------------Query-Update-------------------------*/
+                
+      
+                $stmt = $this->conn->prepare($q);
+    
+                $stmt->bindParam( ":product_id", $this->product_id, PDO::PARAM_STR );
+                $stmt->bindParam( ":n_products", $this->n_products, PDO::PARAM_INT );
+                $stmt->bindParam( ":sales_id", $this->sales_id, PDO::PARAM_STR );
+    
+                $stmt->bindParam( ":code", $sales_to_update, PDO::PARAM_STR );
+                        
+                $stmt->execute();
+                        
+    
+                return $stmt;
+    
+            } catch( PDOException $e ) {
+    
+                exceptionHandler( $e );
+    
+                Message::errorMessage( $e );
+                exit();
+    
+            }
+        }
+    /*-----------------------UPDATE-PRODUCT-IN-ORDER-----------------------*/
+
+    function updateProduct( $prod_to_update, $sales_to_update ){
+
+        $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
+
+        $prod_to_update = htmlspecialchars( strip_tags( $prod_to_update ) );
+        $sales_to_update = htmlspecialchars( strip_tags( $sales_to_update ) );
+        
+        try{
+
+            $q = "UPDATE " . $this->table_name . " " .
+                    "SET n_products=:n_products
+                    WHERE product_id=:product_code
+                    AND sales_id=:sales_code;";
+    
+            /*----------------------Query-Update-------------------------*/
+            
+  
+            $stmt = $this->conn->prepare($q);
+
+            $stmt->bindParam( ":n_products", $this->n_products, PDO::PARAM_INT );
+
+            $stmt->bindParam( ":sales_code", $sales_to_update, PDO::PARAM_STR );
+            $stmt->bindParam( ":product_code", $prod_to_update, PDO::PARAM_STR );
+                    
+            $stmt->execute();
+                    
+
+            return $stmt;
+
+        } catch( PDOException $e ) {
+
+            exceptionHandler( $e );
+
+            Message::errorMessage( $e );
+            exit();
+
+        }
+    }
+
 
     /*-------------------------------DELETE--------------------------------*/
 
-/*     function notInDelete( $old_sales_code ) {
+    function notInDelete( $products, $old_sales_code ) {
 
         $old_sales_code = htmlspecialchars( strip_tags( $old_sales_code ) );
         
         // products in body of request
         $products = array_map( function( $prod ){
 
-            $prod = (array) $prod;
-            $res = htmlspecialchars( strip_tags( $prod["product_code"] ) );
+            $res = htmlspecialchars( strip_tags( $prod ) );
 
             $res = filter_var( $res, FILTER_SANITIZE_NUMBER_INT);
 
@@ -145,23 +282,23 @@ class SalesOrder {
 
             return $res;
 
-        }, (array) $this->products );
+        }, $products );
+
 
         $del_id = "'" . implode( "','", $products ) . "'";
 
-        
         try{
             
             // deletes all products with the "old" sales_code 
             // that don't have the IDs just entered
     
             $q_delete = "DELETE FROM " . $this->table_name .
-            " WHERE sales_code = :sales_code 
+            " WHERE sales_id = :sales_id 
             AND product_id NOT IN ( " . $del_id . " );";
             
             $stmt = $this->conn->prepare( $q_delete );
             
-            $stmt->bindParam( ":sales_code", $old_sales_code, PDO::PARAM_STR );
+            $stmt->bindParam( ":sales_id", $old_sales_code, PDO::PARAM_STR );
             
             $stmt->execute();
 
@@ -174,7 +311,7 @@ class SalesOrder {
             Message::errorMessage( $e );
 
         }
-    } */
+    }
     
     /*-----------------------------------------------QUERY------------------------------------------------*/
 

@@ -40,7 +40,54 @@ class Product{
 
         }
             
+    }
+
+    
+    /*-----------------------------CHECK-IDs-------------------------------*/
+
+    function checkIds( $arr_products ) {
+
+        // products in body of request
+        $arr_products = array_map( function( $prod ){
+
+            $res = htmlspecialchars( strip_tags( $prod ) );
+
+            $res = filter_var( $res, FILTER_SANITIZE_NUMBER_INT);
+
+            if (!$res) {
+                Message::writeJsonMessage("Error in product_code validation!");
+                exit();
+            }
+
+            return $res;
+
+        }, $arr_products );
+
+
+        $ids = "'" . implode( "','", $arr_products ) . "'";
+
+        try{
+            
+            // deletes all products with the "old" sales_code 
+            // that don't have the IDs just entered
+    
+            $q = "SELECT * FROM " . $this->table_name .
+            " WHERE product_code IN ( " . $ids . " );";
+            
+            $stmt = $this->conn->prepare( $q );
+            
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch( PDOException $e ) {
+
+            exceptionHandler( $e );
+
+            Message::errorMessage( $e );
+
         }
+    }
         
 /*--------------------------------------------CRUD-METHODS--------------------------------------------*/
         

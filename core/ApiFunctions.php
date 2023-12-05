@@ -47,14 +47,23 @@ class ApiFunctions {
                     ? file_get_contents("php://input") 
                     : $_POST;
 
-        if (!$data) {
+        if ( !$data ) {
 
             Message::writeJsonMessage("No data");
             http_response_code(400);
             exit();
         }
 
-        return json_decode($data);
+        $result = json_decode($data);
+
+        if ( !$result ) {
+
+            Message::writeJsonMessage("Incorrect data");
+            http_response_code(400);
+            exit();
+        }
+
+        return $result;
     }
 
     /*----------------------------------CHECKING-THE-DATA-RECEIVED----------------------------------*/
@@ -163,27 +172,29 @@ class ApiFunctions {
     // Return empty array if there are all fields
     // Return "data_fields" if there are some of necessary fields
 
-    public static function updateChecker( $data, $stmt ) {
+    public static function updateChecker( $data, $data_fields, $isDescribe = TRUE ) {
 
-        if ( !$stmt ) exit(); 
-    
-        $describe = $stmt->fetchAll( PDO::FETCH_ASSOC );
-    
-        $data_fields = ApiFunctions::getDataFromTable( $describe );
+        if ( !$data_fields ) exit();
+
+        if ( $isDescribe ) {
+
+            $describe = $data_fields->fetchAll( PDO::FETCH_ASSOC );  
+            $data_fields = ApiFunctions::getDataFromTable( $describe );
+        }    
     
         $validation = ApiFunctions::existsAllParams( $data, $data_fields );
     
         if ( !$validation ) {
-
+            
             $validation = ApiFunctions::validateParams( array_keys( $data ), $data_fields );
-
-            return $data_fields;
-
+            
             if ( !$validation ) {
                 Message::writeJsonMessage( "Bad request" );
                 http_response_code(400);
                 exit();
             }
+
+            return $data_fields;
         }
 
         return [];
