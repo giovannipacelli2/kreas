@@ -15,14 +15,15 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 ApiFunctions::checkMethod( "PUT" );
 
-
-/*---------------------------START-CONNECTION--------------------------*/
+/*------------------------GET-DATA-AND-URI-PARAMS----------------------*/
 
 $code = isset($GLOBALS["PARAMS_URI"][0]["code"] )
-            ? $GLOBALS["PARAMS_URI"][0]["code"] 
-            : NULL;
+? $GLOBALS["PARAMS_URI"][0]["code"] 
+: NULL;
 
 if ( !$code ) exit();
+
+/*---------------------------START-CONNECTION--------------------------*/
 
 $conn = ApiFunctions::getConnection( $config );
 
@@ -38,9 +39,13 @@ $allParams = (array) ApiFunctions::updateChecker( $data, $describe );
 
 $old_data = [];
 
+// orderParams contains something only when the request is not complete. 
+
 if ( count( $allParams ) != 0 ){ 
     
     $old_data = $sales->readByOrder( $code );
+
+    // If the order exists, it recovers the old data so that changes are what is of interest
 
     if ( $old_data->rowCount() == 0 ) {
         Message::writeJsonMessage( "Order not found" );

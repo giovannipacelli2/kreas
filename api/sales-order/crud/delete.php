@@ -15,8 +15,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 ApiFunctions::checkMethod( "DELETE" );
 
-
-/*---------------------------START-CONNECTION--------------------------*/
+/*------------------------GET-DATA-AND-URI-PARAMS----------------------*/
 
 
 $product_id = isset($GLOBALS["PARAMS_URI"][0]["product"] )
@@ -29,13 +28,16 @@ $sales_id = isset($GLOBALS["PARAMS_URI"][1]["order"] )
 
 if ( !$product_id || !$sales_id  ) exit();
 
+/*---------------------------START-CONNECTION--------------------------*/
+
 $conn = ApiFunctions::getConnection( $config );
 
 $sales_order = new SalesOrder( $conn );
 
-
+// Check if order with inserted sales_id exists
 $check_order = $sales_order->read_id( $sales_id );
 
+// Check if the searched product in order exists
 $check_product = $sales_order->read_product( $product_id, $sales_id );
 
 if ( !$check_order || !$check_product ) exit();
@@ -48,6 +50,9 @@ if ( $check_order->rowCount() == 0 ) {
 
 }
 
+// THIS IS VERY IMPORTANT FOR DB INTEGRITY:
+// This control ensures that there aren't orders without products
+
 else if ( $check_order->rowCount() == 1 && $check_product->rowCount() == 1 ) {
 
     Message::writeJsonMessage( "DELETE UNSUCCESSFUL: The order MUST contain at least one product" );
@@ -58,6 +63,8 @@ else if ( $check_order->rowCount() == 1 && $check_product->rowCount() == 1 ) {
     Message::writeJsonMessage( "The searched product not exists" );
     exit();
 }
+
+// If all checks are passed, delete is done
 
 $stmt = $sales_order->deleteProduct( $product_id, $sales_id );
 

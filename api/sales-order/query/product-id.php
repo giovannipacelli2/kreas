@@ -11,12 +11,13 @@ header("Acces-Control-Allow-Methods: GET");
 
 ApiFunctions::checkMethod( "GET" );
 
-
-/*---------------------------START-CONNECTION--------------------------*/
+/*------------------------GET-DATA-AND-URI-PARAMS----------------------*/
 
 $product = $GLOBALS["PARAMS_URI"][0]["product"];
 
 if ( !$product ) exit();
+
+/*---------------------------START-CONNECTION--------------------------*/
 
 $conn = ApiFunctions::getConnection( $config );
 

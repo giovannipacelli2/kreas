@@ -66,13 +66,18 @@ if ( $data["product_id"] ) {
 
 $old_data = [];
 
-if ( count( $dataParams ) != 0 ) {
+// dataParams contains something only when the request is not complete. 
 
+if ( count( $dataParams ) != 0 ) {
+    
+    // If the product exists, it recovers the old data so that changes are what is of interest
     $old_data = $check_old_data->fetch( PDO::FETCH_ASSOC );
 
 } else {
     $dataParams = $data_fields;
 }
+
+// Insert data in "sales_order" instance
 
 foreach( $dataParams as $field ) {
 
@@ -87,7 +92,6 @@ foreach( $dataParams as $field ) {
     }
 }
 
-//die(var_dump($sales_order));
 
 $stmt = $sales_order->updateProduct( $product_id, $sales_id );
 

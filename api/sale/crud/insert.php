@@ -19,7 +19,6 @@ ApiFunctions::checkMethod( "POST" );
 /*---------------------------START-CONNECTION--------------------------*/
 
 
-
 $conn = ApiFunctions::getConnection( $config );
 
 $sales = new Sales( $conn );

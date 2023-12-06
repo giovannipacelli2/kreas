@@ -72,6 +72,7 @@ class ApiFunctions {
     /*----------------CHECK-DUPLICATE-FIELD-------------------*/
 
     public static function checkDuplicate( $arr, $arr_description = "data") {
+        
         $unique = array_unique( $arr );
 
         if ( count( $arr ) != count( $unique ) ) {

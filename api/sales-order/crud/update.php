@@ -94,13 +94,13 @@ if ( count( $order ) != 0 ) {   // Array of order data
     
     $old_data = [];
 
-    //  orderParams contains something only when the request is not complete. 
+    // orderParams contains something only when the request is not complete. 
     
     if ( count( $orderParams ) != 0 ){ 
         
         $old_data = $sales->readByOrder( $code );
 
-        //If the order exists, it recovers the old data so that changes are what is of interest
+        // If the order exists, it recovers the old data so that changes are what is of interest
     
         if ( $old_data->rowCount() == 0 ) {
             Message::writeJsonMessage( "Order not found" );

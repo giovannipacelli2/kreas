@@ -15,15 +15,15 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 ApiFunctions::checkMethod( "DELETE" );
 
 
-/*---------------------------START-CONNECTION--------------------------*/
-
+/*------------------------GET-DATA-AND-URI-PARAMS----------------------*/
 
 $code = isset($GLOBALS["PARAMS_URI"][0]["code"] )
-            ? $GLOBALS["PARAMS_URI"][0]["code"] 
-            : NULL;
+? $GLOBALS["PARAMS_URI"][0]["code"] 
+: NULL;
 
 if ( !$code ) exit();
 
+/*---------------------------START-CONNECTION--------------------------*/
 $conn = ApiFunctions::getConnection( $config );
 
 $sales = new Sales( $conn );

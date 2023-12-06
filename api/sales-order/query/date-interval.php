@@ -11,8 +11,7 @@ header("Acces-Control-Allow-Methods: GET");
 
 ApiFunctions::checkMethod( "GET" );
 
-
-/*---------------------------START-CONNECTION--------------------------*/
+/*------------------------GET-DATA-AND-URI-PARAMS----------------------*/
 
 extract($GLOBALS["PARAMS_URI"][0]);
 extract($GLOBALS["PARAMS_URI"][1]);
@@ -25,6 +24,8 @@ $params = [
 $date = ApiFunctions::checkCorrectDates( $params );
 
 if ( !$date ) exit();
+
+/*---------------------------START-CONNECTION--------------------------*/
 
 $conn = ApiFunctions::getConnection( $config );
 
