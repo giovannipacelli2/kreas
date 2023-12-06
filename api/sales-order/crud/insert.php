@@ -37,6 +37,9 @@ validate( $data, $data_fields );
 // Necessary fields in "products"
 $product_fields = [ "product_id", "n_products" ];
 
+// array of product_id
+$new_products = [];
+
 foreach( $data["products"] as $product ) {
 
     $product = (array) $product;
@@ -48,9 +51,20 @@ foreach( $data["products"] as $product ) {
         http_response_code(400);
         exit();
     }
+
+    array_push( $new_products, $product["product_id"] );
     
     validate( $product, $product_fields );
 
+}
+
+
+// Duplicate checking
+$unique = array_unique( $new_products );
+
+if ( count( $new_products ) != count( $unique ) ) {
+    Message::writeJsonMessage( "You cant't duplicate product in order" );
+    exit();
 }
 
 $res = [];
