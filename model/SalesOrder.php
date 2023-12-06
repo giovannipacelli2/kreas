@@ -44,6 +44,7 @@ class SalesOrder {
             exceptionHandler( $e );
 
             Message::errorMessage( $e );
+            exit();
 
         }
             
@@ -76,6 +77,7 @@ class SalesOrder {
             exceptionHandler( $e );
     
             Message::errorMessage( $e );
+            exit();
     
         }
     
@@ -105,6 +107,7 @@ class SalesOrder {
             exceptionHandler( $e );
     
             Message::errorMessage( $e );
+            exit();
     
         }
     
@@ -139,6 +142,7 @@ class SalesOrder {
     
             Message::errorMessage( $e );
     
+            exit();
         }
     
     }
@@ -170,6 +174,7 @@ class SalesOrder {
             exceptionHandler( $e );
     
             Message::errorMessage( $e );
+            exit();
     
         }
     
@@ -204,6 +209,7 @@ class SalesOrder {
             exceptionHandler( $e );
     
             Message::errorMessage( $e );
+            exit();
     
         }
     
@@ -225,10 +231,7 @@ class SalesOrder {
                         "SET product_id=:product_id,
                             n_products=:n_products,
                             sales_id=:sales_id
-                        WHERE sales_id=:code;";
-        
-                /*----------------------Query-Update-------------------------*/
-                
+                        WHERE sales_id=:code;";                
       
                 $stmt = $this->conn->prepare($q);
     
@@ -256,6 +259,7 @@ class SalesOrder {
 
     function updateProduct( $prod_to_update, $sales_to_update ){
 
+        $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
         $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
 
         $prod_to_update = htmlspecialchars( strip_tags( $prod_to_update ) );
@@ -264,15 +268,15 @@ class SalesOrder {
         try{
 
             $q = "UPDATE " . $this->table_name . " " .
-                    "SET n_products=:n_products
+                    "SET 
+                        product_id=:product_id,
+                        n_products=:n_products
                     WHERE product_id=:product_code
-                    AND sales_id=:sales_code;";
-    
-            /*----------------------Query-Update-------------------------*/
-            
+                    AND sales_id=:sales_code;";            
   
             $stmt = $this->conn->prepare($q);
 
+            $stmt->bindParam( ":product_id", $this->product_id, PDO::PARAM_STR );
             $stmt->bindParam( ":n_products", $this->n_products, PDO::PARAM_INT );
 
             $stmt->bindParam( ":sales_code", $sales_to_update, PDO::PARAM_STR );
@@ -321,6 +325,7 @@ class SalesOrder {
             exceptionHandler( $e );
 
             Message::errorMessage( $e );
+            exit();
 
         }
     }
@@ -370,6 +375,7 @@ class SalesOrder {
             exceptionHandler( $e );
 
             Message::errorMessage( $e );
+            exit();
 
         }
     }
@@ -399,6 +405,7 @@ class SalesOrder {
             exceptionHandler( $e );
 
             Message::errorMessage( $e );
+            exit();
 
         }
 
@@ -438,6 +445,7 @@ class SalesOrder {
             exceptionHandler( $e );
 
             Message::errorMessage( $e );
+            exit();
 
         }
 
@@ -473,6 +481,7 @@ class SalesOrder {
             exceptionHandler( $e );
 
             Message::errorMessage( $e );
+            exit();
 
         }
 
@@ -506,6 +515,7 @@ class SalesOrder {
             exceptionHandler( $e );
 
             Message::errorMessage( $e );
+            exit();
 
         }
 

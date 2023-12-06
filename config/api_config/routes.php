@@ -76,6 +76,10 @@ return [
             "order" => [
                 "query"=>["code"],
                 "file"=>"./sales-order/crud/update.php"
+            ],
+            "sale" => [
+                "query"=>["product", "order"],
+                "file"=>"./sales-order/crud/update-single-prod.php"
             ]
         ]
     ],

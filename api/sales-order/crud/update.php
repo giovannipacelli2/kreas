@@ -217,6 +217,7 @@ if ( count( $products ) != 0 ) {
             
             if ( in_array( $p["product_id"], $to_update ) ) {
                 
+                $sales_order->product_id = $p["product_id"];
                 $sales_order->n_products = $p["n_products"];
 
     /*----------------------------UPDATE-SALES-ORDER---------------------------------*/
