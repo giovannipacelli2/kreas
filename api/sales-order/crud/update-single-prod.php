@@ -15,8 +15,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 ApiFunctions::checkMethod( "PUT" );
 
-
-/*---------------------------START-CONNECTION--------------------------*/
+/*------------------------GET-DATA-AND-URI-PARAMS----------------------*/
 
 $product_id = isset($GLOBALS["PARAMS_URI"][0]["product"] )
 ? $GLOBALS["PARAMS_URI"][0]["product"] 
@@ -28,10 +27,12 @@ $sales_id = isset($GLOBALS["PARAMS_URI"][1]["order"] )
 
 if ( !$product_id || !$sales_id  ) exit();
 
+/*---------------------------START-CONNECTION--------------------------*/
+
+$conn = ApiFunctions::getConnection( $config );
 
 /*-------------------CREATE-SALES-AND-SALES-INSTANCES------------------*/
 
-$conn = ApiFunctions::getConnection( $config );
 
 $sales_order = new SalesOrder( $conn );
 

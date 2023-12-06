@@ -187,12 +187,8 @@ if ( count( $products ) != 0 ) {
     $new_products = array_column( $products, "product_id" );
 
     // Duplicate checking
-    $unique = array_unique( $new_products );
+    ApiFunctions::checkDuplicate( $new_products, "product in order" );
 
-    if ( count( $new_products ) != count( $unique ) ) {
-        Message::writeJsonMessage( "You cant't duplicate product in order" );
-        exit();
-    }
 
     $product = new Product( $conn );
 

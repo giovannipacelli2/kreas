@@ -16,23 +16,26 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 ApiFunctions::checkMethod( "PUT" );
 
 
-/*---------------------------START-CONNECTION--------------------------*/
+/*------------------------GET-DATA-AND-URI-PARAMS----------------------*/
+
 
 // QUERY PARAM - OLD CODE
 
 $code = isset($GLOBALS["PARAMS_URI"][0]["code"] )
-            ? $GLOBALS["PARAMS_URI"][0]["code"] 
-            : NULL;
+? $GLOBALS["PARAMS_URI"][0]["code"] 
+: NULL;
 
 if ( !$code ) exit();
+
+// GET DATA FROM REQUEST
+$data = (array) ApiFunctions::getInput();
+
+/*---------------------------START-CONNECTION--------------------------*/
 
 $conn = ApiFunctions::getConnection( $config );
 
 $product = new Product( $conn );
 
-
-// GET DATA FROM REQUEST
-$data = (array) ApiFunctions::getInput();
 
 // Check the correctness of data
 

@@ -69,6 +69,19 @@ class ApiFunctions {
     /*----------------------------------CHECKING-THE-DATA-RECEIVED----------------------------------*/
 
 
+    /*----------------CHECK-DUPLICATE-FIELD-------------------*/
+
+    public static function checkDuplicate( $arr, $arr_description = "data") {
+        $unique = array_unique( $arr );
+
+        if ( count( $arr ) != count( $unique ) ) {
+
+            Message::writeJsonMessage( "You cant't duplicate " . $arr_description );
+            exit();
+        } else return TRUE;
+    }
+
+
     /*---------------------CHECK-INPUT------------------------*/
 
     public static function inputChecker( $data, $stmt ) {
@@ -90,6 +103,7 @@ class ApiFunctions {
 
     }
 
+    // Wants a DESCRIBE result statemento from DATABASE
     public static function getDataFromTable( $describe ) {
 
         // array containing the list of the NOT NULL fields
@@ -124,7 +138,7 @@ class ApiFunctions {
         foreach( $data_fields as $param ){
 
             // $param = a NOT NULL field from existing table
-            // $data_checker = array with exists field
+            // $data = array to check
             $exists = array_key_exists( $param, $data );
 
             // if param NOT EXISTS or an param has empty string
@@ -137,6 +151,9 @@ class ApiFunctions {
 
         return $check;
     }
+
+    /*-------CHECK-IF-THERE-ARE-ANY-INCORRECT-FIELDS----------*/
+
 
     // Wants data and fields as array of string
     public static function validateParams( $data, $data_checker ) {
@@ -294,20 +311,20 @@ class ApiFunctions {
         |        'sales_code' => string 'AA1015',                       |
         |        'sales_date' => string '2023-10-20 15:20:00',          |
         |        'destination' => string 'China',                       |
-        |        'n_products' => int 5,                                 |
+        |        'total_products' => int 5,                             |
         |        'sold_products' => [                                   |
         |           [                                                   |
-        |               'product_code' => string '6476                  |
+        |               'product_id' => string '6476                    |
         |               'n_prod' => int 3,                              |
         |               'prod_name' => string 'Hamburger'               |
         |           ],                                                  |
         |           [                                                   |
-        |               'product_code' => string '0100                  |
+        |               'product_id' => string '0100                    |
         |               'n_prod' => int 2,                              |
         |               'prod_name' => string 'Pork meat'               |
         |           ],                                                  |
         |         ],                                                    |                                                   
-        |        'total_saved_co2' => float '33.42'                     |
+        |        'saved_kg_co2' => float '33.42'                        |
         |    ],                                                         |
         |    .....                                                      |
         ---------------------------------------------------------------*/
@@ -361,8 +378,10 @@ class ApiFunctions {
             }
 
         }
+        
+        //header("Content-Type: application/json charset=UTF-8");
         //echo json_encode($tmp_arr);
-        //var_dump($tmp_arr);
+        //exit();
 
         return $tmp_arr;
     }

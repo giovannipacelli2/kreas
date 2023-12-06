@@ -27,7 +27,8 @@ $sales = new Sales( $conn );
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
 
-// Validation of data in input
+
+/*-------------------------VALIDATION-INPUT-DATA-----------------------*/
 
 // Necessary fields
 $data_fields = [ "sales_code", "sales_date", "destination", "products" ];
@@ -60,15 +61,11 @@ foreach( $data["products"] as $product ) {
 
 
 // Duplicate checking
-$unique = array_unique( $new_products );
+ApiFunctions::checkDuplicate( $new_products, "product in order" );
 
-if ( count( $new_products ) != count( $unique ) ) {
-    Message::writeJsonMessage( "You cant't duplicate product in order" );
-    exit();
-}
 
 $res = [];
-// Inserting product in Order 
+// Inserting data in sales instance
 
 $sales->sales_code = $data["sales_code"];
 $sales->sales_date = $data["sales_date"];
@@ -86,6 +83,8 @@ if ( $stmt->rowCount() > 0 ) {
     foreach ( $data["products"] as $product ) {
 
         $product = (array) $product;
+
+        // Inserting data in sales_order instance
 
         $sales_order->sales_id = $data["sales_code"];
         $sales_order->product_id = $product["product_id"];
@@ -105,8 +104,6 @@ if ( $stmt->rowCount() > 0 ) {
     $res["product"] = "Inserted " . $inserted_product . " product" . isPlural( $inserted_product );
 }
 
-
-// inserting input data into new "sale" instance
 
 if ( $stmt ) {
     writeApi( $res );
