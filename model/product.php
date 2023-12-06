@@ -45,6 +45,8 @@ class Product{
     
     /*-----------------------------CHECK-IDs-------------------------------*/
 
+    // Check if all of "$arr_products" ids exists in the DB table "product"
+
     function checkIds( $arr_products ) {
 
         // products in body of request
@@ -67,9 +69,6 @@ class Product{
         $ids = "'" . implode( "','", $arr_products ) . "'";
 
         try{
-            
-            // deletes all products with the "old" sales_code 
-            // that don't have the IDs just entered
     
             $q = "SELECT * FROM " . $this->table_name .
             " WHERE product_code IN ( " . $ids . " );";
@@ -92,6 +91,8 @@ class Product{
 /*--------------------------------------------CRUD-METHODS--------------------------------------------*/
         
     /*--------------------------------READ---------------------------------*/
+
+    // Read all data
     
     public function read() {
         
@@ -113,6 +114,8 @@ class Product{
         }
         
     }
+
+    // Reads data of a specific product by his product code
     
     public function read_by_code( $product_code ) {
         
@@ -211,14 +214,14 @@ class Product{
             }
             
         }
+
+        // code by uri
     
         $code = htmlspecialchars( strip_tags( $code ) );
 
         $this->product_code = htmlspecialchars( strip_tags( $this->product_code ) );
         $this->name = htmlspecialchars( strip_tags( $this->name ) );
         $this->saved_kg_co2 = htmlspecialchars( strip_tags( $this->saved_kg_co2 ) );
-
-        // code by uri
 
         try{
 

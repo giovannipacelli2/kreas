@@ -47,6 +47,8 @@ class Sales{
     
     /*--------------------------------READ---------------------------------*/
 
+    // Read all data
+
     function read(){
         
         try{
@@ -193,6 +195,8 @@ class Sales{
     
     /*-------------------------------DELETE--------------------------------*/
 
+    // Delete order with a specific sales_code
+
     function delete( string $code ){
         // code by uri
         $code = htmlspecialchars( strip_tags( $code ) );
@@ -218,6 +222,8 @@ class Sales{
 
         }
     }     
+
+    /* // Deletes order that has a specific product_code
 
     function deleteByProduct( string $code, string $product ){
 
@@ -259,7 +265,7 @@ class Sales{
 
         }
             
-    }
+    } */
 
 }
 

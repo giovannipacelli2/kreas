@@ -28,8 +28,7 @@ class SalesOrder {
     /*------------------------------DESCRIBE-------------------------------*/
         
     public function describe() {
-    
-            
+           
         try{
             
             $q = "DESCRIBE " . $this->table_name . ";";
@@ -53,6 +52,8 @@ class SalesOrder {
 /*--------------------------------------------CRUD-METHODS--------------------------------------------*/
 
     /*-------------------------------READ-ID-------------------------------*/
+
+    // reads data of join between product and order tables for a specific sales_code
 
     function read_id( string $sales_code ){
 
@@ -85,6 +86,9 @@ class SalesOrder {
     
     /*------------------------------READ-ALL-------------------------------*/
 
+    // reads data of join between product and order tables 
+    // and catalogs them by sales_code
+
     function read_all(){
 
         try{
@@ -114,6 +118,8 @@ class SalesOrder {
     }
 
     /*------------------------READ-PRODUCT-IN-ORDER------------------------*/
+
+    // reads a specific product of a specific sales_code
 
     function read_product( string $product_code, string $sales_code ){
 
