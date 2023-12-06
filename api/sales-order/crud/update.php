@@ -18,11 +18,13 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 ApiFunctions::checkMethod( "PUT" );
 
 
-/*---------------------------START-CONNECTION--------------------------*/
+/*------------------------GET-DATA-AND-URI-PARAMS----------------------*/
 
 $code = isset($GLOBALS["PARAMS_URI"][0]["code"] )
 ? $GLOBALS["PARAMS_URI"][0]["code"] 
 : NULL;
+
+if ( !$code ) exit();
 
 $new_code = NULL;
 $res = [];
@@ -30,11 +32,12 @@ $res = [];
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
 
-if ( !$code ) exit();
+/*---------------------------START-CONNECTION--------------------------*/
 
-/*-------------------CREATE-SALES-AND-SALES-INSTANCES------------------*/
 
 $conn = ApiFunctions::getConnection( $config );
+
+/*-------------------CREATE-SALES-AND-SALES-INSTANCES------------------*/
 
 $sales_order = new SalesOrder( $conn );
 $sales = new Sales( $conn );
@@ -80,18 +83,24 @@ foreach ( $data as $key=>$value ) {
 
 /*------------------------------CHECK-ORDER-PARAMS-------------------------------*/
 
-if ( count( $order ) != 0 ) {
+if ( count( $order ) != 0 ) {   // Array of order data
 
     // Necessary fields
     $describe = $sales->describe();
+
+    // returns empty array when there are all params
     
     $orderParams = ApiFunctions::updateChecker( $order, $describe );
     
     $old_data = [];
+
+    //  orderParams contains something only when the request is not complete. 
     
     if ( count( $orderParams ) != 0 ){ 
         
         $old_data = $sales->readByOrder( $code );
+
+        //If the order exists, it recovers the old data so that changes are what is of interest
     
         if ( $old_data->rowCount() == 0 ) {
             Message::writeJsonMessage( "Order not found" );
@@ -133,6 +142,7 @@ if ( count( $order ) != 0 ) {
 
             $res["order"] = "Updated " . $affected_rows . " order" . isPlural( $affected_rows );
 
+            // if the code is updated, actions must be taken considering the new code
             $new_code = $sales->sales_code;
 
         } else if ( $affected_rows === FALSE ) {
@@ -157,6 +167,8 @@ if ( count( $products ) != 0 ) {
         validate( $p, $describe );
     }
 
+    // Check if there is order with searched code
+
     $stmt = $sales_order->read_id( $code );
 
     if ( $stmt->rowCount() == 0 ) {
@@ -165,12 +177,26 @@ if ( count( $products ) != 0 ) {
         exit();
     }
 
+    // Get the stored order data with all assoced products
     $old_data = $stmt->fetchAll( PDO::FETCH_ASSOC );
 
+    // Products that already exists in database
     $already_exists = array_column( $old_data, "product_id" );
+
+    // Products send in body request
     $new_products = array_column( $products, "product_id" );
 
+    // Duplicate checking
+    $unique = array_unique( $new_products );
+
+    if ( count( $new_products ) != count( $unique ) ) {
+        Message::writeJsonMessage( "You cant't duplicate product in order" );
+        exit();
+    }
+
     $product = new Product( $conn );
+
+    // Check if the sended product codes exists in database
     $check = $product->checkIds( $new_products );
     
     if ( $check->rowCount() != count( $new_products ) ) {
@@ -202,6 +228,7 @@ if ( count( $products ) != 0 ) {
 
             $res["order"] = "Updated " . $affected_rows . " order" . isPlural( $affected_rows );
 
+            // if the code is updated, actions must be taken considering the new code
             $new_code = $sales->sales_code;
 
         } else if ( $affected_rows === FALSE ) {
@@ -213,9 +240,13 @@ if ( count( $products ) != 0 ) {
     
     if ( $to_update ) {
 
+        $affected_rows = 0;
+
         foreach ( $products as $p ) {
             
             if ( in_array( $p["product_id"], $to_update ) ) {
+
+                // Insert data in sales_order instance
                 
                 $sales_order->product_id = $p["product_id"];
                 $sales_order->n_products = $p["n_products"];
@@ -224,19 +255,18 @@ if ( count( $products ) != 0 ) {
 
                 $stmt = $sales_order->updateProduct( $p["product_id"], $new_code );
 
-                $affected_rows = $stmt ? $stmt->rowCount() : FALSE;
+                if ( $stmt ) {
 
-                if ( $affected_rows > 0 ) {
-
-                    $res["product"]["updated"]= $affected_rows . " product" . isPlural( $affected_rows );
-        
-                    //$new_code = $sales->sales_code;
-
-                } else if ( $affected_rows === FALSE ) {
-                    exit();
+                    $affected_rows = $affected_rows + $stmt->rowCount();
                 }
-
             }    
+
+            // Result message
+            if ( $affected_rows > 0 ) {
+
+                $res["product"]["updated"]= $affected_rows . " product" . isPlural( $affected_rows );
+
+            }
         }
 
     }
@@ -245,9 +275,13 @@ if ( count( $products ) != 0 ) {
 
         $sales_order->sales_id = $new_code;
 
+        $affected_rows = 0;
+
         foreach ( $products as $p ) {
 
             if ( in_array( $p["product_id"], $to_insert ) ) {
+              
+                // Insert data in sales_order instance
 
                 $sales_order->product_id = $p["product_id"];
                 $sales_order->n_products = $p["n_products"];
@@ -256,18 +290,18 @@ if ( count( $products ) != 0 ) {
 
                 $stmt = $sales_order->insert();
 
-                $affected_rows = $stmt ? $stmt->rowCount() : FALSE;
+                if ( $stmt ) {
 
-                if ( $affected_rows > 0 ) {
-
-                    $res["product"]["inserted"]= $affected_rows . " product" . isPlural( $affected_rows );
-
-                    //$new_code = $sales->sales_code;
-
-                } else if ( $affected_rows === FALSE ) {
-                    exit();
+                    $affected_rows = $affected_rows + $stmt->rowCount();
                 }
             }            
+        }
+
+        if ( $affected_rows > 0 ) {
+
+            // Result message
+            $res["product"]["inserted"]= $affected_rows . " product" . isPlural( $affected_rows );
+
         }
 
     }
