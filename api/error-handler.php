@@ -1,8 +1,10 @@
 <?php
 
-    //error_reporting( E_ALL );
-    //ini_set( "display_errors", 0 );
+    // In development comment these lines of code
 
+    /* -----> */ //error_reporting( E_ALL );
+    /* -----> */ //ini_set( "display_errors", 0 ); 
+    /* -----> */ //set_error_handler( "errorHandler" );
     
     function errorHandler( $err_n, $err_str, $err_file, $err_line ){
 
@@ -28,7 +30,6 @@
         
     }
     
-    set_error_handler( "errorHandler" );
     //set_exception_handler("exceptionHandler");
 
 ?>

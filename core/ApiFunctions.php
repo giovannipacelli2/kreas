@@ -85,13 +85,15 @@ class ApiFunctions {
 
     /*---------------------CHECK-INPUT------------------------*/
 
-    public static function inputChecker( $data, $stmt ) {
+    public static function inputChecker( $data, $data_fields, $isDescribe = TRUE ) {
 
-        if ( !$stmt ) exit(); 
+        if ( !$data_fields ) exit(); 
 
-        $describe = $stmt->fetchAll( PDO::FETCH_ASSOC );
+        if ( $isDescribe ) {
 
-        $data_fields = ApiFunctions::getDataFromTable( $describe );
+            $describe = $data_fields->fetchAll( PDO::FETCH_ASSOC );  
+            $data_fields = ApiFunctions::getDataFromTable( $describe );
+        }  
 
         $validation = ApiFunctions::existsAllParams( $data, $data_fields );
 

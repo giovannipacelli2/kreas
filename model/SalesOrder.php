@@ -154,6 +154,8 @@ class SalesOrder {
     }
     /*-----------------------------READ-ORDER------------------------------*/
 
+    // reads the join data between the product and order tables for a given sales_code
+
     function read_order( string $sales_code ){
 
         $sales_code = htmlspecialchars( strip_tags( $sales_code ) );
@@ -306,6 +308,8 @@ class SalesOrder {
 
     /*-------------------------------DELETE--------------------------------*/
 
+    // Delete a product in sales order
+
     function deleteProduct( $product_id, $sales_id ) {
 
         $product_id = htmlspecialchars( strip_tags( $product_id ) );
@@ -336,6 +340,8 @@ class SalesOrder {
         }
     }
 
+    // delete all products that are not in $products array
+    
     function notInDelete( $products, $old_sales_code ) {
 
         $old_sales_code = htmlspecialchars( strip_tags( $old_sales_code ) );

@@ -32,7 +32,7 @@ return [
                     "file" => "./sales-order/query/all-co2.php",
                 ],
                 "{id}" => [
-                    "file" => "./sales-order/crud/read-id.php",
+                    "file" => "./sales-order/crud/read-order.php",
                 ],
                 "date-interval-co2" => [
                     "query" => ["start", "end"],
@@ -57,6 +57,12 @@ return [
         ],
         "sales-orders" => [
             "file"=>"./sales-order/crud/insert.php",
+        ],
+        "sales-orders" => [
+            "sale" => [
+                "query" => ["order"],
+                "file" =>"./sales-order/crud/insert-single-prod.php",
+            ]
         ]
     ],
     "PUT" => [
@@ -99,7 +105,7 @@ return [
         "sales-orders" => [
             "sale" => [
                 "query"=>["product", "order"],
-                "file"=>"./sales-order/crud/delete.php"
+                "file"=>"./sales-order/crud/delete-prod.php"
             ]
         ]
     ]

@@ -7,54 +7,48 @@ use App\core\Message;
 /*-----------------------UPDATE-CONNECTION-HEADER----------------------*/
 
 header("Acces-Control-Allow-Origin: *");
-header("Acces-Control-Allow-Methods: PUT");
+header("Acces-Control-Allow-Methods: POST");
 
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 
-ApiFunctions::checkMethod( "PUT" );
+ApiFunctions::checkMethod( "POST" );
 
 /*------------------------GET-DATA-AND-URI-PARAMS----------------------*/
 
-$product_id = isset($GLOBALS["PARAMS_URI"][0]["product"] )
-? $GLOBALS["PARAMS_URI"][0]["product"] 
+$sales_id = isset($GLOBALS["PARAMS_URI"][0]["order"] )
+? $GLOBALS["PARAMS_URI"][0]["order"] 
 : NULL;
 
-$sales_id = isset($GLOBALS["PARAMS_URI"][1]["order"] )
-? $GLOBALS["PARAMS_URI"][1]["order"] 
-: NULL;
-
-if ( !$product_id || !$sales_id  ) exit();
+if ( !$sales_id  ) exit();
 
 /*---------------------------START-CONNECTION--------------------------*/
 
 $conn = ApiFunctions::getConnection( $config );
 
-/*-------------------CREATE-SALES-AND-SALES-INSTANCES------------------*/
+/*---------------------CREATE-SALES-ORDER-INSTANCES--------------------*/
 
 
 $sales_order = new SalesOrder( $conn );
 
-$check_old_data = $sales_order->read_product( $product_id, $sales_id );
+$check_order = $sales_order->read_id( $sales_id );
 
-if ( $check_old_data->rowCount() == 0 ) {
-    Message::writeJsonMessage( "Product or order not exists" );
+if ( $check_order->rowCount() == 0 ) {
+    Message::writeJsonMessage( "Order not exists" );
     exit();
 }
-
-$res = [];
 
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();
 
 $data_fields = [ "product_id", "n_products" ];
 
-$dataParams = ApiFunctions::updateChecker( $data, $data_fields, FALSE );
+$dataParams = ApiFunctions::inputChecker( $data, $data_fields, FALSE );
 
-// Check if the code do you want to change already exsists in that order
+// Check if the code do you want to change already exists in that order
 
-if ( isset($data["product_id"]) ) {
+if ( $data["product_id"] ) {
 
     $verify = $sales_order->read_product( $data["product_id"], $sales_id );
 
@@ -64,36 +58,19 @@ if ( isset($data["product_id"]) ) {
     }
 }
 
-$old_data = [];
-
-// dataParams contains something only when the request is not complete. 
-
-if ( count( $dataParams ) != 0 ) {
-    
-    // If the product exists, it recovers the old data so that changes are what is of interest
-    $old_data = $check_old_data->fetch( PDO::FETCH_ASSOC );
-
-} else {
-    $dataParams = $data_fields;
-}
-
 // Insert data in "sales_order" instance
 
-foreach( $dataParams as $field ) {
+foreach( $data_fields as $field ) {
 
     if ( array_key_exists( $field, $data ) ) {
 
         $sales_order->$field = $data[$field];
-    } else {
-
-        $sales_order->$field = isset( $old_data[$field] ) 
-                            ? $old_data[$field] 
-                            : null;
     }
 }
 
+$sales_order->sales_id = $sales_id;
 
-$stmt = $sales_order->updateProduct( $product_id, $sales_id );
+$stmt = $sales_order->insert( $sales_id );
 
 if ( $stmt ) {
 
@@ -117,13 +94,13 @@ function writeApi ( int $affected_rows ) {
     if ( $affected_rows > 0 ){
 
         $result["result"] = [
-            "message" => "Update successfully!"
+            "message" => "Insert successfully!"
         ]; 
 
         
     } else {
         $result["result"] = [
-            "message" => "Update unsuccessful"
+            "message" => "Insert unsuccessful"
         ]; 
     }
     
