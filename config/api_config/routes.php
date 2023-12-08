@@ -56,13 +56,11 @@ return [
             "file" => "./sale/crud/insert.php",
         ],
         "sales-orders" => [
-            "file"=>"./sales-order/crud/insert.php",
-        ],
-        "sales-orders" => [
             "sale" => [
                 "query" => ["order"],
                 "file" =>"./sales-order/crud/insert-single-prod.php",
-            ]
+            ],
+            "file"=>"./sales-order/crud/insert.php"
         ]
     ],
     "PUT" => [

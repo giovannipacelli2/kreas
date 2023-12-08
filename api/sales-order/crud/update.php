@@ -91,6 +91,11 @@ if ( count( $order ) != 0 ) {   // Array of order data
     // returns empty array when there are all params
     
     $orderParams = ApiFunctions::updateChecker( $order, $describe );
+
+    if ( isset( $order["sales_date"] ) ) {
+    
+        ApiFunctions::checkDate( $order["sales_date"] );
+    }
     
     $old_data = [];
 

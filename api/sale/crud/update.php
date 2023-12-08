@@ -37,6 +37,11 @@ $describe = $sales->describe();
 // Check the correctness of REQUEST
 $allParams = (array) ApiFunctions::updateChecker( $data, $describe );
 
+if ( isset( $data["sales_date"] ) ) {
+    
+    ApiFunctions::checkDate( $data["sales_date"] );
+}
+
 $old_data = [];
 
 // orderParams contains something only when the request is not complete. 

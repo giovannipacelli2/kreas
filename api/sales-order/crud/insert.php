@@ -35,6 +35,11 @@ $data_fields = [ "sales_code", "sales_date", "destination", "products" ];
 
 validate( $data, $data_fields );
 
+if ( isset( $data["sales_date"] ) ) {
+    
+    ApiFunctions::checkDate( $data["sales_date"] );
+}
+
 // Necessary fields in "products"
 $product_fields = [ "product_id", "n_products" ];
 

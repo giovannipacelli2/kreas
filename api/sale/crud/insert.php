@@ -31,7 +31,10 @@ $describe = $sales->describe();
 
 ApiFunctions::inputChecker( $data, $describe );
 
-
+if ( isset( $data["sales_date"] ) ) {
+    
+    ApiFunctions::checkDate( $data["sales_date"] );
+}
 
 // INSERT data in SALES intance
 

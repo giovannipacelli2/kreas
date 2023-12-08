@@ -230,6 +230,24 @@ class ApiFunctions {
         return $d && $d->format($format) == $date;
     }
 
+    // check data format:
+    // It can be 'Y-m-d H:i:s' or 'Y-m-d'
+
+    public static function checkDate( $date ){
+        
+        $validation = ApiFunctions::validateDate( $date );
+        
+        if ( !$validation ) {
+
+            if ( !ApiFunctions::validateDate( $date, 'Y-m-d' ) ){
+
+                Message::writeJsonMessage( "Not valid format of 'sales_date'" );
+                exit();
+            }
+            
+        }
+    }
+
     public static function checkCorrectDates( array $date_arr ) : mixed {
         $now = new DateTime("now");
 
