@@ -40,7 +40,7 @@
 
 * Contiene il file `index.php`, il quale ricava i dati dall’URI e reindirizza verso l’operazione desiderata utilizzando la funzione contenuta in `file-renderer.php` che a sua volta utilizza lo schema in `routes.php`
 
-* Contiene `./product`, `./sales` e `./sales-order` che sono le cartelle che contengono i file che si occupano di effettuare le azioni.
+* Contiene `./product`, `./sale` e `./sales-order` che sono le cartelle che contengono i file che si occupano di effettuare le azioni.
 
 ## La cartella `./config` contiene:
 
@@ -284,6 +284,11 @@
 <img src = "./readme-img/delete_product_order.jpg" style = "width:70%" >
 
 </br>
+
+# **Di più:**
+
+### Per informazioni aggiuntive consultare il file: `how-to-use.txt`
+
 
 # **Link utili:**
 
