@@ -17,10 +17,6 @@ return [
             ],
             "{id}" => [
                 "file" => "./sale/crud/read-id.php",
-            ],
-            "sale-product" => [
-                "query" => ["code", "prod"],
-                "file" => "./sale/query/read-sales-prod.php",
             ]
         ],
 

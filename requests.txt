@@ -7,6 +7,9 @@ api/products/{id}               -> Restituisce i dati inerenti ad un solo prodot
 api/sales-orders/all            -> Restituisce tutti gli ordini
 api/sales-orders/{id}   -> Informazioni di un singolo ordine
 
+api/sales/all          -> Restituisce le info di tutti gli ordini
+api/sales/{id}   -> Restituisce le info di un singolo ordine
+
 api/sales-orders/all-co2         -> estrae il totale della co2 risparmiata dalle vendite
 
 api/sales-orders/date-interval-co2?start={start}&end={end}   -> Restituisce tutti gli ordini
@@ -14,8 +17,6 @@ api/sales-orders/date-interval-co2?start={start}&end={end}   -> Restituisce tutt
 api/sales-orders/destination-co2?country={country}            -> Restituisce tutti gli ordini fatti verso un determinato paese
 
 api/sales-orders/product-co2?product={id}               -> restituisce il totale della co2 risparmiata dalle vendite di un determinato prodotto
-
-api/sales/sale-product?code={code}&prod={prod}      -> restituisce l'ordine con il prodotto /////////////////
 
 POST:  
 
@@ -30,16 +31,25 @@ api/products   ->  inserire nel corpo della richiesta i dati del prodotto da ins
 api/sales-orders        ->  inserire nel corpo della richiesta i dati della vendita da inserire.
 
 {
-    "sales_code": "AA0000",
-    "sales_date": "2023-11-13 09:36:20",
-    "destination": "Italy",
-    "product_id": "5520, 0100"
+    "sales_code": "ZZ0000",
+    "sales_date": "2023-11-22 09:36:20",
+    "destination": "France",
+    "products": [
+            {
+                "product_id": "0234",
+                "n_products": 5
+            },
+            {
+                "product_id": "6476",
+                "n_products": 2
+            }
+    ]
 }
 
-api/sales/sale-product?code={code}        ->  inserire nel corpo della richiesta il prodotto da inserire nella vendita.
+/api/sales-orders/sale?order={code}        ->  inserire nel corpo della richiesta il prodotto da inserire nella vendita.
 
 {     
-    "product_id": "5520",        ////////////////////////////
+    "product_id": "5520",        
     "n_prod" : 4
 }
 
@@ -54,18 +64,48 @@ api/products/product?code={value}    -> esegue l'update del prodotto con il codi
     "saved_kg_co2":"7"
 }
 
+/api/sales/sale?code={value}        -> Esegue l'update delle informazioni riguardanti l'ordine
+
+{
+    "sales_code": "ZZ0001",
+    "sales_date" : "2023-11-30 16:30:00",
+    "destination" : "Italy"
+}
+
+api/sales-orders/sale?product={p_code}&order=={o_code}      -> esegue l'update di un determinato prodotto in quell'ordine
+
+{
+    "product_id": "0100",
+    "n_products": 5
+}
+
 api/sales-orders/order?code={value}     -> esegue l'update della vendita con il codice = {value}
                                         -> inserire uno o più elementi da modificare nel corpo della richiesta
 
 {
-    "sales_code": "BB0000",
-    "sales_date": "2023-11-14",
-    "destination": "USA",
-    "product_id": "5520, 0100, 0234"
+    "sales_code": "ZZ0001",
+    "sales_date": "2023-11-25 16:00:00",
+    "destination": "Canada",
+    "products": [
+            {
+                "product_id": "0100",
+                "n_products": 2
+            },
+            {
+                "product_id": "6476",
+                "n_products": 5
+            },
+            {
+                "product_id": "0234",
+                "n_products": 11
+            }
+    ]
 }
 
 DELETE:
 
 api/products/product?code={value}     -> elimina il prodotto con il codice = {value}
 
-api/sales-orders/order?code={value}     -> elimina la vendita con il codice = {value}
+api/sales/sale?code={value}      -> elimina la vendita con il codice = {value}
+
+api/sales-orders/sale?product={p_code}&order={o_code}       -> elimina un prodotto in una vendita

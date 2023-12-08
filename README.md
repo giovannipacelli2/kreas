@@ -40,7 +40,7 @@
 
 * Contiene il file `index.php`, il quale ricava i dati dall’URI e reindirizza verso l’operazione desiderata utilizzando la funzione contenuta in `file-renderer.php` che a sua volta utilizza lo schema in `routes.php`
 
-* Contiene `./product` e `./sales-order` che sono le due cartelle che contengono i file che si occupano di effettuare le azioni.
+* Contiene `./product`, `./sales` e `./sales-order` che sono le cartelle che contengono i file che si occupano di effettuare le azioni.
 
 ## La cartella `./config` contiene:
 
@@ -57,7 +57,7 @@
 
 ## La cartella `./model` contiene le classi che sono astrazione dei modelli:
 
-#### `Product` e `Sale`  ->  Ognuno con i suoi metodi **CRUD** e funzioni per le query.
+#### `Product`, `Sales` e `SalesOrder`  ->  Ognuno con i suoi metodi **CRUD** e funzioni per le query.
 
 </br>
 
@@ -65,20 +65,25 @@
 
 ## Richieste “GET” lettura dati
 
-### Ricavare tutti i prodotti o tutti gli ordini:
+### Lettura dei prodotti:
 
     GET -> {domain}/api/products/all
-    GET -> {domain}/api/sales-orders/all
-
-</br>
-<img src = "./readme-img/prod_insert.jpg" style = "width:70%" >
-
-### Ricavare un singolo prodotto od ordine:
-
     GET -> {domain}/api/products/{id}
+
+### Lettura info ordini:
+
+    GET -> {domain}/api/sales/all
+    GET -> {domain}/api/sales/{id}
+
+
+### Lettura ordine completo:
+
+    GET -> {domain}/api/sales-orders/all
     GET -> {domain}/api/sales-orders/{id}
 
- </br>
+</br>
+
+#### Esempio lettura ordine:
  
  <img src = "./readme-img/order_read_id.jpg" style = "width:70%" >
 
@@ -138,22 +143,44 @@
 ### Corpo della richiesta: 
 
     {
-        "sales_code": "AA0000",
-        "sales_date": "2023-11-13 09:36:20",
-        "destination": "Italy",
-        "product_id": "5520, 0100"
-    }	
+        "sales_code": "ZZ0000",
+        "sales_date": "2023-11-22 09:36:20",
+        "destination": "France",
+        "products": [
+                {
+                    "product_id": "0234",
+                    "n_products": 5
+                },
+                {
+                    "product_id": "6476",
+                    "n_products": 2
+                }
+        ]
+    }
+
+
+### Inserimento di un nuovo prodotto in un ordine già esistente:
+	
+    	POST -> {domain}/api/sales-orders/sale?order={code}
+
+### Corpo della richiesta: 
+
+    {     
+        "product_id": "5520",        
+        "n_prod" : 4
+    }
 
 </br>
 
 ## Richieste “PUT” modifica dei dati:
+
+### **N.B** Per tutte le richieste `PUT` è possibile immettere uno o più campi da modificare. Non è necessario rinserire dati che non si vuole modificare.
 
 ### Modifica di un prodotto:
 
 		PUT -> {domain}/api/products/product?code={value}
 
 #### esegue l'update del prodotto con il codice = {value}
-#### Nel corpo della richiesta possono essere specificati tutti i campi o solo quelli interessati:
 
 ### Corpo della richiesta: 
 
@@ -170,21 +197,46 @@
 		PUT -> {domain}/api/sales-orders/order?code={value}
 
 #### esegue l'update dell’ordine con il codice = {value}
-#### Nel corpo della richiesta possono essere specificati tutti i campi o solo quelli interessati:
 
-### Corpo della richiesta: 
+#### Corpo della richiesta: 
 
     {
-        "sales_code": "BB0000",
-        "sales_date": "2023-11-14",
-        "destination": "USA",
-        "product_id": "5520, 0100, 0234"
+        "sales_code": "ZZ0001",
+        "sales_date": "2023-11-25 16:00:00",
+        "destination": "Canada",
+        "products": [
+                {
+                    "product_id": "0100",
+                    "n_products": 2
+                }
+        ]
+    }
+
+#### Se si vuole lasciare tutto invariato e modificare solo i prodotti nell'ordine è possibile fare in questo modo:
+
+<img src = "./readme-img/order_update_products.jpg" style = "width:70%" >
+
+</br>
+
+
+### Modifica info ordine:
+
+#### Si può effettuare la modifica delle informazioni di vendita senza andare a specificare i prodotti con:
+
+		PUT -> {domain}/api/sales/sale?code={value} 
+
+#### specificando uno o più campi nel corpo della richiesta
+
+    {
+        "sales_code": "ZZ0001",
+        "sales_date" : "2023-11-30 16:30:00",
+        "destination" : "Italy"
     }
 
 #### O semplicemente modificare solo il paese di destinazione
 
     {
-        "destination": "USA",
+        "destination": "Greece",
     }
 
 <img src = "./readme-img/order_update.jpg" style = "width:70%" >
@@ -205,9 +257,17 @@
 
 ### Cancellazione di un ordine di vendita:
 
-		DELETE -> {domain}/api/sales-orders/order?code={value}
+		DELETE -> {domain}/api/sales/sale?code={value} 
 
 #### esegue il delete dell’ordine con il codice = {value}
+
+</br>
+
+### Cancellazione di un singolo prodotto nell'ordine di vendita: 
+
+		DELETE -> {domain}/api/sales-orders/sale?product={p_code}&order={o_code}  
+
+#### esegue il delete del prodotto con il codice `{p_code}` e codice ordine `{o_code}`
 
 </br>
 
@@ -216,6 +276,12 @@
 ### Ordine già esistente:
 
 <img src = "./readme-img/order_error_insert.jpg" style = "width:70%" >
+
+</br>
+
+### Non è possibile eliminare tutti i prodotti nell'ordine:
+
+<img src = "./readme-img/delete_product_order.jpg" style = "width:70%" >
 
 </br>
 
