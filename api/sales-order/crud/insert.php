@@ -40,6 +40,14 @@ if ( isset( $data["sales_date"] ) ) {
     ApiFunctions::checkDate( $data["sales_date"] );
 }
 
+// check that product isn't empty array
+
+if ( count( $data["products"] ) == 0 ) {
+    
+    Message::writeJsonMessage( "Products can't be empty!" );
+    exit();
+}
+
 // Necessary fields in "products"
 $product_fields = [ "product_id", "n_products" ];
 
