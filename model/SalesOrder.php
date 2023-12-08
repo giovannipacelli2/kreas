@@ -213,10 +213,15 @@ class SalesOrder {
             return $stmt;
     
         } catch( PDOException $e ) {
-    
+
             exceptionHandler( $e );
+
+            if ( $e->getCode() == "23000" ) {
+                Message::errorMessage( $e, "Inserted key already exists!!" );
+            } else {
+                Message::errorMessage( $e );
+            }
     
-            Message::errorMessage( $e );
             exit();
     
         }

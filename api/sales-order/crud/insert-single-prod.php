@@ -1,6 +1,7 @@
 <?php
 
 use App\model\SalesOrder;
+use App\model\Sales;
 use App\core\ApiFunctions;
 use App\core\Message;
 
@@ -30,9 +31,10 @@ $conn = ApiFunctions::getConnection( $config );
 /*---------------------CREATE-SALES-ORDER-INSTANCES--------------------*/
 
 
+$sales = new Sales( $conn );
 $sales_order = new SalesOrder( $conn );
 
-$check_order = $sales_order->read_id( $sales_id );
+$check_order = $sales->readByOrder( $sales_id );
 
 if ( $check_order->rowCount() == 0 ) {
     Message::writeJsonMessage( "Order not exists" );

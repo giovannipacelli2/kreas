@@ -223,50 +223,6 @@ class Sales{
         }
     }     
 
-    /* // Deletes order that has a specific product_code
-
-    function deleteByProduct( string $code, string $product ){
-
-        // code by uri
-        $code = htmlspecialchars( strip_tags( $code ) );
-        $product = htmlspecialchars( strip_tags( $product ) );
-
-        $check = $this->readByOrder( $code );
-
-        if ( $check->rowCount() > 1 ) {
-            Message::writeJsonMessage( 
-                "Unable to delete the product: \n"
-                ."The sales order can't be without products" 
-            );
-
-            exit();
-        }
-        
-        try{
-            
-            $q = "DELETE FROM " . $this->table_name .
-            " WHERE sales_code = :code " . 
-            "AND product_id = :product;";
-            
-            $stmt = $this->conn->prepare( $q );
-            
-            $stmt->bindParam( ":code", $code, PDO::PARAM_STR );
-            $stmt->bindParam( ":product", $product, PDO::PARAM_STR );
-            
-            $stmt->execute();
-
-            return $stmt;
-            
-        } catch( PDOException $e ) {
-
-            exceptionHandler( $e );
-
-            Message::errorMessage( $e );
-
-        }
-            
-    } */
-
 }
 
 ?>

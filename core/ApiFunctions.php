@@ -224,6 +224,12 @@ class ApiFunctions {
 
     /*----------------------CHECK-DATE------------------------*/
 
+    public static function validateDate($date, $format = 'Y-m-d H:i:s') {
+
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
+    }
+
     public static function checkCorrectDates( array $date_arr ) : mixed {
         $now = new DateTime("now");
 
