@@ -84,6 +84,7 @@ class Product{
             exceptionHandler( $e );
 
             Message::errorMessage( $e );
+            exit();
 
         }
     }

@@ -158,7 +158,7 @@ class ApiFunctions {
     /*-------CHECK-IF-THERE-ARE-ANY-INCORRECT-FIELDS----------*/
 
 
-    // Wants data and fields as array of string
+    // Wants data as associative array and fields as array of string
     public static function validateParams( $data, $data_checker ) {
 
         //cast sended data in associative array;
@@ -168,15 +168,17 @@ class ApiFunctions {
 
         // check input data integrity
 
-        foreach( $data as $param ){
+        foreach( $data as $field=>$value ){
 
             // $param = key of sended data
             // $data_checker = array with necessary field
-            $exists = in_array( $param, $data_checker );
+
+            $exists = in_array( $field, $data_checker );
+            //$exists = in_array( $param, $data_checker );
 
             // if param NOT EXISTS
 
-            if( !$exists ) {
+            if( !$exists || $value == "" ) {
                 $check = false;
             }
 
@@ -206,7 +208,7 @@ class ApiFunctions {
     
         if ( !$validation ) {
             
-            $validation = ApiFunctions::validateParams( array_keys( $data ), $data_fields );
+            $validation = ApiFunctions::validateParams( $data, $data_fields );
             
             if ( !$validation ) {
                 Message::writeJsonMessage( "Bad request" );

@@ -222,7 +222,7 @@ class SalesOrder {
             exceptionHandler( $e );
 
             if ( $e->getCode() == "23000" ) {
-                Message::errorMessage( $e, "Inserted key already exists!!" );
+                Message::errorMessage( $e, "Integrity violation" );
             } else {
                 Message::errorMessage( $e );
             }

@@ -1,5 +1,6 @@
 <?php
 
+use App\model\Product;
 use App\model\Sales;
 use App\model\SalesOrder;
 use App\core\ApiFunctions;
@@ -77,7 +78,18 @@ foreach( $data["products"] as $product ) {
     
 
 }
+// Check if the inserted products code exists in product TABLE
 
+$product = new Product($conn);
+
+$check_prod = $product->checkIds( $new_products );
+
+if ( $check_prod->rowCount() != count( $new_products ) ) {
+
+    Message::writeJsonMessage( "Product codes are incorrect" );
+    http_response_code(400);
+    exit();
+}
 
 // Duplicate checking
 ApiFunctions::checkDuplicate( $new_products, "product in order" );

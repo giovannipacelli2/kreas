@@ -43,7 +43,13 @@ if ($uri) {
         $GLOBALS["PARAMS_URI"] = $result["param"];
     }
         
-    require_once $result["file"];
+    try {
+        require_once $result["file"];
+    } catch (Error $e) {
+        Message::writeJsonMessage("Page NOT FOUND");
+        http_response_code(404);
+        exit();
+    }
 } 
 elseif (!$uri) {    // $uri=FALSE only if not exists "path" & "query"
 

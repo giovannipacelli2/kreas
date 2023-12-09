@@ -49,7 +49,7 @@ return [
             "file"=>"./product/crud/insert.php",
         ],
         "sales" => [
-            "file" => "./sale/crud/insert.php",
+            "file" => "./sale/crud/insert_insert.php",      // for unlock sales insert change file name in "insert.php"
         ],
         "sales-orders" => [
             "sale" => [
