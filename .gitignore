@@ -4,6 +4,9 @@
 /query
 /query/*
 
+/vendor
+/vendor/*
+
 /.vscode
 /.vscode/*
 
