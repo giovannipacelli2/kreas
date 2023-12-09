@@ -11,6 +11,10 @@
 
 * Aver installato PHP e MySql ( es. XAMPP )
 * installare `composer` come dependecy manager
+* avviare `composer` con il comando:
+    
+        composer install
+
 * creare apposito file `.ENV` per l’accesso al DB
 
 		Immettere i propri dati nel file .ENV
