@@ -24,6 +24,8 @@
         DB_PASSWORD=[password]
         DB_HOST=[host]		// es. Localhost -> 127.0.0.1
 
+* per visualizzare gli errori, commentare le 3 righe di codice indicate nel file `error-handler-php` nella cartella `api`.
+
 </br>
 
 ## **Linguaggi utilizzati:** 
