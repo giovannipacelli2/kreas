@@ -1,13 +1,29 @@
 <?php
 
-    $dotenv = Dotenv\Dotenv::createImmutable( "../" );
-    $dotenv->load();
+    use Dotenv\Exception\InvalidPathException;
+    use Dotenv\Exception\ValidationException;
 
-    $dotenv->required([
-        'DB_USER',
-        'DB_PASSWORD',
-        'DB_HOST'
-    ])->notEmpty();
+    
+    try {
+        $dotenv = Dotenv\Dotenv::createImmutable( "../" );
+
+        $dotenv->load();
+
+        $dotenv->required([
+            'DB_USER',
+            'DB_PASSWORD',
+            'DB_HOST'
+        ])->notEmpty();
+
+    } catch ( InvalidPathException $e ) {
+        echo "<h2>Invalid credential</h2>";
+        http_response_code(401);
+        exit();
+    } catch ( ValidationException $e ) {
+        echo "<h2>Invalid credential</h2>";
+        http_response_code(401);
+        exit();
+    }
 
     return [
         "database" => [
