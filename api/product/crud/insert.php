@@ -61,7 +61,7 @@ function writeApi ( int $affected_rows ) {
             "message" => "inserted successfully!"
         ]; 
 
-        http_response_code(200);
+        http_response_code(201);
 
     } else {
         $result["result"] = [

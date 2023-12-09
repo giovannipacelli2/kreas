@@ -148,7 +148,12 @@ class Product{
 
         $this->product_code = htmlspecialchars( strip_tags( $this->product_code ) );
         $this->name = htmlspecialchars( strip_tags( $this->name ) );
-        $this->saved_kg_co2 = htmlspecialchars( strip_tags( $this->saved_kg_co2 ) );
+        $this->saved_kg_co2 = htmlspecialchars( strip_tags( (float) $this->saved_kg_co2 ) );
+
+        if ( $this->saved_kg_co2 == 0 ) {
+            Message::writeJsonMessage("Saved kg co2 format isn't valid!");
+            exit();
+        }
 
         try{
 
@@ -221,7 +226,12 @@ class Product{
 
         $this->product_code = htmlspecialchars( strip_tags( $this->product_code ) );
         $this->name = htmlspecialchars( strip_tags( $this->name ) );
-        $this->saved_kg_co2 = htmlspecialchars( strip_tags( $this->saved_kg_co2 ) );
+        $this->saved_kg_co2 = htmlspecialchars( strip_tags( (float) $this->saved_kg_co2 ) );
+
+        if ( $this->saved_kg_co2 == 0 ) {
+            Message::writeJsonMessage("Saved kg co2 format isn't valid!");
+            exit();
+        }
 
         try{
 

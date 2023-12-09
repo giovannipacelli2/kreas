@@ -35,15 +35,26 @@ $GLOBALS["conn"] = NULL;
 function writeApi( PDOStatement $stmt ) {
 
     $data = $stmt->fetch( PDO::FETCH_ASSOC );
-    $co2 = round((float)$data["total_co2_saved"], 2);
-
     $result = [];
-    $result["result"] = [
-        "total_co2_saved" => $co2
-    ];
+
+    if ( !isset($data["total_co2_saved"]) || is_null($data["total_co2_saved"]) ) {
+
+        $result["result"] = [
+            "message" => "Error finding co2 in sales_order"
+        ];
+    } else {
+
+        $co2 = round((float)$data["total_co2_saved"], 2);
+    
+        $result["result"] = [
+            "total_co2_saved" => $co2
+        ];
+
+        http_response_code(200);
+    }
+
 
     header("Content-Type: application/json charset=UTF-8");
-    http_response_code(200);
     echo json_encode( $result );
 
 }

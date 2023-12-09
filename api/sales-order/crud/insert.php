@@ -57,18 +57,24 @@ $new_products = [];
 foreach( $data["products"] as $product ) {
 
     $product = (array) $product;
+    
+    validate( $product, $product_fields );
 
-    // Check n_products--> can't be ZERO
+    // Check n_products
     if ( $product["n_products"] == 0 ) {
                 
         Message::writeJsonMessage( "n_products can't be ZERO!" );
+        http_response_code(400);
+        exit();
+
+    } else if ( (int) $product["n_products"] == 0 ) {
+        Message::writeJsonMessage("n_products format isn't valid");
         http_response_code(400);
         exit();
     }
 
     array_push( $new_products, $product["product_id"] );
     
-    validate( $product, $product_fields );
 
 }
 
@@ -140,7 +146,7 @@ function writeApi ( $res ) {
 
         $result["result"] = $res;
 
-        http_response_code(200);
+        http_response_code(201);
 
     }
     else {

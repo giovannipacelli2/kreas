@@ -107,6 +107,8 @@ function writeApi ( int $affected_rows ) {
             "message" => "Update successfully!"
         ]; 
 
+        http_response_code(200);
+
         
     } else {
         $result["result"] = [
@@ -114,7 +116,6 @@ function writeApi ( int $affected_rows ) {
         ]; 
     }
     
-    http_response_code(200);
     header("Content-Type: application/json charset=UTF-8");
     echo json_encode( $result );
 

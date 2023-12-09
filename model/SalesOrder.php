@@ -193,8 +193,13 @@ class SalesOrder {
     function insert(){
 
         $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
-        $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
+        $this->n_products = htmlspecialchars( strip_tags( (int) $this->n_products ) );
         $this->sales_id = htmlspecialchars( strip_tags( $this->sales_id ) );
+
+        if ( $this->n_products == 0 ) {
+            Message::writeJsonMessage("n_products format isn't valid!");
+            exit();
+        }
 
         try{
     
@@ -233,10 +238,15 @@ class SalesOrder {
         function update( $sales_to_update ){
 
             $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
-            $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
+            $this->n_products = htmlspecialchars( strip_tags( (int) $this->n_products ) );
             $this->sales_id = htmlspecialchars( strip_tags( $this->sales_id ) );
     
             $sales_to_update = htmlspecialchars( strip_tags( $sales_to_update ) );
+
+            if ( $this->n_products == 0 ) {
+                Message::writeJsonMessage("n_products format isn't valid!");
+                exit();
+            }
             
             try{
     
@@ -273,10 +283,15 @@ class SalesOrder {
     function updateProduct( $prod_to_update, $sales_to_update ){
 
         $this->product_id = htmlspecialchars( strip_tags( $this->product_id ) );
-        $this->n_products = htmlspecialchars( strip_tags( $this->n_products ) );
-
+        $this->n_products = htmlspecialchars( strip_tags( (int) $this->n_products ) );
+        
         $prod_to_update = htmlspecialchars( strip_tags( $prod_to_update ) );
         $sales_to_update = htmlspecialchars( strip_tags( $sales_to_update ) );
+        
+        if ( $this->n_products == 0 ) {
+            Message::writeJsonMessage("n_products format isn't valid!");
+            exit();
+        }
         
         try{
 

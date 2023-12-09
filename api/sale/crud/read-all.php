@@ -35,19 +35,28 @@ $GLOBALS["conn"] = NULL;
 function writeApi( PDOStatement $stmt ) {
 
     $result = [];
-    $result["allOrders"] = [];
 
-    $data = $stmt->fetchAll( PDO::FETCH_ASSOC );
-        
-        foreach ( $data as $row ) {
-            
-            array_push( $result["allOrders"], $row );
-        
-        }
+    if ( $stmt->rowCount() > 0 ) {
+
+        $result["allOrders"] = [];
     
+        $data = $stmt->fetchAll( PDO::FETCH_ASSOC );
+            
+            foreach ( $data as $row ) {
+                
+                array_push( $result["allOrders"], $row );
+            
+            }
+        
+        http_response_code(200);
+    } else {
+
+        $result["result"] = [
+            "message"=>"Orders not found"
+        ];
+    }
 
     header("Content-Type: application/json charset=UTF-8");
-    http_response_code(200);
     echo json_encode( $result );
 
 }

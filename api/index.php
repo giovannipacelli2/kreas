@@ -35,9 +35,10 @@ if ($uri) {
 
     if (!$result) {
         Message::writeJsonMessage( "Resource not found" );
+        http_response_code(404);
         exit();
     }
-
+    
     if ( $result["param"] ) {
         $GLOBALS["PARAMS_URI"] = $result["param"];
     }

@@ -53,7 +53,8 @@ function writeApi( PDOStatement $stmt ) {
                 "total_co2_saved" => round( (float) $data["total_co2_saved"], 2 )
             ]
         ];
-
+        
+        http_response_code(200);
     } else {
         $result["result"] = [
             "message" => "Product not found!"
@@ -61,7 +62,6 @@ function writeApi( PDOStatement $stmt ) {
     }
 
     header("Content-Type: application/json charset=UTF-8");
-    http_response_code(200);
     echo json_encode( $result );
 
 }

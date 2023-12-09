@@ -61,6 +61,8 @@ function writeApi( PDOStatement $stmt, array $date ) {
             "end_date" => $date["end"]->format( "Y-m-d" ), 
             "co2_saved" => round( (float) $res["co2_saved"], 2 )
         ];
+        
+        http_response_code(200);
     } else {
         $result["result"] = [
             "message" => "Data not found!"
@@ -69,7 +71,6 @@ function writeApi( PDOStatement $stmt, array $date ) {
 
 
     header("Content-Type: application/json charset=UTF-8");
-    http_response_code(200);
     echo json_encode( $result );
 
 }

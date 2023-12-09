@@ -170,6 +170,19 @@ if ( count( $products ) != 0 ) {
     foreach ( $products as $p ) {
     
         validate( $p, $describe );
+
+        // Check n_products
+        if ( $p["n_products"] == 0 ) {
+                    
+            Message::writeJsonMessage( "n_products can't be ZERO!" );
+            http_response_code(400);
+            exit();
+
+        } else if ( (int) $p["n_products"] == 0 ) {
+            Message::writeJsonMessage("n_products format isn't valid");
+            http_response_code(400);
+            exit();
+        }
     }
 
     // Check if there is order with searched code
@@ -348,6 +361,7 @@ function writeApi ( mixed $res ) {
         
         $result["result"] = $res;
 
+        http_response_code(200);
         
     } else {
         $result["result"] = [
@@ -355,7 +369,6 @@ function writeApi ( mixed $res ) {
         ]; 
     }
     
-    http_response_code(200);
     header("Content-Type: application/json charset=UTF-8");
     echo json_encode( $result );
 

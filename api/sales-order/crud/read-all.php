@@ -34,18 +34,28 @@ $GLOBALS["conn"] = NULL;
 function writeApi( PDOStatement $stmt ) {
 
     $result = [];
-    $tmp_arr = ApiFunctions::combineBySalesCode( $stmt );
 
-    $result["result"]["sales_orders"]=[];
+    if ( $stmt->rowCount() > 0) {
 
-    foreach( $tmp_arr as $row ) {
+        $tmp_arr = ApiFunctions::combineBySalesCode( $stmt );
+    
+        $result["result"]["sales_orders"]=[];
+    
+        foreach( $tmp_arr as $row ) {
+    
+            array_push( $result["result"]["sales_orders"], $row );
+    
+        }
 
-        array_push( $result["result"]["sales_orders"], $row );
-
+        http_response_code(200);
+        
+    } else {
+        $result["result"] = [
+            "message"=> "Orders not found"
+        ];
     }
 
     header("Content-Type: application/json charset=UTF-8");
-    http_response_code(200);
     echo json_encode( $result );
 
 }

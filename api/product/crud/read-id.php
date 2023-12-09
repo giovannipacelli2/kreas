@@ -44,6 +44,8 @@ function writeApi ( PDOStatement $stmt ) {
             "message" => "Product Not Found"
         ];
 
+        http_response_code(404);
+
     } else {
 
         $data = $stmt->fetchAll( PDO::FETCH_ASSOC );

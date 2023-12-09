@@ -47,9 +47,10 @@ function writeApi( PDOStatement $stmt ) {
     if ( $stmt->rowCount() == 0 ) {
 
         $result["result"] = [
-            "message" => "Resource Not Found"
+            "message" => "Order Not Found"
         ];
-
+        
+        http_response_code(404);
     } else {
         
         $tmp_arr = ApiFunctions::combineBySalesCode( $stmt );

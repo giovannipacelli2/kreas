@@ -35,20 +35,29 @@ $GLOBALS["conn"] = NULL;
 function writeApi( PDOStatement $stmt ) {
 
     $result = [];
-    $result["allProducts"] = [];
-
-    $data = $stmt->fetchAll( PDO::FETCH_ASSOC );
-        
-        foreach ( $data as $row ) {
-            
-            array_push( $result["allProducts"], $row );
-        
-        }
     
+    if ( $stmt->rowCount() > 0 ) {
 
-    header("Content-Type: application/json charset=UTF-8");
-    http_response_code(200);
-    echo json_encode( $result );
+        $result["allProducts"] = [];
+
+        $data = $stmt->fetchAll( PDO::FETCH_ASSOC );
+            
+            foreach ( $data as $row ) {
+                
+                array_push( $result["allProducts"], $row );
+            
+            }
+        
+    
+            http_response_code(200);
+        } else {
+            $result["result"] = [
+                "message"=> "There aren't products"
+            ];
+        }
+        
+        header("Content-Type: application/json charset=UTF-8");
+        echo json_encode( $result );
 
 }
 
