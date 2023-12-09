@@ -68,11 +68,14 @@
                     foreach( $arr_query as $q ) {
 
                         $q_arr = explode( "=", $q );
-
-                        $data = [ $q_arr[0] => $q_arr[1] ];
-    
+                        
+                        $key = isset( $q_arr[0] ) ? $q_arr[0] : "";
+                        $value = isset( $q_arr[1] ) ? $q_arr[1] : "";
+                        
+                        $data = [ $key => $value ];
+                        
                         array_push( $uri["query"], $data );
-
+                        
                     }
                 }
                 

@@ -1,5 +1,6 @@
 <?php
 
+use App\core\Message;
 use App\model\Sales;
 use App\core\ApiFunctions;
 
@@ -17,7 +18,12 @@ $code = isset($GLOBALS["PARAMS_URI"] )
 ? $GLOBALS["PARAMS_URI"] 
 : NULL;
 
-if ( !$code ) exit();
+if ( !$code ) {
+
+    Message::writeJsonMessage( "Error in searched code" );
+    http_response_code(400);
+    exit();
+}
 
 /*---------------------------START-CONNECTION--------------------------*/
 

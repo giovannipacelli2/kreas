@@ -25,7 +25,12 @@ $sales_id = isset($GLOBALS["PARAMS_URI"][1]["order"] )
 ? $GLOBALS["PARAMS_URI"][1]["order"] 
 : NULL;
 
-if ( !$product_id || !$sales_id  ) exit();
+if ( !$product_id || !$sales_id  ) {
+
+    Message::writeJsonMessage( "Error in URI request" );
+    http_response_code(400);
+    exit();
+}
 
 /*---------------------------START-CONNECTION--------------------------*/
 

@@ -25,7 +25,12 @@ $code = isset($GLOBALS["PARAMS_URI"][0]["code"] )
 ? $GLOBALS["PARAMS_URI"][0]["code"] 
 : NULL;
 
-if ( !$code ) exit();
+if ( !$code ) {
+
+    Message::writeJsonMessage( "Error in searched code" );
+    http_response_code(400);
+    exit();
+}
 
 // GET DATA FROM REQUEST
 $data = (array) ApiFunctions::getInput();

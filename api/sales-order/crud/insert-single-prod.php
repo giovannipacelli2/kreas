@@ -22,7 +22,12 @@ $sales_id = isset($GLOBALS["PARAMS_URI"][0]["order"] )
 ? $GLOBALS["PARAMS_URI"][0]["order"] 
 : NULL;
 
-if ( !$sales_id  ) exit();
+if ( !$sales_id  ) {
+
+    Message::writeJsonMessage( "Error in searched code" );
+    http_response_code(400);
+    exit();
+}
 
 /*---------------------------START-CONNECTION--------------------------*/
 
