@@ -2,7 +2,7 @@
 
     // In development comment these lines of code
 
-    /* -----> */ error_reporting( E_ALL, E_WARNING );
+    /* -----> */ error_reporting( E_ALL );
     /* -----> */ ini_set( "display_errors", 0 ); 
     /* -----> */ set_error_handler( "errorHandler" );
 
