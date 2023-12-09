@@ -10,6 +10,7 @@
         $dotenv->load();
 
         $dotenv->required([
+            'DB_NAME',
             'DB_USER',
             'DB_PASSWORD',
             'DB_HOST'
@@ -27,7 +28,7 @@
 
     return [
         "database" => [
-            "name" => "kreas",
+            "name" => $_ENV["DB_NAME"],
             "username" => $_ENV["DB_USER"],
             "password" => $_ENV["DB_PASSWORD"],
             "connection" => "mysql:host=" . $_ENV["DB_HOST"],

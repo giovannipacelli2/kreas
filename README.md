@@ -15,6 +15,7 @@
 
 		Immettere i propri dati nel file .ENV
         
+		DB_NAME=kreas
 		DB_USER=[username]
         DB_PASSWORD=[password]
         DB_HOST=[host]		// es. Localhost -> 127.0.0.1
