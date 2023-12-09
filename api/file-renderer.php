@@ -3,12 +3,18 @@
 use App\core\Message;
 
 function fileRenderer( $uri ) {
-    
-    $list = include_once("../config/api_config/routes.php");
+
+    if ( file_exists( "../config/api_config/routes.php" ) ) {
+
+        $list = include_once("../config/api_config/routes.php");
+    } else {
+        $list = FALSE;
+    }
     
 
     if (!$list) {
         Message::writeJsonMessage( "Error loading routes file" );
+        http_response_code(500);
         exit();
     }
 
