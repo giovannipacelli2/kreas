@@ -1,0 +1,21 @@
+Date: 2023-12-09 22:19:33
+Error: [23000] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '4000' for key 'PRIMARY' - C:\Users\giess\Documents\GitHub\kreas\model\product.php : line: 172
+
+Date: 2023-12-10 10:47:06
+Error: [23000] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '4141' for key 'PRIMARY' - C:\Users\giess\Documents\GitHub\kreas\model\product.php : line: 172
+
+Date: 2023-12-10 10:48:03
+Error: [23000] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '4141' for key 'PRIMARY' - C:\Users\giess\Documents\GitHub\kreas\model\product.php : line: 172
+
+Date: 2023-12-10 10:48:16
+Error: [23000] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '4141' for key 'PRIMARY' - C:\Users\giess\Documents\GitHub\kreas\model\product.php : line: 172
+
+Date: 2023-12-10 10:48:34
+Error: [23000] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '4141' for key 'PRIMARY' - C:\Users\giess\Documents\GitHub\kreas\model\product.php : line: 172
+
+Date: 2023-12-10 11:13:56
+Error: [23000] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '4141' for key 'PRIMARY' - C:\Users\giess\Documents\GitHub\kreas\model\product.php : line: 172
+
+Date: 2023-12-10 14:48:48
+Error: [23000] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '4141' for key 'PRIMARY' - C:\Users\giess\Documents\GitHub\kreas\model\product.php : line: 172
+

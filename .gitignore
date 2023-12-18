@@ -1,15 +1,4 @@
-# misc
-.env
+old
+old/*
 
-/query
-/query/*
-
-/vendor
-/vendor/*
-
-/.vscode
-/.vscode/*
-
-/error/*
-
-migration.sql
+.ENV
