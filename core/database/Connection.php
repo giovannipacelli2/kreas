@@ -1,30 +1,31 @@
 <?php
 
-    namespace App\core\database;
-    use PDO, PDOException;
+namespace App\core\database;
 
-    class Connection {
+use PDO;
+use PDOException;
 
-        public static function make( $config ) {
+class Connection
+{
+    public static function make($config)
+    {
 
 
-            try {
+        try {
 
-                $pdo = new PDO(
-                    $config['connection'].';dbname='.$config['name'],
-                    $config['username'],
-                    $config['password'],
-                    $config['options']
-                );
+            $pdo = new PDO(
+                $config['connection'].';dbname='.$config['name'],
+                $config['username'],
+                $config['password'],
+                $config['options']
+            );
 
-                $pdo->exec( "set names utf8" );
+            $pdo->exec("set names utf8");
 
-                return $pdo;
+            return $pdo;
 
-            } catch (PDOException $e) {
-                die($e->getMessage());
-            }   
+        } catch (PDOException $e) {
+            die($e->getMessage());
         }
     }
-
-?>
+}

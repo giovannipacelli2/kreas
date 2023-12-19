@@ -17,54 +17,52 @@ class Router
         'DELETE' => [],
     ];
 
-    public static function load( $file )
+    public static function load($file)
     {
-        $router = new static;
+        $router = new static();
 
         require $file;
 
         return $router;
     }
 
-    public function get( $uri, $controller )
+    public function get($uri, $controller)
     {
-        $this->routes['GET'][$uri] = $controller; 
+        $this->routes['GET'][$uri] = $controller;
     }
 
-    public function post( $uri, $controller )
+    public function post($uri, $controller)
     {
-        $this->routes['POST'][$uri] = $controller; 
+        $this->routes['POST'][$uri] = $controller;
     }
 
-    public function put( $uri, $controller )
+    public function put($uri, $controller)
     {
-        $this->routes['PUT'][$uri] = $controller; 
+        $this->routes['PUT'][$uri] = $controller;
     }
 
-    public function delete( $uri, $controller )
+    public function delete($uri, $controller)
     {
-        $this->routes['DELETE'][$uri] = $controller; 
+        $this->routes['DELETE'][$uri] = $controller;
     }
 
-    public function direct( $uri, $requestType )
+    public function direct($uri, $requestType)
     {
-        if ( array_key_exists( $uri, $this->routes[$requestType] ) )
-        {
+        if (array_key_exists($uri, $this->routes[$requestType])) {
             return $this->callAction(
-                ...explode( "@", $this->routes[$requestType][$uri] )
+                ...explode("@", $this->routes[$requestType][$uri])
             );
         }
 
         throw new \RuntimeException('No route defined for this URI.');
     }
 
-    protected function callAction ( $controller, $action )
+    protected function callAction($controller, $action)
     {
         $controller = "App\\controllers\\{$controller}";
-        $controller = new $controller;
+        $controller = new $controller();
 
-        if ( !method_exists( $controller, $action ) )
-        {
+        if (!method_exists($controller, $action)) {
             throw new \RuntimeException(
                 "{$controller} doesn't respond to the {$action} action"
             );
@@ -72,5 +70,5 @@ class Router
 
         return $controller->$action();
     }
-    
+
 }
