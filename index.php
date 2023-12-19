@@ -8,8 +8,12 @@
 
     $method = Request::method();
     $uri = Request::uri();
-    $query = Request::query();
+
+    // Contains QUERY
+    //die(var_dump($_REQUEST));
 
     $router = Router::load( './app/routes.php' );
+
+    $router->direct( $uri, $method );
 
 ?>

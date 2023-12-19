@@ -61,6 +61,7 @@ class ComposerStaticInitaf8448339f667680ad9ba033dd0073b9
     );
 
     public static $classMap = array (
+        'App\\controllers\\ApiProductController' => __DIR__ . '/../..' . '/app/controllers/ApiProductController.php',
         'App\\core\\ApiFunctions' => __DIR__ . '/../..' . '/old/core/ApiFunctions.php',
         'App\\core\\App' => __DIR__ . '/../..' . '/core/App.php',
         'App\\core\\Connection' => __DIR__ . '/../..' . '/old/core/Connection.php',
