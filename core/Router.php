@@ -50,7 +50,7 @@ class Router
     {
         if (array_key_exists($uri, $this->routes[$requestType])) {
             return $this->callAction(
-                ...explode("@", $this->routes[$requestType][$uri])
+                ...explode('@', $this->routes[$requestType][$uri])
             );
         }
 
@@ -70,5 +70,4 @@ class Router
 
         return $controller->$action();
     }
-
 }

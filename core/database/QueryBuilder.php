@@ -15,18 +15,17 @@ class QueryBuilder
     {
         try {
 
-            $q = "SELECT * FROM " . $table_name . ";";
+            $q = 'SELECT * FROM ' . $table_name . ';';
             $stmt = $this->pdo->prepare($q);
 
             $stmt->execute();
 
             return $stmt;
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
 
-            echo "An error occurred while executing the query. Try later.";
+            echo 'An error occurred while executing the query. Try later.';
 
         }
     }
-
 }

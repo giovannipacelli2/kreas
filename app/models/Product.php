@@ -8,6 +8,6 @@ class Product
 {
     public static function readAll()
     {
-        return App::get("database")->selectAll('products');
+        return App::get('database')->selectAll('products');
     }
 }

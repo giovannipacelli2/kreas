@@ -2,8 +2,8 @@
 
 namespace App\controllers;
 
-use App\models\Product;
 use App\core\Response;
+use App\models\Product;
 use PDO;
 
 class ApiProductController
@@ -13,7 +13,7 @@ class ApiProductController
         $result = Product::readAll();
 
         if ($result->rowCount() == 0) {
-            Response::json([], 404, "Products not found");
+            Response::json([], 404, 'Products not found');
             exit();
         }
 
@@ -22,8 +22,9 @@ class ApiProductController
         exit();
 
     }
+
     public function getSingleProduct()
     {
-        echo "Ecco il singolo prodotto";
+        echo 'Ecco il singolo prodotto';
     }
 }

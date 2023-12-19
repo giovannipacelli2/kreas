@@ -10,10 +10,13 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.41"
     },
-    "sniff": [
-        "./vendor/bin/php-cs-fixer fix -vvv --dry-run --show-progress=dots"
-   ],
-   "lint": [
-       "./vendor/bin/php-cs-fixer fix -vvv --show-progress=dots"
-   ]
+    "scripts": {
+        "sniff": [
+            "./vendor/bin/php-cs-fixer fix -vvv --dry-run --show-progress=dots"
+       ],
+       "lint": [
+           "./vendor/bin/php-cs-fixer fix -vvv --show-progress=dots"
+       ]
+    },
+   "php-cs-fixer.executablePath": "php-cs-fixer"
 }

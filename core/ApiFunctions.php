@@ -2,11 +2,10 @@
 
 namespace App\core;
 
-use App\core\Request;
 use DateTime;
+use Exception;
 use PDO;
 use PDOStatement;
-use Exception;
 
 class ApiFunctions
 {
@@ -16,15 +15,14 @@ class ApiFunctions
 
     /*------------------------------------------CONNECTION------------------------------------------*/
 
-
     // Check connection methods
 
     public static function checkMethod(string $method)
     {
 
-        if ($_SERVER["REQUEST_METHOD"] !== $method) {
+        if ($_SERVER['REQUEST_METHOD'] !== $method) {
 
-            Response::json([], 405, "Method Not Allowed");
+            Response::json([], 405, 'Method Not Allowed');
 
             exit();
         }
@@ -34,13 +32,13 @@ class ApiFunctions
 
     public static function getInput()
     {
-        $data = file_get_contents("php://input")
-                    ? file_get_contents("php://input")
+        $data = file_get_contents('php://input')
+                    ? file_get_contents('php://input')
                     : $_POST;
 
         if (!$data) {
 
-            Message::writeJsonMessage("No data");
+            Message::writeJsonMessage('No data');
             http_response_code(400);
             exit();
         }
@@ -49,7 +47,7 @@ class ApiFunctions
 
         if (!$result) {
 
-            Message::writeJsonMessage("Incorrect data");
+            Message::writeJsonMessage('Incorrect data');
             http_response_code(400);
             exit();
         }
@@ -59,10 +57,9 @@ class ApiFunctions
 
     /*----------------------------------CHECKING-THE-DATA-RECEIVED----------------------------------*/
 
-
     /*----------------CHECK-DUPLICATE-FIELD-------------------*/
 
-    public static function checkDuplicate($arr, $arr_description = "data")
+    public static function checkDuplicate($arr, $arr_description = 'data')
     {
 
         $unique = array_unique($arr);
@@ -76,7 +73,6 @@ class ApiFunctions
         }
     }
 
-
     /*---------------------CHECK-INPUT------------------------*/
 
     public static function inputChecker($data, $data_fields, $isDescribe = true)
@@ -89,14 +85,14 @@ class ApiFunctions
         if ($isDescribe) {
 
             $describe = $data_fields->fetchAll(PDO::FETCH_ASSOC);
-            $data_fields = ApiFunctions::getDataFromTable($describe);
+            $data_fields = self::getDataFromTable($describe);
         }
 
-        $validation = ApiFunctions::existsAllParams($data, $data_fields);
+        $validation = self::existsAllParams($data, $data_fields);
 
         if (!$validation) {
 
-            Message::writeJsonMessage("Bad request");
+            Message::writeJsonMessage('Bad request');
             http_response_code(400);
             exit();
         }
@@ -111,12 +107,12 @@ class ApiFunctions
         $data_fields = [];
 
         // Push in $data_checker all NOT NULL fields
-        foreach($describe as $row) {
+        foreach ($describe as $row) {
 
-            $extra = isset($row["Extra"]) ? $row["Extra"] : "";
+            $extra = isset($row['Extra']) ? $row['Extra'] : '';
 
-            if ($row["Null"] == "NO" && !preg_match("/auto_increment/", $extra)) {
-                array_push($data_fields, $row["Field"]);
+            if ($row['Null'] == 'NO' && !preg_match('/auto_increment/', $extra)) {
+                array_push($data_fields, $row['Field']);
             }
 
         }
@@ -137,7 +133,7 @@ class ApiFunctions
 
         // check input data integrity
 
-        foreach($data_fields as $param) {
+        foreach ($data_fields as $param) {
 
             // $param = a NOT NULL field from existing table
             // $data = array to check
@@ -145,7 +141,7 @@ class ApiFunctions
 
             // if param NOT EXISTS or an param has empty string
 
-            if(!$exists || $data[$param] == "") {
+            if (!$exists || $data[$param] == '') {
                 $check = false;
             }
 
@@ -155,7 +151,6 @@ class ApiFunctions
     }
 
     /*-------CHECK-IF-THERE-ARE-ANY-INCORRECT-FIELDS----------*/
-
 
     // Wants data as associative array and fields as array of string
     public static function validateParams($data, $data_checker)
@@ -168,7 +163,7 @@ class ApiFunctions
 
         // check input data integrity
 
-        foreach($data as $field => $value) {
+        foreach ($data as $field => $value) {
 
             // $param = key of sended data
             // $data_checker = array with necessary field
@@ -178,7 +173,7 @@ class ApiFunctions
 
             // if param NOT EXISTS
 
-            if(!$exists || $value == "") {
+            if (!$exists || $value == '') {
                 $check = false;
             }
 
@@ -186,8 +181,6 @@ class ApiFunctions
 
         return $check;
     }
-
-
 
     /*--------------------CHECK-UPDATE------------------------*/
 
@@ -204,17 +197,17 @@ class ApiFunctions
         if ($isDescribe) {
 
             $describe = $data_fields->fetchAll(PDO::FETCH_ASSOC);
-            $data_fields = ApiFunctions::getDataFromTable($describe);
+            $data_fields = self::getDataFromTable($describe);
         }
 
-        $validation = ApiFunctions::existsAllParams($data, $data_fields);
+        $validation = self::existsAllParams($data, $data_fields);
 
         if (!$validation) {
 
-            $validation = ApiFunctions::validateParams($data, $data_fields);
+            $validation = self::validateParams($data, $data_fields);
 
             if (!$validation) {
-                Message::writeJsonMessage("Bad request");
+                Message::writeJsonMessage('Bad request');
                 http_response_code(400);
                 exit();
             }
@@ -226,13 +219,13 @@ class ApiFunctions
 
     }
 
-
     /*----------------------CHECK-DATE------------------------*/
 
     public static function validateDate($date, $format = 'Y-m-d H:i:s')
     {
 
         $d = DateTime::createFromFormat($format, $date);
+
         return $d && $d->format($format) == $date;
     }
 
@@ -242,11 +235,11 @@ class ApiFunctions
     public static function checkDate($date)
     {
 
-        $validation = ApiFunctions::validateDate($date);
+        $validation = self::validateDate($date);
 
         if (!$validation) {
 
-            if (!ApiFunctions::validateDate($date, 'Y-m-d')) {
+            if (!self::validateDate($date, 'Y-m-d')) {
 
                 Message::writeJsonMessage("Not valid format of 'sales_date'");
                 exit();
@@ -257,26 +250,27 @@ class ApiFunctions
 
     public static function checkCorrectDates(array $date_arr): mixed
     {
-        $now = new DateTime("now");
+        $now = new DateTime('now');
 
         $date = [
-            "start" => "",
-            "end" => ""
+            'start' => '',
+            'end' => '',
         ];
 
         $count = 0;
 
         // Creates datatime objects from query data
         try {
-            foreach($date_arr as $key => $value) {
+            foreach ($date_arr as $key => $value) {
 
-                if ($value != "") {
+                if ($value != '') {
                     $date[$key] = new DateTime($value);
                     $count++;
                 }
             }
         } catch (Exception $e) {
-            Message::writeJsonMessage("Error in date format!");
+            Message::writeJsonMessage('Error in date format!');
+
             return false;
         }
 
@@ -284,6 +278,7 @@ class ApiFunctions
         if ($count === 0) {
 
             Message::writeJsonMessage("The 'START' and 'END' values ​​cannot be both empty!");
+
             return false;
 
         }
@@ -292,32 +287,36 @@ class ApiFunctions
 
         elseif ($count < count($date)) {
 
-            if ($date["start"] != "" && $date["start"] >= $now) {
+            if ($date['start'] != '' && $date['start'] >= $now) {
 
                 Message::writeJsonMessage("the 'START' date cannot be greater than today's date");
+
                 return false;
 
-            } elseif ($date["end"] != "" && $date["end"] <= $now) {
+            } elseif ($date['end'] != '' && $date['end'] <= $now) {
 
                 Message::writeJsonMessage("the 'END' date cannot be less than today's date");
+
                 return false;
 
             }
 
-            if ($date["start"] == "") {
-                $date["start"] = $now;
+            if ($date['start'] == '') {
+                $date['start'] = $now;
             }
-            if ($date["end"] == "") {
-                $date["end"] = $now;
+            if ($date['end'] == '') {
+                $date['end'] = $now;
             }
 
         } elseif ($count == count($date)) {
 
-            if ($date["start"] > $date["end"]) {
+            if ($date['start'] > $date['end']) {
                 Message::writeJsonMessage("the 'END' date cannot be less than 'START' date");
+
                 return false;
-            } elseif ($date["start"] == $date["end"]) {
+            } elseif ($date['start'] == $date['end']) {
                 Message::writeJsonMessage("The 'START' date can't be the same as the 'END' date");
+
                 return false;
             }
 
@@ -362,52 +361,52 @@ class ApiFunctions
         |    .....                                                      |
         ---------------------------------------------------------------*/
 
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
             //var_dump($row);
             $cur_code = $row['sales_code'];
 
             foreach ($row as $key => $value) {
 
-                if (($key != "name") &&
-                     ($key != "product_id") &&
-                     ($key != "saved_kg_co2") &&
-                     ($key != "n_products")
+                if (($key != 'name') &&
+                     ($key != 'product_id') &&
+                     ($key != 'saved_kg_co2') &&
+                     ($key != 'n_products')
                 ) {
-                    $tmp_arr[$cur_code][ $key ] = $value;
+                    $tmp_arr[$cur_code][$key] = $value;
                 }
             }
 
             // CALCULATE TOTAL PRODUCTS
-            if (isset($tmp_arr[$cur_code]["total_products"])) {
+            if (isset($tmp_arr[$cur_code]['total_products'])) {
 
-                $tmp_arr[$cur_code]["total_products"] += (int) $row["n_products"];
+                $tmp_arr[$cur_code]['total_products'] += (int) $row['n_products'];
             } else {
-                $tmp_arr[$cur_code]["total_products"] = (int) $row["n_products"];
+                $tmp_arr[$cur_code]['total_products'] = (int) $row['n_products'];
             }
 
             // MANAGE SOLD PRODUCTS
 
             $tmp = [
 
-                "product_id" => $row["product_id"],
-                "n_prod" => $row["n_products"],
-                "prod_name" => $row["name"]
+                'product_id' => $row['product_id'],
+                'n_prod' => $row['n_products'],
+                'prod_name' => $row['name'],
             ];
 
-            if (isset($tmp_arr[$cur_code]["sold_products"])) {
+            if (isset($tmp_arr[$cur_code]['sold_products'])) {
 
-                array_push($tmp_arr[$cur_code]["sold_products"], $tmp);
+                array_push($tmp_arr[$cur_code]['sold_products'], $tmp);
 
             } else {
-                $tmp_arr[$cur_code]["sold_products"] = [$tmp] ;
+                $tmp_arr[$cur_code]['sold_products'] = [$tmp];
             }
 
-            if (isset($tmp_arr[$cur_code]["saved_kg_co2"])) {
+            if (isset($tmp_arr[$cur_code]['saved_kg_co2'])) {
 
-                $tmp_arr[$cur_code]["saved_kg_co2"] += $row["saved_kg_co2"] * $row["n_products"] ;
+                $tmp_arr[$cur_code]['saved_kg_co2'] += $row['saved_kg_co2'] * $row['n_products'];
             } else {
-                $tmp_arr[$cur_code]["saved_kg_co2"] = $row["saved_kg_co2"] * $row["n_products"] ;
+                $tmp_arr[$cur_code]['saved_kg_co2'] = $row['saved_kg_co2'] * $row['n_products'];
             }
 
         }

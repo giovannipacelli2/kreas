@@ -2,8 +2,8 @@
 
 namespace App\controllers;
 
-use App\models\SalesOrder;
 use App\core\Response;
+use App\models\SalesOrder;
 use PDO;
 
 class ApiSalesOrderController
@@ -13,7 +13,7 @@ class ApiSalesOrderController
         $result = SalesOrder::readAll();
 
         if ($result->rowCount() == 0) {
-            Response::json([], 404, "Sales Orders not found");
+            Response::json([], 404, 'Sales Orders not found');
             exit();
         }
 
@@ -22,5 +22,4 @@ class ApiSalesOrderController
         exit();
 
     }
-
 }
