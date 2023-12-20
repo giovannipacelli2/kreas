@@ -2,9 +2,9 @@
 
 namespace App\controllers;
 
+use App\core\ApiFunctions;
 use App\core\Response;
 use App\models\Product;
-use App\core\ApiFunctions;
 
 class ApiProductController
 {

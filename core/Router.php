@@ -57,7 +57,7 @@ class Router
         throw new \RuntimeException('No route defined for this URI.');
     }
 
-    protected function callAction($controller, $action)
+    protected function callAction($controller_name, $action)
     {
 
         $match = preg_match('/(,)/', $action);
@@ -73,12 +73,13 @@ class Router
 
         }
 
-        $controller = "App\\controllers\\{$controller}";
+        $controller = "App\\controllers\\{$controller_name}";
         $controller = new $controller();
 
         if (!method_exists($controller, $action)) {
+
             throw new \RuntimeException(
-                "{$controller} doesn't respond to the {$action} action"
+                "{$controller_name} doesn't respond to the {$action} action"
             );
         }
 

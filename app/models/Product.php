@@ -12,6 +12,7 @@ class Product
     {
         return App::get('database')->selectAll(static::$table);
     }
+
     public static function readId($id)
     {
         return App::get('database')->selectProductById(static::$table, $id);
