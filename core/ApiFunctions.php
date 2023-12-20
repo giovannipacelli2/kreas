@@ -38,8 +38,7 @@ class ApiFunctions
 
         if (!$data) {
 
-            Message::writeJsonMessage('No data');
-            http_response_code(400);
+            Response::json([], 400, 'No data');
             exit();
         }
 
@@ -47,8 +46,7 @@ class ApiFunctions
 
         if (!$result) {
 
-            Message::writeJsonMessage('Incorrect data');
-            http_response_code(400);
+            Response::json([], 400, 'Incorrect data');
             exit();
         }
 
@@ -66,7 +64,7 @@ class ApiFunctions
 
         if (count($arr) != count($unique)) {
 
-            Message::writeJsonMessage("You cant't duplicate " . $arr_description);
+            Response::json([], 400, "You cant't duplicate " . $arr_description);
             exit();
         } else {
             return true;
@@ -92,8 +90,7 @@ class ApiFunctions
 
         if (!$validation) {
 
-            Message::writeJsonMessage('Bad request');
-            http_response_code(400);
+            Response::json([], 400, 'Bad request');
             exit();
         }
 
@@ -207,8 +204,7 @@ class ApiFunctions
             $validation = self::validateParams($data, $data_fields);
 
             if (!$validation) {
-                Message::writeJsonMessage('Bad request');
-                http_response_code(400);
+                Response::json([], 400, 'Bad request');
                 exit();
             }
 
@@ -241,7 +237,7 @@ class ApiFunctions
 
             if (!self::validateDate($date, 'Y-m-d')) {
 
-                Message::writeJsonMessage("Not valid format of 'sales_date'");
+                Response::json([], 400, "Not valid format of 'sales_date'");
                 exit();
             }
 
@@ -269,7 +265,7 @@ class ApiFunctions
                 }
             }
         } catch (Exception $e) {
-            Message::writeJsonMessage('Error in date format!');
+            Response::json([], 400, 'Error in date format!');
 
             return false;
         }
@@ -277,7 +273,7 @@ class ApiFunctions
         // if the data is not there
         if ($count === 0) {
 
-            Message::writeJsonMessage("The 'START' and 'END' values ​​cannot be both empty!");
+            Response::json([], 400, "The 'START' and 'END' values ​​cannot be both empty!");
 
             return false;
 
@@ -289,13 +285,13 @@ class ApiFunctions
 
             if ($date['start'] != '' && $date['start'] >= $now) {
 
-                Message::writeJsonMessage("the 'START' date cannot be greater than today's date");
+                Response::json([], 400, "the 'START' date cannot be greater than today's date");
 
                 return false;
 
             } elseif ($date['end'] != '' && $date['end'] <= $now) {
 
-                Message::writeJsonMessage("the 'END' date cannot be less than today's date");
+                Response::json([], 400, "the 'END' date cannot be less than today's date");
 
                 return false;
 
@@ -311,11 +307,13 @@ class ApiFunctions
         } elseif ($count == count($date)) {
 
             if ($date['start'] > $date['end']) {
-                Message::writeJsonMessage("the 'END' date cannot be less than 'START' date");
+
+                Response::json([], 400, "the 'END' date cannot be less than 'START' date");
 
                 return false;
             } elseif ($date['start'] == $date['end']) {
-                Message::writeJsonMessage("The 'START' date can't be the same as the 'END' date");
+
+                Response::json([], 400, "The 'START' date can't be the same as the 'END' date");
 
                 return false;
             }
