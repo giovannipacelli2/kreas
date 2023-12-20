@@ -28,4 +28,30 @@ class QueryBuilder
 
         }
     }
+
+    public function selectById($table_name, $id)
+    {
+        try {
+
+            $id = htmlspecialchars(strip_tags($id));
+
+            $q = 'SELECT
+                    so.sales_code, so.sales_date, so.destination, so.product_id, so.n_products,
+                    p.name, p.saved_kg_co2' .
+                    ' FROM ' . $table_name .
+                    ' WHERE so.sales_code=:id;';
+
+            $stmt = $this->pdo->prepare($q);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch (\Exception $e) {
+
+            echo 'An error occurred while executing the query. Try later.';
+
+        }
+    }
 }

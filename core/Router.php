@@ -59,6 +59,20 @@ class Router
 
     protected function callAction($controller, $action)
     {
+
+        $match = preg_match('/(,)/', $action);
+
+        if ($match) {
+
+            $action = explode(',', $action);
+            $params = [];
+            for ($i = 1; $i < count($action); $i++) {
+                array_push($params, $action[$i]);
+            }
+            $action = $action[0];
+
+        }
+
         $controller = "App\\controllers\\{$controller}";
         $controller = new $controller();
 
@@ -66,6 +80,10 @@ class Router
             throw new \RuntimeException(
                 "{$controller} doesn't respond to the {$action} action"
             );
+        }
+
+        if ($params) {
+            return $controller->$action($params);
         }
 
         return $controller->$action();

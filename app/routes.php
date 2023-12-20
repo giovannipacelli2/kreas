@@ -1,10 +1,10 @@
 <?php
 
 $router->get('api/products/all', 'ApiProductController@getAllProducts');
-$router->get('api/product', 'ApiProductController@getSingleProduct');
+$router->get('api/product', 'ApiProductController@getSingleProduct,id');
 
 $router->get('api/sales-orders/all', 'ApiSalesOrderController@getAllSalesOrders');
-$router->get('api/sales-order', 'ApiSalesOrderController@getSingleSalesOrder');
+$router->get('api/sales-order', 'ApiSalesOrderController@getSingleSalesOrder,id');
 
 $router->get('api/sales-orders/all-co2', 'ApiSalesOrderController@getAllCo2');
 $router->get('api/sales-orders/date-interval-co2', 'ApiSalesOrderController@getIntervalCo2');

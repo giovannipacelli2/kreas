@@ -30,6 +30,25 @@ class ApiFunctions
 
     /*-----------------------------------------RECEIVED-DATA----------------------------------------*/
 
+    public static function paramsUri(array $params)
+    {
+
+        if (!$_REQUEST) {
+            Response::json([], 400, 'Bad request');
+            exit();
+        }
+
+        $validation = self::existsAllParams($_REQUEST, $params);
+
+        if (!$validation) {
+            Response::json([], 400, 'Incorrect data in request');
+            exit();
+        }
+
+        return $_REQUEST;
+
+    }
+
     public static function getInput()
     {
         $data = file_get_contents('php://input')
@@ -166,7 +185,6 @@ class ApiFunctions
             // $data_checker = array with necessary field
 
             $exists = in_array($field, $data_checker);
-            //$exists = in_array( $param, $data_checker );
 
             // if param NOT EXISTS
 
