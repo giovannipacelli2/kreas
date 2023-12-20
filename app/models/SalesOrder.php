@@ -22,6 +22,6 @@ class SalesOrder
 
     public static function readId($id)
     {
-        return App::get('database')->selectById(static::$join_table, $id);
+        return App::get('database')->selectOrderById(static::$join_table, $id);
     }
 }

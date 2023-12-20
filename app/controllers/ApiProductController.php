@@ -4,7 +4,7 @@ namespace App\controllers;
 
 use App\core\Response;
 use App\models\Product;
-use PDO;
+use App\core\ApiFunctions;
 
 class ApiProductController
 {
@@ -17,14 +17,28 @@ class ApiProductController
             exit();
         }
 
-        $data = $result->fetchAll(PDO::FETCH_ASSOC);
+        $data = $result->fetchAll(\PDO::FETCH_ASSOC);
         Response::json($data, 200);
         exit();
 
     }
 
-    public function getSingleProduct()
+    public function getSingleProduct($params)
     {
-        echo 'Ecco il singolo prodotto';
+        // Says: "Bad request" if user not insert any params in uri
+        $params = ApiFunctions::paramsUri($params);
+
+        $result = Product::readId($params['id']);
+
+        if ($result->rowCount() == 0) {
+            Response::json([], 404, 'Product not found');
+            exit();
+        }
+
+        $data = $result->fetchAll(\PDO::FETCH_ASSOC);
+
+        Response::json($data, 200);
+        exit();
+
     }
 }

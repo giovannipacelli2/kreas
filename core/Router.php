@@ -82,7 +82,7 @@ class Router
             );
         }
 
-        if ($params) {
+        if (isset($params)) {
             return $controller->$action($params);
         }
 
