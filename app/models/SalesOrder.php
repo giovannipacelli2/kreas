@@ -6,6 +6,7 @@ use App\core\App;
 
 class SalesOrder
 {
+    private static $table = 'sales_orders';
     private static $join_table = 'products AS p JOIN (' .
                                         'SELECT * FROM ' .
                                         'sales as s JOIN sales_orders as o ' .
@@ -43,5 +44,12 @@ class SalesOrder
     public static function getProductCo2($product_id)
     {
         return App::get('database')->getCo2FromProduct(static::$join_table, $product_id);
+    }
+
+    // POST METHODS
+
+    public static function insert($data)
+    {
+        return App::get('database')->insert(static::$table, $data);
     }
 }

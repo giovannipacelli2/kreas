@@ -136,13 +136,25 @@ class ApiSalesOrderController
         ApiFunctions::inputChecker($data, $describe);
 
         foreach ($data['products'] as $product) {
+            $product = (array) $product;
             ApiFunctions::inputChecker($product, ['product_id', 'n_products'], false);
+
+            $n_product = (int) $product['n_products'];
+
+            if ($n_product == 0) {
+                Response::json([], 400, 'n_products format is not valid');
+                exit();
+            }
         }
 
         $verify_order = Sales::checkId($data);
         $verify_product = Product::checkId($data['products']);
 
         if (!$verify_order && $verify_product) {
+
+            // Insert Order
+
+            $result = [];
 
             $stmt = Sales::insert([
                 'sales_code' => $data['sales_code'],
@@ -155,9 +167,28 @@ class ApiSalesOrderController
                 exit();
             }
 
-            $result = [
-                'affected_rows' => $stmt->rowCount(),
-            ];
+            $result['Inserted_order'] = $stmt->rowCount();
+
+            // Insert product in order
+
+            $affected_products = 0;
+
+            foreach ($data['products'] as $product) {
+
+                $product = (array) $product;
+                $product['sales_id'] = $data['sales_code'];
+
+                $stmt = SalesOrder::insert($product);
+
+                if (!$stmt || $stmt->rowCount() == 0) {
+                    Response::json([], 200, 'Insert product unsuccess');
+                    exit();
+                }
+
+                $affected_products = $affected_products + $stmt->rowCount();
+            }
+
+            $result['Inserted_products'] = $affected_products;
 
             Response::json($result, 200, '');
             exit();
