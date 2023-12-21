@@ -24,7 +24,7 @@ class SalesOrder
     {
         return App::get('database')->selectOrderById(static::$join_table, $id);
     }
-    
+
     public static function getAllCo2()
     {
         return App::get('database')->getCo2FromOrders(static::$join_table);
@@ -33,5 +33,10 @@ class SalesOrder
     public static function getIntervalCo2($date)
     {
         return App::get('database')->getCo2FromDataInterval(static::$join_table, $date);
+    }
+
+    public static function getDestinationCo2($country)
+    {
+        return App::get('database')->getCo2FromDestination(static::$join_table, $country);
     }
 }

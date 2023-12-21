@@ -55,15 +55,15 @@ class ApiSalesOrderController
         $result = $result->fetch(\PDO::FETCH_ASSOC);
 
         // Normal case
-        if ( isset($result['total_co2_saved']) && $result['total_co2_saved'] > 0){
-            $data["total_co2_saved"] = round((float)$result["total_co2_saved"], 2);
+        if (isset($result['total_co2_saved']) && $result['total_co2_saved'] > 0) {
+            $data['total_co2_saved'] = round((float) $result['total_co2_saved'], 2);
 
             Response::json($data, 200);
-        } 
+        }
         // If total co2 less than zero
-        else if ( isset($result['total_co2_saved']) && $result['total_co2_saved'] == 0){
+        elseif (isset($result['total_co2_saved']) && $result['total_co2_saved'] == 0) {
             Response::json([], 200, 'No CO2 saved');
-        } 
+        }
         // If query result is NULL
         else {
             Response::json([], 200, 'Products not found');
@@ -88,18 +88,45 @@ class ApiSalesOrderController
         $result = $result->fetch(\PDO::FETCH_ASSOC);
 
         // Normal case
-        if ( isset($result['co2_saved']) && $result['co2_saved'] > 0){
-            $data["co2_saved"] = round((float)$result["co2_saved"], 2);
+        if (isset($result['co2_saved']) && $result['co2_saved'] > 0) {
+            $data['co2_saved'] = round((float) $result['co2_saved'], 2);
 
             Response::json($data, 200);
-        } 
+        }
         // If total co2 less than zero
-        else if ( isset($result['co2_saved']) && $result['co2_saved'] == 0){
+        elseif (isset($result['co2_saved']) && $result['co2_saved'] == 0) {
             Response::json([], 200, 'No CO2 saved');
-        } 
+        }
         // If query result is NULL
         else {
             Response::json([], 200, 'Products not found');
+        }
+
+        exit();
+    }
+
+    public static function getDestinationCo2($params)
+    {
+        // Says: "Bad request" if user not insert any params in uri
+        $params = ApiFunctions::paramsUri($params);
+
+        $result = SalesOrder::getDestinationCo2($params['country']);
+
+        $result = $result->fetch(\PDO::FETCH_ASSOC);
+
+        // Normal case
+        if (isset($result['total_co2_saved']) && $result['total_co2_saved'] > 0) {
+            $data['total_co2_saved'] = round((float) $result['total_co2_saved'], 2);
+
+            Response::json($data, 200);
+        }
+        // If total co2 less than zero
+        elseif (isset($result['total_co2_saved']) && $result['total_co2_saved'] == 0) {
+            Response::json([], 200, 'No CO2 saved');
+        }
+        // If query result is NULL
+        else {
+            Response::json([], 200, 'Country not found');
         }
 
         exit();
