@@ -41,4 +41,26 @@ class ApiProductController
         exit();
 
     }
+
+    public static function insertProduct()
+    {
+        $data = (array) ApiFunctions::getInput();
+        $describe = Product::describe();
+
+        ApiFunctions::inputChecker($data, $describe);
+
+        $stmt = Product::insert($data);
+
+        if (!$stmt || $stmt->rowCount() == 0) {
+            Response::json([], 200, 'Insert unsuccess');
+            exit();
+        }
+
+        $result = [
+            'affected_rows' => $stmt->rowCount(),
+        ];
+
+        Response::json($result, 200, '');
+        exit();
+    }
 }

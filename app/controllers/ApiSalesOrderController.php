@@ -4,6 +4,8 @@ namespace App\controllers;
 
 use App\core\ApiFunctions;
 use App\core\Response;
+use App\models\Product;
+use App\models\Sales;
 use App\models\SalesOrder;
 
 class ApiSalesOrderController
@@ -124,5 +126,51 @@ class ApiSalesOrderController
         else {
             Response::json([], 200, $type . ' not found');
         }
+    }
+
+    public static function insertSalesOrders()
+    {
+        $data = (array) ApiFunctions::getInput();
+        $describe = Sales::describe();
+
+        ApiFunctions::inputChecker($data, $describe);
+
+        foreach ($data['products'] as $product) {
+            ApiFunctions::inputChecker($product, ['product_id', 'n_products'], false);
+        }
+
+        $verify_order = Sales::checkId($data);
+        $verify_product = Product::checkId($data['products']);
+
+        if (!$verify_order && $verify_product) {
+
+            $stmt = Sales::insert([
+                'sales_code' => $data['sales_code'],
+                'sales_date' => $data['sales_date'],
+                'destination' => $data['destination'],
+            ]);
+
+            if (!$stmt || $stmt->rowCount() == 0) {
+                Response::json([], 200, 'Insert unsuccess');
+                exit();
+            }
+
+            $result = [
+                'affected_rows' => $stmt->rowCount(),
+            ];
+
+            Response::json($result, 200, '');
+            exit();
+
+        } elseif ($verify_order) {
+
+            Response::json([], 200, 'Order already exists');
+
+        } elseif (!$verify_product) {
+
+            Response::json([], 400, 'Inserted products not exists in product table');
+        }
+        exit();
+
     }
 }

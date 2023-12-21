@@ -30,6 +30,61 @@ class QueryBuilder
         }
     }
 
+    // $values =
+    // accept single code in string format
+    // or array of params as string
+    public function checkField($table_name, $field, $values)
+    {
+
+        if (is_array($values)) {
+            $tmp = [];
+
+            for ($i = 0; $i < count($values); $i++) {
+                array_push($tmp, [
+                    'placeholder'=> ':id' . $i,
+                    'value'=> $values[$i],
+                ]);
+            }
+
+            $values = $tmp;
+            $tmp = null;
+        } else {
+            $tmp = [
+                'placeholder'=> ':id',
+                'value'=> $values,
+            ];
+            $values = [];
+            array_push($values, $tmp);
+        }
+
+        try {
+
+            $q = 'SELECT * FROM ' . $table_name .
+            ' WHERE ' . $field . ' IN (' . implode(', ', array_column($values, 'placeholder')) . ');';
+
+            $stmt = $this->pdo->prepare($q);
+
+            foreach ($values as $param) {
+                $stmt->bindParam($param['placeholder'], $param['value']);
+            }
+
+            $stmt->execute();
+
+            if (!$stmt || $stmt->rowCount() == 0 || $stmt->rowCount() != count($values)) {
+                return false;
+            }
+            if ($stmt->rowCount() == count($values)) {
+                return true;
+            }
+
+        } catch (\Exception $e) {
+
+            echo 'An error occurred while executing the query. Try later.';
+            exit();
+
+        }
+    }
+
     /*-----------------------------------------------------GET-METHODS-----------------------------------------------------*/
 
     public function selectAll($table_name)
@@ -95,6 +150,52 @@ class QueryBuilder
 
             echo 'An error occurred while executing the query. Try later.';
             exit();
+
+        }
+    }
+
+    /*-----------------------------------------------------POST-METHODS----------------------------------------------------*/
+
+    public function insert($table_name, $data)
+    {
+
+        $params = [];
+
+        foreach ($data as $key=>$value) {
+            $data[$key] = htmlspecialchars(strip_tags($value));
+
+            $tmp = [
+                'field' => htmlspecialchars(strip_tags($key)),
+                'placeholder' => ':' . htmlspecialchars(strip_tags($key)),
+                'value' => htmlspecialchars(strip_tags($value)),
+            ];
+
+            array_push($params, $tmp);
+        }
+
+        try {
+
+            $q = 'INSERT INTO ' . $table_name . ' (' . implode(', ', array_column($params, 'field')) . ') '
+                    . 'VALUES(' . implode(', ', array_column($params, 'placeholder')) . ')';
+
+            $stmt = $this->pdo->prepare($q);
+
+            foreach ($params as $param) {
+                $stmt->bindParam($param['placeholder'], $param['value']);
+            }
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch (\Exception $e) {
+
+            if ($e->getCode() != 23000) {
+                echo 'An error occurred while executing the query. Try later.';
+                exit();
+            }
+
+            return false;
 
         }
     }

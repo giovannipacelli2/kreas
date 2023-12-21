@@ -113,6 +113,8 @@ class ApiFunctions
             exit();
         }
 
+        return true;
+
     }
 
     // Wants a DESCRIBE result statemento from DATABASE
@@ -141,7 +143,6 @@ class ApiFunctions
     // Wants data as key=>value and fields as array of string
     public static function existsAllParams($data, $data_fields)
     {
-
         //cast sended data in associative array;
         $data = (array) $data;
 

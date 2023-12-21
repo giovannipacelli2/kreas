@@ -6,7 +6,7 @@ use App\core\App;
 
 class SalesOrder
 {
-    protected static $join_table = 'products AS p JOIN (' .
+    private static $join_table = 'products AS p JOIN (' .
                                         'SELECT * FROM ' .
                                         'sales as s JOIN sales_orders as o ' .
                                         'ON s.sales_code = o.sales_id' .
