@@ -39,4 +39,9 @@ class SalesOrder
     {
         return App::get('database')->getCo2FromDestination(static::$join_table, $country);
     }
+
+    public static function getProductCo2($product_id)
+    {
+        return App::get('database')->getCo2FromProduct(static::$join_table, $product_id);
+    }
 }

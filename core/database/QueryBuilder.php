@@ -57,10 +57,7 @@ class QueryBuilder
 
             $id = htmlspecialchars(strip_tags($id));
 
-            $q = 'SELECT
-                    so.sales_code, so.sales_date, so.destination, so.product_id, so.n_products,
-                    p.name, p.saved_kg_co2' .
-                    ' FROM ' . $table_name .
+            $q = 'SELECT * FROM ' . $table_name .
                     ' WHERE so.sales_code=:id;';
 
             $stmt = $this->pdo->prepare($q);
@@ -133,7 +130,7 @@ class QueryBuilder
             $start = htmlspecialchars(strip_tags($date['start']->format('Y-m-d H:i:s')));
             $end = htmlspecialchars(strip_tags($date['end']->format('Y-m-d H:i:s')));
 
-            $q = 'SELECT SUM(j.tot_co2_prod) AS `co2_saved`
+            $q = 'SELECT SUM(j.tot_co2_prod) AS `total_co2_saved`
                     
                     FROM (
                             SELECT so.sales_date, ( p.saved_kg_co2 * so.n_products ) as `tot_co2_prod`
@@ -175,6 +172,37 @@ class QueryBuilder
             $stmt = $this->pdo->prepare($q);
 
             $stmt->bindParam(':destination', $destination, \PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch (\Exception $e) {
+
+            echo 'An error occurred while executing the query. Try later.';
+            exit();
+
+        }
+
+    }
+
+    public function getCo2FromProduct($table_name, $product_id)
+    {
+
+        $product_id = htmlspecialchars(strip_tags($product_id));
+
+        try {
+
+            $q = 'SELECT SUM(j.tot_co2_prod) AS `total_co2_saved`
+                    FROM (
+                            SELECT ( p.saved_kg_co2 * so.n_products ) as `tot_co2_prod`
+                            FROM ' . $table_name .
+                            ' WHERE p.product_code = :product_id
+                        ) AS j;';
+
+            $stmt = $this->pdo->prepare($q);
+
+            $stmt->bindParam(':product_id', $product_id, \PDO::PARAM_STR);
 
             $stmt->execute();
 

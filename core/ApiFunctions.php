@@ -387,7 +387,10 @@ class ApiFunctions
                 if (($key != 'name') &&
                      ($key != 'product_id') &&
                      ($key != 'saved_kg_co2') &&
-                     ($key != 'n_products')
+                     ($key != 'n_products') &&
+                     ($key != 'id') &&
+                     ($key != 'sales_id') &&
+                     ($key != 'product_code')
                 ) {
                     $tmp_arr[$cur_code][$key] = $value;
                 }

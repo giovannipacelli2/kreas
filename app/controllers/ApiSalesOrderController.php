@@ -54,20 +54,7 @@ class ApiSalesOrderController
 
         $result = $result->fetch(\PDO::FETCH_ASSOC);
 
-        // Normal case
-        if (isset($result['total_co2_saved']) && $result['total_co2_saved'] > 0) {
-            $data['total_co2_saved'] = round((float) $result['total_co2_saved'], 2);
-
-            Response::json($data, 200);
-        }
-        // If total co2 less than zero
-        elseif (isset($result['total_co2_saved']) && $result['total_co2_saved'] == 0) {
-            Response::json([], 200, 'No CO2 saved');
-        }
-        // If query result is NULL
-        else {
-            Response::json([], 200, 'Products not found');
-        }
+        self::co2SavedCheck($result, 'Products');
 
         exit();
     }
@@ -87,20 +74,7 @@ class ApiSalesOrderController
 
         $result = $result->fetch(\PDO::FETCH_ASSOC);
 
-        // Normal case
-        if (isset($result['co2_saved']) && $result['co2_saved'] > 0) {
-            $data['co2_saved'] = round((float) $result['co2_saved'], 2);
-
-            Response::json($data, 200);
-        }
-        // If total co2 less than zero
-        elseif (isset($result['co2_saved']) && $result['co2_saved'] == 0) {
-            Response::json([], 200, 'No CO2 saved');
-        }
-        // If query result is NULL
-        else {
-            Response::json([], 200, 'Products not found');
-        }
+        self::co2SavedCheck($result, 'Products');
 
         exit();
     }
@@ -114,6 +88,28 @@ class ApiSalesOrderController
 
         $result = $result->fetch(\PDO::FETCH_ASSOC);
 
+        self::co2SavedCheck($result, 'Country');
+
+        exit();
+    }
+
+    public static function getProductCo2($params)
+    {
+        // Says: "Bad request" if user not insert any params in uri
+        $params = ApiFunctions::paramsUri($params);
+
+        $result = SalesOrder::getProductCo2($params['product']);
+
+        $result = $result->fetch(\PDO::FETCH_ASSOC);
+
+        self::co2SavedCheck($result, 'Product');
+
+        exit();
+    }
+
+    private static function co2SavedCheck($result, $type)
+    {
+
         // Normal case
         if (isset($result['total_co2_saved']) && $result['total_co2_saved'] > 0) {
             $data['total_co2_saved'] = round((float) $result['total_co2_saved'], 2);
@@ -126,9 +122,7 @@ class ApiSalesOrderController
         }
         // If query result is NULL
         else {
-            Response::json([], 200, 'Country not found');
+            Response::json([], 200, $type . ' not found');
         }
-
-        exit();
     }
 }
