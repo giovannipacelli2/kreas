@@ -63,7 +63,7 @@ class ApiFunctions
 
         $result = json_decode($data);
 
-        if (!$result) {
+        if (!$result || empty(get_object_vars($result))) {
 
             Response::json([], 400, 'Incorrect data');
             exit();

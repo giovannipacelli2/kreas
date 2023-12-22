@@ -52,6 +52,7 @@ class ApiProductController
         $describe = Product::describe();
 
         ApiFunctions::inputChecker($data, $describe);
+        self::product_validation($data);
 
         $stmt = Product::insert($data);
 
@@ -61,7 +62,7 @@ class ApiProductController
         }
 
         $result = [
-            'affected_rows' => $stmt->rowCount(),
+            'inserted_products' => $stmt->rowCount(),
         ];
 
         Response::json($result, 200, '');
@@ -69,4 +70,46 @@ class ApiProductController
     }
 
     /*---------------------------------------------------PUT-FUNCTIONS---------------------------------------------------*/
+
+    public static function updateProduct($params)
+    {
+        // Says: "Bad request" if user not insert any params in uri
+        $params = ApiFunctions::paramsUri($params);
+
+        $data = (array) ApiFunctions::getInput();
+        $describe = Product::describe();
+
+        ApiFunctions::updateChecker($data, $describe);
+
+        if (isset($data['saved_kg_co2'])) {
+            self::product_validation($data);
+        }
+
+        $stmt = Product::update($data, $params['id']);
+
+        if (!$stmt || $stmt->rowCount() == 0) {
+            Response::json([], 200, 'Update unsuccess');
+            exit();
+        }
+
+        $result = [
+            'updated_products' => $stmt->rowCount(),
+        ];
+
+        Response::json($result, 200, '');
+        exit();
+    }
+
+    /*-------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
+
+    private static function product_validation($product)
+    {
+
+        $n_product = (float) $product['saved_kg_co2'];
+
+        if ($n_product == 0) {
+            Response::json([], 400, 'n_products format is not valid');
+            exit();
+        }
+    }
 }

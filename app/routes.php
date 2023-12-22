@@ -16,7 +16,7 @@ $router->post('api/products', 'ApiProductController@insertProduct');
 $router->post('api/sales-orders', 'ApiSalesOrderController@insertSalesOrders');
 $router->post('api/sales-orders/sale', 'ApiSalesOrderController@insertProductInOrder,order');
 
-$router->put('api/products/product', 'ApiProductController@updateProduct');
+$router->put('api/products/product', 'ApiProductController@updateProduct,id');
 $router->put('api/sales/sale', 'ApiSalesController@updateSales');
 $router->put('api/sales-orders/sale', 'ApiSalesOrderController@updateProductInSalesOrders');
 $router->put('api/sales-orders/order', 'ApiSalesOrderController@updateSalesOrders');

@@ -44,4 +44,8 @@ class Product
 
     // PUT METHODS
 
+    public static function update($data, $product_code)
+    {
+        return App::get('database')->update(static::$table, $data, 'product_code', $product_code);
+    }
 }

@@ -11,6 +11,8 @@ class QueryBuilder
         $this->pdo = $pdo;
     }
 
+    /*----------------------------------------------------CHECK-METHODS----------------------------------------------------*/
+
     public function describe($table_name)
     {
         try {
@@ -216,6 +218,60 @@ class QueryBuilder
             foreach ($params as $param) {
                 $stmt->bindParam($param['placeholder'], $param['value']);
             }
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch (\Exception $e) {
+
+            if ($e->getCode() != 23000) {
+                echo 'An error occurred while executing the query. Try later.';
+                exit();
+            }
+
+            return false;
+
+        }
+    }
+
+    /*------------------------------------------------------PUT-METHODS----------------------------------------------------*/
+
+    public function update($table_name, $data, $field, $old_product_id)
+    {
+        // wants $data like this:
+        // (array) :
+        //      'product_id' => '0010',
+        //      'n_products' => '3'
+
+        $params = [];
+
+        $field = htmlspecialchars(strip_tags($field));
+        $old_product_id = htmlspecialchars(strip_tags($old_product_id));
+
+        foreach ($data as $key=>$value) {
+
+            $tmp = [
+                'field' => htmlspecialchars(strip_tags($key)),
+                'placeholder' => ':' . htmlspecialchars(strip_tags($key)),
+                'value' => htmlspecialchars(strip_tags($value)),
+                'set' => htmlspecialchars(strip_tags($key)) . '=:' . htmlspecialchars(strip_tags($key)),
+            ];
+
+            array_push($params, $tmp);
+        }
+
+        try {
+
+            $q = 'UPDATE ' . $table_name . ' SET ' . implode(', ', array_column($params, 'set')) .
+                    ' WHERE ' . $field . '=:code' . ';';
+
+            $stmt = $this->pdo->prepare($q);
+
+            foreach ($params as $param) {
+                $stmt->bindParam($param['placeholder'], $param['value']);
+            }
+            $stmt->bindParam(':code', $old_product_id);
 
             $stmt->execute();
 
