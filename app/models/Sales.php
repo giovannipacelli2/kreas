@@ -29,4 +29,11 @@ class Sales
     {
         return App::get('database')->insert(static::$table, $data);
     }
+
+    // PUT METHODS
+
+    public static function update($data, $sales_code)
+    {
+        return App::get('database')->update(static::$table, $data, 'sales_code', $sales_code);
+    }
 }
