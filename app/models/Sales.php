@@ -8,14 +8,11 @@ class Sales
 {
     private static $table = 'sales';
 
+    // CHECK METHODS
+
     public static function describe()
     {
         return App::get('database')->describe(static::$table);
-    }
-
-    public static function insert($data)
-    {
-        return App::get('database')->insert(static::$table, $data);
     }
 
     public static function checkId($data)
@@ -24,5 +21,12 @@ class Sales
         $value = $data[$field];
 
         return App::get('database')->checkField(static::$table, $field, $value);
+    }
+
+    // POST METHODS
+
+    public static function insert($data)
+    {
+        return App::get('database')->insert(static::$table, $data);
     }
 }

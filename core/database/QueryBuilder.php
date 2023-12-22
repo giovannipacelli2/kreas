@@ -85,6 +85,36 @@ class QueryBuilder
         }
     }
 
+    public function checkProductInOrder($table_name, $sales_id, $product_id)
+    {
+
+        try {
+
+            $q = 'SELECT * FROM ' . $table_name .
+            ' WHERE sales_id=:sales_id' .
+            ' AND product_id=:product_id';
+
+            $stmt = $this->pdo->prepare($q);
+
+            $stmt->bindParam(':sales_id', $sales_id, \PDO::PARAM_STR);
+            $stmt->bindParam(':product_id', $product_id, \PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            if (!$stmt || $stmt->rowCount() == 0) {
+                return false;
+            }
+
+            return true;
+
+        } catch (\Exception $e) {
+
+            echo 'An error occurred while executing the query. Try later.';
+            exit();
+
+        }
+    }
+
     /*-----------------------------------------------------GET-METHODS-----------------------------------------------------*/
 
     public function selectAll($table_name)
@@ -158,11 +188,14 @@ class QueryBuilder
 
     public function insert($table_name, $data)
     {
+        // wants $data like this:
+        // (array) :
+        //      'product_id' => '0010',
+        //      'n_products' => '3'
 
         $params = [];
 
         foreach ($data as $key=>$value) {
-            $data[$key] = htmlspecialchars(strip_tags($value));
 
             $tmp = [
                 'field' => htmlspecialchars(strip_tags($key)),

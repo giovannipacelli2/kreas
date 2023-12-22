@@ -14,7 +14,7 @@ $router->get('api/sales-orders/product-co2', 'ApiSalesOrderController@getProduct
 
 $router->post('api/products', 'ApiProductController@insertProduct');
 $router->post('api/sales-orders', 'ApiSalesOrderController@insertSalesOrders');
-$router->post('api/sales-orders/sale', 'ApiSalesOrderController@insertProductInOrder');
+$router->post('api/sales-orders/sale', 'ApiSalesOrderController@insertProductInOrder,order');
 
 $router->put('api/products/product', 'ApiProductController@updateProduct');
 $router->put('api/sales/sale', 'ApiSalesController@updateSales');

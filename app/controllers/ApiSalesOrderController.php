@@ -10,6 +10,8 @@ use App\models\SalesOrder;
 
 class ApiSalesOrderController
 {
+    /*---------------------------------------------------GET-FUNCTIONS---------------------------------------------------*/
+
     public function getAllSalesOrders()
     {
         $result = SalesOrder::readAll();
@@ -109,24 +111,7 @@ class ApiSalesOrderController
         exit();
     }
 
-    private static function co2SavedCheck($result, $type)
-    {
-
-        // Normal case
-        if (isset($result['total_co2_saved']) && $result['total_co2_saved'] > 0) {
-            $data['total_co2_saved'] = round((float) $result['total_co2_saved'], 2);
-
-            Response::json($data, 200);
-        }
-        // If total co2 less than zero
-        elseif (isset($result['total_co2_saved']) && $result['total_co2_saved'] == 0) {
-            Response::json([], 200, 'No CO2 saved');
-        }
-        // If query result is NULL
-        else {
-            Response::json([], 200, $type . ' not found');
-        }
-    }
+    /*--------------------------------------------------POST-FUNCTIONS---------------------------------------------------*/
 
     public static function insertSalesOrders()
     {
@@ -135,17 +120,7 @@ class ApiSalesOrderController
 
         ApiFunctions::inputChecker($data, $describe);
 
-        foreach ($data['products'] as $product) {
-            $product = (array) $product;
-            ApiFunctions::inputChecker($product, ['product_id', 'n_products'], false);
-
-            $n_product = (int) $product['n_products'];
-
-            if ($n_product == 0) {
-                Response::json([], 400, 'n_products format is not valid');
-                exit();
-            }
-        }
+        self::products_validation($data['products']);
 
         $verify_order = Sales::checkId($data);
         $verify_product = Product::checkId($data['products']);
@@ -203,5 +178,74 @@ class ApiSalesOrderController
         }
         exit();
 
+    }
+
+    public static function insertProductInOrder($params)
+    {
+        // Says: "Bad request" if user not insert any params in uri
+        $params = ApiFunctions::paramsUri($params);
+
+        $data = (array) ApiFunctions::getInput();
+
+        self::products_validation([$data]);
+        $already_exists = SalesOrder::checkProductInOrder($params['order'], $data['product_id']);
+
+        if ($already_exists) {
+            Response::json([], 400, 'Product already exists in that order');
+            exit();
+        }
+
+        $stmt = SalesOrder::insertProduct($data, $params['order']);
+
+        if (!$stmt || $stmt->rowCount() == 0) {
+            Response::json([], 200, 'Insert unsuccess');
+            exit();
+        }
+
+        $result = [
+            'Inserted_products' => $stmt->rowCount(),
+        ];
+
+        Response::json($result, 200, '');
+        exit();
+
+    }
+
+    /*---------------------------------------------------PUT-FUNCTIONS---------------------------------------------------*/
+
+    /*-------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
+
+    private static function co2SavedCheck($result, $type)
+    {
+
+        // Normal case
+        if (isset($result['total_co2_saved']) && $result['total_co2_saved'] > 0) {
+            $data['total_co2_saved'] = round((float) $result['total_co2_saved'], 2);
+
+            Response::json($data, 200);
+        }
+        // If total co2 less than zero
+        elseif (isset($result['total_co2_saved']) && $result['total_co2_saved'] == 0) {
+            Response::json([], 200, 'No CO2 saved');
+        }
+        // If query result is NULL
+        else {
+            Response::json([], 200, $type . ' not found');
+        }
+    }
+
+    private static function products_validation($products)
+    {
+        foreach ($products as $product) {
+            $product = (array) $product;
+            ApiFunctions::inputChecker($product, ['product_id', 'n_products'], false);
+
+            $n_product = (int) $product['n_products'];
+
+            if ($n_product == 0) {
+                Response::json([], 400, 'n_products format is not valid');
+                exit();
+            }
+        }
     }
 }

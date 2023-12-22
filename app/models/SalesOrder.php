@@ -14,6 +14,15 @@ class SalesOrder
                                         ') AS so' .
                                         ' ON p.product_code = so.product_id';
 
+    // CHECK METHODS
+
+    public static function checkProductInOrder($sales_id, $product_id)
+    {
+        return App::get('database')->checkProductInOrder(static::$table, $sales_id, $product_id);
+    }
+
+    // GET METHODS
+
     public static function readAll()
     {
         $join_table = static::$join_table . ' ORDER BY so.sales_code';
@@ -52,4 +61,13 @@ class SalesOrder
     {
         return App::get('database')->insert(static::$table, $data);
     }
+
+    public static function insertProduct($data, $sales_id)
+    {
+        $data['sales_id'] = $sales_id;
+
+        return App::get('database')->insert(static::$table, $data);
+    }
+
+    //PUT METHODS
 }

@@ -8,6 +8,8 @@ use App\models\Product;
 
 class ApiProductController
 {
+    /*---------------------------------------------------GET-FUNCTIONS---------------------------------------------------*/
+
     public function getAllProducts()
     {
         $result = Product::readAll();
@@ -42,6 +44,8 @@ class ApiProductController
 
     }
 
+    /*---------------------------------------------------POST-FUNCTIONS--------------------------------------------------*/
+
     public static function insertProduct()
     {
         $data = (array) ApiFunctions::getInput();
@@ -63,4 +67,6 @@ class ApiProductController
         Response::json($result, 200, '');
         exit();
     }
+
+    /*---------------------------------------------------PUT-FUNCTIONS---------------------------------------------------*/
 }
