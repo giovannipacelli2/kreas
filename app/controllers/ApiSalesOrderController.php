@@ -308,7 +308,7 @@ class ApiSalesOrderController
 
         $stmt = Sales::update($data, $old_id);
 
-        if (!$stmt || $stmt->rowCount() == 0) {
+        if (!$stmt) {
             Response::json([], 200, 'Update unsuccess');
             exit();
         }
@@ -322,14 +322,32 @@ class ApiSalesOrderController
         if ($to_update) {
             $code = $new_id ? $new_id : $old_id;
 
+            $count = 0;
+
             foreach ($to_update as $p) {
-                SalesOrder::updateProductsInOrder($p, $code);
+                $stmt = SalesOrder::updateProductsInOrder($p, $code);
+
+                if ($stmt->rowCount() > 0) {
+                    $count = $count + $stmt->rowCount();
+                }
             }
+
+            $result['update_products'] = $count;
+
         }
         if ($to_insert) {
+
+            $count = 0;
+
             foreach ($to_insert as $p) {
-                SalesOrder::insert($p);
+                $stmt = SalesOrder::insert($p);
+
+                if ($stmt && $stmt->rowCount() > 0) {
+                    $count = $count + $stmt->rowCount();
+                }
             }
+
+            $result['insert_products'] = $count;
         }
 
         if (isset($data['products']) && !empty($data['products'])) {
@@ -338,11 +356,14 @@ class ApiSalesOrderController
 
             $ids = array_column($data['products'], 'product_id');
             $stmt = SalesOrder::notInOrderProducts($ids, $code);
-        }
-        exit();
 
-        /* Response::json($result, 200, '');
-        exit(); */
+            if ($stmt && $stmt->rowCount() > 0) {
+                $result['delete_products'] = $stmt->rowCount();
+            }
+        }
+
+        Response::json($result, 200, '');
+        exit();
     }
 
     /*-------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/

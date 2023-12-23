@@ -359,12 +359,8 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            if ($e->getCode() != 23000) {
-                echo 'An error occurred while executing the query. Try later.';
-                exit();
-            }
-
-            return false;
+            echo 'An error occurred while executing the query. Try later.';
+            exit();
 
         }
     }
