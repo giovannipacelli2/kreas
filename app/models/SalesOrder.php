@@ -30,6 +30,11 @@ class SalesOrder
         return App::get('database')->selectAll($join_table);
     }
 
+    public static function readByField($field, $values)
+    {
+        return App::get('database')->selectAllByField(static::$table, $field, $values);
+    }
+
     public static function readId($id)
     {
         return App::get('database')->selectOrderById(static::$join_table, $id);
@@ -71,4 +76,25 @@ class SalesOrder
 
     //PUT METHODS
 
+    public static function update($data, $old_id)
+    {
+        return App::get('database')->update(static::$table, $data, 'sales_id', $old_id);
+    }
+
+    public static function updateProductsInOrder($data, $sales_id)
+    {
+        return App::get('database')->updateProducts(static::$table, $data, $sales_id);
+    }
+
+    //DELETE METHODS
+
+    public static function notInOrderProducts($ids, $code)
+    {
+        $condition = [
+            'field' => 'sales_id',
+            'value' => $code,
+        ];
+
+        return App::get('database')->notInDelete(static::$table, 'product_id', $ids, $condition);
+    }
 }

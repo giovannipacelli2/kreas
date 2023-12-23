@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\core\ApiFunctions;
 use App\core\App;
 
 class Product
@@ -19,6 +20,9 @@ class Product
     {
         $field = 'product_code';
         $values = array_column($data, 'product_id');
+
+        // Duplicate checking
+        ApiFunctions::checkDuplicate($values, 'product in order');
 
         return App::get('database')->checkField(static::$table, $field, $values);
     }

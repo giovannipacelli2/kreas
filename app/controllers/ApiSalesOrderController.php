@@ -242,6 +242,109 @@ class ApiSalesOrderController
         exit();
     }
 
+    public static function updateSalesOrders($params)
+    {
+        // Says: "Bad request" if user not insert any params in uri
+        $params = ApiFunctions::paramsUri($params);
+
+        $result = [];
+
+        $data = (array) ApiFunctions::getInput();
+        $data_fields = ['sales_code', 'sales_date', 'destination', 'products'];
+
+        /*------------------Check-correctness-of-body-request-data------------------*/
+
+        // Order info:
+
+        ApiFunctions::updateChecker($data, $data_fields, false);
+
+        $old_id = $params['id'];
+        $new_id = null;
+
+        if (isset($data['sales_code'])) {
+            $new_id = $data['sales_code'];
+        }
+        if (isset($data['sales_date'])) {
+            ApiFunctions::checkDate($data['sales_date']);
+        }
+
+        // Products in order:
+
+        if (isset($data['products']) && !empty($data['products'])) {
+
+            self::products_validation($data['products']);
+
+            $check_products_id = Product::checkId($data['products']);
+
+            if (!$check_products_id) {
+                Response::json([], 400, 'Inserted product not exists in PRODUCTS table');
+                exit();
+            }
+
+            /*----------------finds-which-data-to-edit-insert-and-delete----------------*/
+
+            $stmt = SalesOrder::readByField('sales_id', $old_id);
+            $stmt = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $already_exists = array_column($stmt, 'product_id');
+
+            $to_update = [];
+            $to_insert = [];
+
+            foreach ($data['products'] as $p) {
+
+                $p = (array) $p;
+
+                if (in_array($p['product_id'], $already_exists)) {
+                    array_push($to_update, $p);
+                } else {
+                    $p['sales_id'] = $new_id ? $new_id : $old_id;
+                    array_push($to_insert, $p);
+                }
+            }
+        }
+
+        /*-----------------------Does-update-of-order-info--------------------------*/
+
+        $stmt = Sales::update($data, $old_id);
+
+        if (!$stmt || $stmt->rowCount() == 0) {
+            Response::json([], 200, 'Update unsuccess');
+            exit();
+        }
+
+        $result = [
+            'updated_orders' => $stmt->rowCount(),
+        ];
+
+        /*------------------Check-correctness-of-body-request-data------------------*/
+
+        if ($to_update) {
+            $code = $new_id ? $new_id : $old_id;
+
+            foreach ($to_update as $p) {
+                SalesOrder::updateProductsInOrder($p, $code);
+            }
+        }
+        if ($to_insert) {
+            foreach ($to_insert as $p) {
+                SalesOrder::insert($p);
+            }
+        }
+
+        if (isset($data['products']) && !empty($data['products'])) {
+
+            $code = $new_id ? $new_id : $old_id;
+
+            $ids = array_column($data['products'], 'product_id');
+            $stmt = SalesOrder::notInOrderProducts($ids, $code);
+        }
+        exit();
+
+        /* Response::json($result, 200, '');
+        exit(); */
+    }
+
     /*-------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
 
     private static function co2SavedCheck($result, $type)

@@ -138,6 +138,53 @@ class QueryBuilder
         }
     }
 
+    public function selectAllByField($table_name, $field, $values)
+    {
+
+        if (is_array($values)) {
+            $tmp = [];
+
+            for ($i = 0; $i < count($values); $i++) {
+                array_push($tmp, [
+                    'placeholder'=> ':id' . $i,
+                    'value'=> $values[$i],
+                ]);
+            }
+
+            $values = $tmp;
+            $tmp = null;
+        } else {
+            $tmp = [
+                'placeholder'=> ':id',
+                'value'=> $values,
+            ];
+            $values = [];
+            array_push($values, $tmp);
+        }
+
+        try {
+
+            $q = 'SELECT * FROM ' . $table_name .
+            ' WHERE ' . $field . ' IN (' . implode(', ', array_column($values, 'placeholder')) . ');';
+
+            $stmt = $this->pdo->prepare($q);
+
+            foreach ($values as $param) {
+                $stmt->bindParam($param['placeholder'], $param['value']);
+            }
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch (\Exception $e) {
+
+            echo 'An error occurred while executing the query. Try later.';
+            exit();
+
+        }
+    }
+
     public function selectOrderById($table_name, $id)
     {
         try {
@@ -237,7 +284,7 @@ class QueryBuilder
 
     /*------------------------------------------------------PUT-METHODS----------------------------------------------------*/
 
-    public function update($table_name, $data, $field, $old_product_id)
+    public function update($table_name, $data, $field, $old_id)
     {
         // wants $data like this:
         // (array) :
@@ -247,7 +294,7 @@ class QueryBuilder
         $params = [];
 
         $field = htmlspecialchars(strip_tags($field));
-        $old_product_id = htmlspecialchars(strip_tags($old_product_id));
+        $old_id = htmlspecialchars(strip_tags($old_id));
 
         foreach ($data as $key=>$value) {
 
@@ -271,7 +318,7 @@ class QueryBuilder
             foreach ($params as $param) {
                 $stmt->bindParam($param['placeholder'], $param['value']);
             }
-            $stmt->bindParam(':code', $old_product_id);
+            $stmt->bindParam(':code', $old_id);
 
             $stmt->execute();
 
@@ -285,6 +332,91 @@ class QueryBuilder
             }
 
             return false;
+
+        }
+    }
+
+    public function updateProducts($table_name, $data, $sales_id)
+    {
+        $product_id = htmlspecialchars(strip_tags($data['product_id']));
+        $n_products = htmlspecialchars(strip_tags($data['n_products']));
+        $sales_id = htmlspecialchars(strip_tags($sales_id));
+
+        try {
+
+            $q = 'UPDATE ' . $table_name . ' SET n_products=:n_products' .
+                    ' WHERE sales_id=:sales_id AND product_id=:product_id;';
+
+            $stmt = $this->pdo->prepare($q);
+
+            $stmt->bindParam(':sales_id', $sales_id, \PDO::PARAM_STR);
+            $stmt->bindParam(':product_id', $product_id, \PDO::PARAM_STR);
+            $stmt->bindParam(':n_products', $n_products, \PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch (\Exception $e) {
+
+            if ($e->getCode() != 23000) {
+                echo 'An error occurred while executing the query. Try later.';
+                exit();
+            }
+
+            return false;
+
+        }
+    }
+
+    /*---------------------------------------------------DELETE-METHODS----------------------------------------------------*/
+
+    public function notInDelete($table_name, $field, $values, $condition)
+    {
+
+        if (is_array($values)) {
+            $tmp = [];
+
+            for ($i = 0; $i < count($values); $i++) {
+                array_push($tmp, [
+                    'placeholder'=> ':id' . $i,
+                    'value'=> $values[$i],
+                ]);
+            }
+
+            $values = $tmp;
+            $tmp = null;
+        } else {
+            $tmp = [
+                'placeholder'=> ':id',
+                'value'=> $values,
+            ];
+            $values = [];
+            array_push($values, $tmp);
+        }
+
+        try {
+
+            $q = 'DELETE FROM ' . $table_name .
+            ' WHERE ' . $field . ' NOT IN (' . implode(', ', array_column($values, 'placeholder')) . ')'
+            . ' AND ' . $condition['field'] . '=:code;';
+
+            $stmt = $this->pdo->prepare($q);
+
+            foreach ($values as $param) {
+                $stmt->bindParam($param['placeholder'], $param['value']);
+            }
+
+            $stmt->bindParam(':code', $condition['value'], \PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch (\Exception $e) {
+
+            echo 'An error occurred while executing the query. Try later.';
+            exit();
 
         }
     }
