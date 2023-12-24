@@ -81,9 +81,9 @@ class SalesOrder
         return App::get('database')->update(static::$table, $data, 'sales_id', $old_id);
     }
 
-    public static function updateProductsInOrder($data, $sales_id)
+    public static function updateProductsInOrder($data, $sales_id, $old_product_id)
     {
-        return App::get('database')->updateProducts(static::$table, $data, $sales_id);
+        return App::get('database')->updateProducts(static::$table, $data, $sales_id, $old_product_id);
     }
 
     //DELETE METHODS

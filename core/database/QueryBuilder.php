@@ -298,22 +298,39 @@ class QueryBuilder
         }
     }
 
-    public function updateProducts($table_name, $data, $sales_id)
+    public function updateProducts($table_name, $data, $sales_id, $old_product_id)
     {
-        $product_id = htmlspecialchars(strip_tags($data['product_id']));
-        $n_products = htmlspecialchars(strip_tags($data['n_products']));
+
+        $params = [];
+
+        foreach ($data as $key=>$value) {
+
+            $tmp = [
+                'field' => htmlspecialchars(strip_tags($key)),
+                'placeholder' => ':' . htmlspecialchars(strip_tags($key)),
+                'value' => htmlspecialchars(strip_tags($value)),
+                'set' => htmlspecialchars(strip_tags($key)) . '=:' . htmlspecialchars(strip_tags($key)),
+            ];
+
+            array_push($params, $tmp);
+        }
+
         $sales_id = htmlspecialchars(strip_tags($sales_id));
+        $old_product_id = htmlspecialchars(strip_tags($old_product_id));
 
         try {
 
-            $q = 'UPDATE ' . $table_name . ' SET n_products=:n_products' .
-                    ' WHERE sales_id=:sales_id AND product_id=:product_id;';
+            $q = 'UPDATE ' . $table_name . ' SET ' . implode(', ', array_column($params, 'set')) .
+                    ' WHERE sales_id=:sales_id AND product_id=:old_product_id;';
 
             $stmt = $this->pdo->prepare($q);
 
+            foreach ($params as $param) {
+                $stmt->bindParam($param['placeholder'], $param['value']);
+            }
+
             $stmt->bindParam(':sales_id', $sales_id, \PDO::PARAM_STR);
-            $stmt->bindParam(':product_id', $product_id, \PDO::PARAM_STR);
-            $stmt->bindParam(':n_products', $n_products, \PDO::PARAM_INT);
+            $stmt->bindParam(':old_product_id', $old_product_id, \PDO::PARAM_STR);
 
             $stmt->execute();
 

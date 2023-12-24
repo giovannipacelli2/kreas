@@ -19,7 +19,7 @@ $router->post('api/sales-orders/sale', 'ApiSalesOrderController@insertProductInO
 $router->put('api/products/product', 'ApiProductController@updateProduct,id');
 $router->put('api/sales/sale', 'ApiSalesOrderController@updateSales,id');
 $router->put('api/sales-orders/order', 'ApiSalesOrderController@updateSalesOrders,id');
-$router->put('api/sales-orders/sale', 'ApiSalesOrderController@updateProductInSalesOrders');
+$router->put('api/sales-orders/sale', 'ApiSalesOrderController@updateProductInSalesOrders,product,order');
 
 $router->delete('api/products/product', 'ApiProductController@deleteProduct');
 $router->delete('api/sales/sale', 'ApiSalesController@deleteSales');

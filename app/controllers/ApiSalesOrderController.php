@@ -245,8 +245,6 @@ class ApiSalesOrderController
 
         // Order info:
 
-        ApiFunctions::updateChecker($data, $data_fields, false);
-
         $old_id = $params['id'];
         $new_id = null;
 
@@ -322,7 +320,7 @@ class ApiSalesOrderController
 
             $total_query_success += $stmt->rowCount();
         }
-        /*---------------------QUERY-UPDATE-PRODUCT-IN-ORDER------------------------*/ /*------------------------QUERY-UPDATE-ORDER-INFO---------------------------*/
+        /*---------------------QUERY-UPDATE-PRODUCT-IN-ORDER------------------------*/
 
         if ($to_update) {
             $code = $new_id ? $new_id : $old_id;
@@ -330,7 +328,7 @@ class ApiSalesOrderController
             $count = 0;
 
             foreach ($to_update as $p) {
-                $stmt = SalesOrder::updateProductsInOrder($p, $code);
+                $stmt = SalesOrder::updateProductsInOrder($p, $code, $p['product_id']);
 
                 if ($stmt->rowCount() > 0) {
                     $count = $count + $stmt->rowCount();
@@ -342,7 +340,7 @@ class ApiSalesOrderController
 
         }
 
-        /*---------------------QUERY-INSERT-PRODUCT-IN-ORDER------------------------*/ /*------------------------QUERY-UPDATE-ORDER-INFO---------------------------*/
+        /*---------------------QUERY-INSERT-PRODUCT-IN-ORDER------------------------*/
 
         if ($to_insert) {
 
@@ -360,7 +358,7 @@ class ApiSalesOrderController
             $total_query_success += $count;
         }
 
-        /*-------------------QUERY-DELETE-OLD-PRODUCT-IN-ORDER----------------------*/ /*------------------------QUERY-UPDATE-ORDER-INFO---------------------------*/
+        /*-------------------QUERY-DELETE-OLD-PRODUCT-IN-ORDER----------------------*/
 
         if (isset($data['products']) && !empty($data['products'])) {
 
@@ -379,6 +377,49 @@ class ApiSalesOrderController
         if ($total_query_success == 0) {
             Response::json([], 200, 'Nothing to update');
         }
+        Response::json($result, 200, '');
+    }
+
+    public static function updateProductInSalesOrders($params)
+    {
+        $params = ApiFunctions::paramsUri($params);
+        $product = (array) ApiFunctions::getInput();
+
+        $data_fields = ['product_id', 'n_products'];
+
+        ApiFunctions::updateChecker($product, $data_fields, false);
+
+        // check n_product
+
+        if (isset($product['n_products'])) {
+            $n_product = (int) $product['n_products'];
+
+            if ($n_product == 0) {
+                Response::json([], 400, 'n_products format is not valid');
+            }
+        }
+
+        // check product_id
+
+        if (isset($product['product_id'])) {
+
+            $verify = SalesOrder::checkProductInOrder($params['order'], $product['product_id']);
+
+            if ($verify && $product['product_id'] != $params['product']) {
+                Response::json([], 400, 'Product already exists in that order');
+            }
+        }
+
+        // if all checks are ok, do the update
+
+        $stmt = SalesOrder::updateProductsInOrder($product, $params['order'], $params['product']);
+
+        if ($stmt->rowCount() == 0) {
+            Response::json([], 400, 'Product update unsuccess');
+        }
+
+        $result['update_products'] = $stmt->rowCount();
+
         Response::json($result, 200, '');
     }
 
