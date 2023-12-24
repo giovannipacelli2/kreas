@@ -478,7 +478,6 @@ class QueryBuilder
 
     }
 
-
     /*---------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
 
     public function queryValuesBuilder($values)

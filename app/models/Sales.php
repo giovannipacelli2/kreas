@@ -15,10 +15,9 @@ class Sales
         return App::get('database')->describe(static::$table);
     }
 
-    public static function checkId($data)
+    public static function checkId($value)
     {
         $field = 'sales_code';
-        $value = $data[$field];
 
         return App::get('database')->checkField(static::$table, $field, $value);
     }
@@ -34,17 +33,6 @@ class Sales
 
     public static function update($data, $sales_code)
     {
-        $tmp = [];
-
-        foreach ($data as $field=>$value) {
-            if ($field != 'products') {
-                $tmp[$field] = $value;
-            }
-        }
-
-        $data = $tmp;
-        $tmp = null;
-
         return App::get('database')->update(static::$table, $data, 'sales_code', $sales_code);
     }
 }

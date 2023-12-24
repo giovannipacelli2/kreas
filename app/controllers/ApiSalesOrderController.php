@@ -116,7 +116,7 @@ class ApiSalesOrderController
 
         self::products_validation($data['products']);
 
-        $verify_order = Sales::checkId($data);
+        $verify_order = Sales::checkId($data['sales_code']);
         $verify_product = Product::checkId($data['products']);
 
         if (!$verify_order && $verify_product) {
@@ -197,7 +197,6 @@ class ApiSalesOrderController
 
         Response::json($result, 200, '');
 
-
     }
 
     /*---------------------------------------------------PUT-FUNCTIONS---------------------------------------------------*/
@@ -234,7 +233,10 @@ class ApiSalesOrderController
         // Says: "Bad request" if user not insert any params in uri
         $params = ApiFunctions::paramsUri($params);
 
+        $sales_info = [];
         $result = [];
+
+        $total_query_success = 0;
 
         $data = (array) ApiFunctions::getInput();
         $data_fields = ['sales_code', 'sales_date', 'destination', 'products'];
@@ -248,11 +250,28 @@ class ApiSalesOrderController
         $old_id = $params['id'];
         $new_id = null;
 
+        $verify_sales_code = Sales::checkId($old_id);
+
+        if (!$verify_sales_code) {
+            Response::json([], 400, 'Sales code not exists');
+        }
+
         if (isset($data['sales_code'])) {
             $new_id = $data['sales_code'];
         }
         if (isset($data['sales_date'])) {
             ApiFunctions::checkDate($data['sales_date']);
+        }
+
+        $to_update = [];
+        $to_insert = [];
+
+        // Create array with ORDER INFORMATIONS
+
+        foreach ($data as $field=>$value) {
+            if ($field != 'products') {
+                $sales_info[$field] = $value;
+            }
         }
 
         // Products in order:
@@ -274,9 +293,6 @@ class ApiSalesOrderController
 
             $already_exists = array_column($stmt, 'product_id');
 
-            $to_update = [];
-            $to_insert = [];
-
             foreach ($data['products'] as $p) {
 
                 $p = (array) $p;
@@ -290,19 +306,23 @@ class ApiSalesOrderController
             }
         }
 
-        /*-----------------------Does-update-of-order-info--------------------------*/
+        /*------------------------QUERY-UPDATE-ORDER-INFO---------------------------*/
 
-        $stmt = Sales::update($data, $old_id);
+        if ($sales_info) {
 
-        if (!$stmt) {
-            Response::json([], 200, 'Update unsuccess');
+            $stmt = Sales::update($sales_info, $old_id);
+
+            if (!$stmt) {
+                Response::json([], 200, 'Update unsuccess');
+            }
+
+            $result = [
+                'updated_orders' => $stmt->rowCount(),
+            ];
+
+            $total_query_success += $stmt->rowCount();
         }
-
-        $result = [
-            'updated_orders' => $stmt->rowCount(),
-        ];
-
-        /*------------------Check-correctness-of-body-request-data------------------*/
+        /*---------------------QUERY-UPDATE-PRODUCT-IN-ORDER------------------------*/ /*------------------------QUERY-UPDATE-ORDER-INFO---------------------------*/
 
         if ($to_update) {
             $code = $new_id ? $new_id : $old_id;
@@ -318,8 +338,12 @@ class ApiSalesOrderController
             }
 
             $result['update_products'] = $count;
+            $total_query_success += $count;
 
         }
+
+        /*---------------------QUERY-INSERT-PRODUCT-IN-ORDER------------------------*/ /*------------------------QUERY-UPDATE-ORDER-INFO---------------------------*/
+
         if ($to_insert) {
 
             $count = 0;
@@ -333,7 +357,10 @@ class ApiSalesOrderController
             }
 
             $result['insert_products'] = $count;
+            $total_query_success += $count;
         }
+
+        /*-------------------QUERY-DELETE-OLD-PRODUCT-IN-ORDER----------------------*/ /*------------------------QUERY-UPDATE-ORDER-INFO---------------------------*/
 
         if (isset($data['products']) && !empty($data['products'])) {
 
@@ -345,8 +372,13 @@ class ApiSalesOrderController
             if ($stmt && $stmt->rowCount() > 0) {
                 $result['delete_products'] = $stmt->rowCount();
             }
+
+            $total_query_success += $stmt->rowCount();
         }
 
+        if ($total_query_success == 0) {
+            Response::json([], 200, 'Nothing to update');
+        }
         Response::json($result, 200, '');
     }
 
