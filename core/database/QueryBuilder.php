@@ -38,26 +38,7 @@ class QueryBuilder
     public function checkField($table_name, $field, $values)
     {
 
-        if (is_array($values)) {
-            $tmp = [];
-
-            for ($i = 0; $i < count($values); $i++) {
-                array_push($tmp, [
-                    'placeholder'=> ':id' . $i,
-                    'value'=> $values[$i],
-                ]);
-            }
-
-            $values = $tmp;
-            $tmp = null;
-        } else {
-            $tmp = [
-                'placeholder'=> ':id',
-                'value'=> $values,
-            ];
-            $values = [];
-            array_push($values, $tmp);
-        }
+        $values = self::queryValuesBuilder($values);
 
         try {
 
@@ -141,26 +122,7 @@ class QueryBuilder
     public function selectAllByField($table_name, $field, $values)
     {
 
-        if (is_array($values)) {
-            $tmp = [];
-
-            for ($i = 0; $i < count($values); $i++) {
-                array_push($tmp, [
-                    'placeholder'=> ':id' . $i,
-                    'value'=> $values[$i],
-                ]);
-            }
-
-            $values = $tmp;
-            $tmp = null;
-        } else {
-            $tmp = [
-                'placeholder'=> ':id',
-                'value'=> $values,
-            ];
-            $values = [];
-            array_push($values, $tmp);
-        }
+        $values = self::queryValuesBuilder($values);
 
         try {
 
@@ -370,26 +332,7 @@ class QueryBuilder
     public function notInDelete($table_name, $field, $values, $condition)
     {
 
-        if (is_array($values)) {
-            $tmp = [];
-
-            for ($i = 0; $i < count($values); $i++) {
-                array_push($tmp, [
-                    'placeholder'=> ':id' . $i,
-                    'value'=> $values[$i],
-                ]);
-            }
-
-            $values = $tmp;
-            $tmp = null;
-        } else {
-            $tmp = [
-                'placeholder'=> ':id',
-                'value'=> $values,
-            ];
-            $values = [];
-            array_push($values, $tmp);
-        }
+        $values = self::queryValuesBuilder($values);
 
         try {
 
@@ -533,5 +476,34 @@ class QueryBuilder
 
         }
 
+    }
+
+
+    /*---------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
+
+    public function queryValuesBuilder($values)
+    {
+        if (is_array($values)) {
+            $tmp = [];
+
+            for ($i = 0; $i < count($values); $i++) {
+                array_push($tmp, [
+                    'placeholder'=> ':id' . $i,
+                    'value'=> $values[$i],
+                ]);
+            }
+
+            $values = $tmp;
+            $tmp = null;
+        } else {
+            $tmp = [
+                'placeholder'=> ':id',
+                'value'=> $values,
+            ];
+            $values = [];
+            array_push($values, $tmp);
+        }
+
+        return $values;
     }
 }

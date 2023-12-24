@@ -18,13 +18,11 @@ class ApiSalesOrderController
 
         if ($result->rowCount() == 0) {
             Response::json([], 404, 'Sales Orders not found');
-            exit();
         }
 
         $data = ApiFunctions::combineBySalesCode($result);
 
         Response::json($data, 200);
-        exit();
 
     }
 
@@ -37,13 +35,11 @@ class ApiSalesOrderController
 
         if ($result->rowCount() == 0) {
             Response::json([], 404, 'Sales Orders not found');
-            exit();
         }
 
         $data = ApiFunctions::combineBySalesCode($result);
 
         Response::json($data, 200);
-        exit();
 
     }
 
@@ -53,7 +49,6 @@ class ApiSalesOrderController
 
         if ($result->rowCount() == 0) {
             Response::json([], 404, 'Sales Orders not found');
-            exit();
         }
 
         $result = $result->fetch(\PDO::FETCH_ASSOC);
@@ -73,7 +68,6 @@ class ApiSalesOrderController
 
         if ($result->rowCount() == 0) {
             Response::json([], 404, 'Sales Orders not found');
-            exit();
         }
 
         $result = $result->fetch(\PDO::FETCH_ASSOC);
@@ -139,7 +133,6 @@ class ApiSalesOrderController
 
             if (!$stmt || $stmt->rowCount() == 0) {
                 Response::json([], 200, 'Insert unsuccess');
-                exit();
             }
 
             $result['Inserted_order'] = $stmt->rowCount();
@@ -157,7 +150,6 @@ class ApiSalesOrderController
 
                 if (!$stmt || $stmt->rowCount() == 0) {
                     Response::json([], 200, 'Insert product unsuccess');
-                    exit();
                 }
 
                 $affected_products = $affected_products + $stmt->rowCount();
@@ -166,7 +158,6 @@ class ApiSalesOrderController
             $result['Inserted_products'] = $affected_products;
 
             Response::json($result, 200, '');
-            exit();
 
         } elseif ($verify_order) {
 
@@ -192,14 +183,12 @@ class ApiSalesOrderController
 
         if ($already_exists) {
             Response::json([], 400, 'Product already exists in that order');
-            exit();
         }
 
         $stmt = SalesOrder::insertProduct($data, $params['order']);
 
         if (!$stmt || $stmt->rowCount() == 0) {
             Response::json([], 200, 'Insert unsuccess');
-            exit();
         }
 
         $result = [
@@ -207,7 +196,7 @@ class ApiSalesOrderController
         ];
 
         Response::json($result, 200, '');
-        exit();
+
 
     }
 
@@ -231,7 +220,6 @@ class ApiSalesOrderController
 
         if (!$stmt || $stmt->rowCount() == 0) {
             Response::json([], 200, 'Update unsuccess');
-            exit();
         }
 
         $result = [
@@ -239,7 +227,6 @@ class ApiSalesOrderController
         ];
 
         Response::json($result, 200, '');
-        exit();
     }
 
     public static function updateSalesOrders($params)
@@ -278,7 +265,6 @@ class ApiSalesOrderController
 
             if (!$check_products_id) {
                 Response::json([], 400, 'Inserted product not exists in PRODUCTS table');
-                exit();
             }
 
             /*----------------finds-which-data-to-edit-insert-and-delete----------------*/
@@ -310,7 +296,6 @@ class ApiSalesOrderController
 
         if (!$stmt) {
             Response::json([], 200, 'Update unsuccess');
-            exit();
         }
 
         $result = [
@@ -363,7 +348,6 @@ class ApiSalesOrderController
         }
 
         Response::json($result, 200, '');
-        exit();
     }
 
     /*-------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
@@ -397,7 +381,6 @@ class ApiSalesOrderController
 
             if ($n_product == 0) {
                 Response::json([], 400, 'n_products format is not valid');
-                exit();
             }
         }
     }

@@ -21,8 +21,6 @@ class ApiProductController
 
         $data = $result->fetchAll(\PDO::FETCH_ASSOC);
         Response::json($data, 200);
-        exit();
-
     }
 
     public function getSingleProduct($params)
@@ -34,13 +32,11 @@ class ApiProductController
 
         if ($result->rowCount() == 0) {
             Response::json([], 404, 'Product not found');
-            exit();
         }
 
         $data = $result->fetchAll(\PDO::FETCH_ASSOC);
 
         Response::json($data, 200);
-        exit();
 
     }
 
@@ -58,7 +54,6 @@ class ApiProductController
 
         if (!$stmt || $stmt->rowCount() == 0) {
             Response::json([], 200, 'Insert unsuccess');
-            exit();
         }
 
         $result = [
@@ -66,7 +61,6 @@ class ApiProductController
         ];
 
         Response::json($result, 200, '');
-        exit();
     }
 
     /*---------------------------------------------------PUT-FUNCTIONS---------------------------------------------------*/
@@ -89,7 +83,6 @@ class ApiProductController
 
         if (!$stmt || $stmt->rowCount() == 0) {
             Response::json([], 200, 'Update unsuccess');
-            exit();
         }
 
         $result = [
@@ -97,7 +90,6 @@ class ApiProductController
         ];
 
         Response::json($result, 200, '');
-        exit();
     }
 
     /*-------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
@@ -109,7 +101,6 @@ class ApiProductController
 
         if ($n_product == 0) {
             Response::json([], 400, 'n_products format is not valid');
-            exit();
         }
     }
 }
