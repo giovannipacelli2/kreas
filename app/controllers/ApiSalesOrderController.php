@@ -423,6 +423,27 @@ class ApiSalesOrderController
         Response::json($result, 200, '');
     }
 
+    /*--------------------------------------------------DELETE-FUNCTIONS-------------------------------------------------*/
+
+    public static function deleteSales($params)
+    {
+        $params = ApiFunctions::paramsUri($params);
+
+        $stmt = Sales::delete($params['id']);
+
+        if (!$stmt) {
+            Response::json([], 200, 'delete unsuccess');
+        }
+
+        $result['deleted'] = true;
+        Response::json($result, 200, '');
+    }
+
+    public static function deleteProductInSalesOrders()
+    {
+
+    }
+
     /*-------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
 
     private static function co2SavedCheck($result, $type)

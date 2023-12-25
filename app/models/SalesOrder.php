@@ -88,6 +88,11 @@ class SalesOrder
 
     //DELETE METHODS
 
+    public static function deleteProduct($sales_id, $product_id)
+    {
+        return App::get('database')->deleteProductsOrder(static::$table, $sales_id, $product_id);
+    }
+
     public static function notInOrderProducts($ids, $code)
     {
         $condition = [

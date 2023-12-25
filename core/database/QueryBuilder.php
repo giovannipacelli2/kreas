@@ -346,6 +346,43 @@ class QueryBuilder
 
     /*---------------------------------------------------DELETE-METHODS----------------------------------------------------*/
 
+    public function deleteField($table_name, $field, $values)
+    {
+        $values = self::queryValuesBuilder($values);
+
+        try {
+
+            $q = 'DELETE FROM ' . $table_name .
+            ' WHERE ' . $field . ' IN (' . implode(', ', array_column($values, 'placeholder')) . ');';
+
+            $stmt = $this->pdo->prepare($q);
+
+            foreach ($values as $param) {
+                $stmt->bindParam($param['placeholder'], $param['value']);
+            }
+
+            $stmt->execute();
+
+            if (!$stmt || $stmt->rowCount() == 0 || $stmt->rowCount() != count($values)) {
+                return false;
+            }
+            if ($stmt->rowCount() == count($values)) {
+                return true;
+            }
+
+        } catch (\Exception $e) {
+
+            echo 'An error occurred while executing the query. Try later.';
+            exit();
+
+        }
+    }
+
+    public static function deleteProductsOrder($table_name, $sales_id, $product_id)
+    {
+
+    }
+
     public function notInDelete($table_name, $field, $values, $condition)
     {
 
@@ -496,6 +533,9 @@ class QueryBuilder
     }
 
     /*---------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
+
+    // Wants $values as array:  [value1, value2]
+    // or single value as string: 'value'
 
     public function queryValuesBuilder($values)
     {

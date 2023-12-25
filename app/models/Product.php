@@ -52,4 +52,11 @@ class Product
     {
         return App::get('database')->update(static::$table, $data, 'product_code', $product_code);
     }
+
+    // DELETE METHODS
+
+    public static function delete($product_code)
+    {
+        return App::get('database')->deleteField(static::$table, 'product_code', $product_code);
+    }
 }

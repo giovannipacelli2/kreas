@@ -21,6 +21,6 @@ $router->put('api/sales/sale', 'ApiSalesOrderController@updateSales,id');
 $router->put('api/sales-orders/order', 'ApiSalesOrderController@updateSalesOrders,id');
 $router->put('api/sales-orders/sale', 'ApiSalesOrderController@updateProductInSalesOrders,product,order');
 
-$router->delete('api/products/product', 'ApiProductController@deleteProduct');
-$router->delete('api/sales/sale', 'ApiSalesController@deleteSales');
-$router->delete('api/sales-orders/sale', 'ApiSalesOrderController@deleteProductInSalesOrders');
+$router->delete('api/products/product', 'ApiProductController@deleteProduct,id');
+$router->delete('api/sales/sale', 'ApiSalesOrderController@deleteSales,id');
+$router->delete('api/sales-orders/sale', 'ApiSalesOrderController@deleteProductInSalesOrders,product,order');

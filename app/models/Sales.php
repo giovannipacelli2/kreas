@@ -35,4 +35,11 @@ class Sales
     {
         return App::get('database')->update(static::$table, $data, 'sales_code', $sales_code);
     }
+
+    // DELETE METHODS
+
+    public static function delete($sales_code)
+    {
+        return App::get('database')->deleteField(static::$table, 'sales_code', $sales_code);
+    }
 }

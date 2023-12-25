@@ -92,6 +92,22 @@ class ApiProductController
         Response::json($result, 200, '');
     }
 
+    /*--------------------------------------------------DELETE-FUNCTIONS-------------------------------------------------*/
+
+    public static function deleteProduct($params)
+    {
+        $params = ApiFunctions::paramsUri($params);
+
+        $stmt = Product::delete($params['id']);
+
+        if (!$stmt) {
+            Response::json([], 200, 'delete unsuccess');
+        }
+
+        $result['deleted'] = true;
+        Response::json($result, 200, '');
+    }
+
     /*-------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/
 
     private static function product_validation($product)
