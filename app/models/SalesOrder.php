@@ -21,6 +21,11 @@ class SalesOrder
         return App::get('database')->checkProductInOrder(static::$table, $sales_id, $product_id);
     }
 
+    public static function selectProductsInOrder($sales_id)
+    {
+        return App::get('database')->selectAllByField(static::$table, 'sales_id', $sales_id);
+    }
+
     // GET METHODS
 
     public static function readAll()

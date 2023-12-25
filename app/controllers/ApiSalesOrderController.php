@@ -439,9 +439,24 @@ class ApiSalesOrderController
         Response::json($result, 200, '');
     }
 
-    public static function deleteProductInSalesOrders()
+    public static function deleteProductInSalesOrders($params)
     {
+        $params = ApiFunctions::paramsUri($params);
 
+        $select_products = SalesOrder::selectProductsInOrder($params['order']);
+
+        if ($select_products->rowCount() == 1) {
+            Response::json([], 200, ['Delete unsuccess: the order must contain at least one product']);
+        }
+
+        $stmt = SalesOrder::deleteProduct($params['order'], $params['product']);
+
+        if ($stmt->rowCount() == 0) {
+            Response::json([], 200, ['Delete unsuccess']);
+        }
+
+        $result['deleted'] = true;
+        Response::json($result, 200, '');
     }
 
     /*-------------------------------------------------PRIVATE-FUNCTIONS-------------------------------------------------*/

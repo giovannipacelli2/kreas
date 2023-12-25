@@ -378,11 +378,34 @@ class QueryBuilder
         }
     }
 
-    public static function deleteProductsOrder($table_name, $sales_id, $product_id)
+    public function deleteProductsOrder($table_name, $sales_id, $product_id)
     {
+        try {
 
+            $sales_id = htmlspecialchars(strip_tags($sales_id));
+            $product_id = htmlspecialchars(strip_tags($product_id));
+
+            $q = 'DELETE FROM ' . $table_name .
+                    ' WHERE product_id=:product_id' .
+                    ' AND sales_id=:sales_id;';
+
+            $stmt = $this->pdo->prepare($q);
+            $stmt->bindParam(':sales_id', $sales_id, \PDO::PARAM_STR);
+            $stmt->bindParam(':product_id', $product_id, \PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            return $stmt;
+
+        } catch (\Exception $e) {
+
+            echo 'An error occurred while executing the query. Try later.';
+            exit();
+
+        }
     }
 
+    // wants condition as [ 'field' => 'field_name', 'value' => value ]
     public function notInDelete($table_name, $field, $values, $condition)
     {
 
