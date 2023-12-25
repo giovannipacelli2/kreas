@@ -1,6 +1,7 @@
 <?php
 
     require './vendor/autoload.php';
+    require './core/error-handler.php';
 
     use App\core\{ Request, Router };
 

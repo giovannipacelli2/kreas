@@ -26,15 +26,11 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
 
-    // $values =
-    // accept single code in string format
-    // or array of params as string
     public function checkField($table_name, $field, $values)
     {
 
@@ -62,8 +58,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -92,8 +87,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -113,8 +107,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -141,8 +134,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -165,8 +157,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -189,8 +180,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -235,9 +225,10 @@ class QueryBuilder
         } catch (\Exception $e) {
 
             if ($e->getCode() != 23000) {
-                echo 'An error occurred while executing the query. Try later.';
-                exit();
+                self::manageError($e);
             }
+
+            exceptionHandler($e);
 
             return false;
 
@@ -289,9 +280,10 @@ class QueryBuilder
         } catch (\Exception $e) {
 
             if ($e->getCode() != 23000) {
-                echo 'An error occurred while executing the query. Try later.';
-                exit();
+                self::manageError($e);
             }
+
+            exceptionHandler($e);
 
             return false;
 
@@ -338,8 +330,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -372,8 +363,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -399,8 +389,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -431,8 +420,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -455,8 +443,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -487,8 +474,7 @@ class QueryBuilder
             return $stmt;
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
     }
@@ -517,8 +503,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
 
@@ -548,8 +533,7 @@ class QueryBuilder
 
         } catch (\Exception $e) {
 
-            echo 'An error occurred while executing the query. Try later.';
-            exit();
+            self::manageError($e);
 
         }
 
@@ -560,7 +544,7 @@ class QueryBuilder
     // Wants $values as array:  [value1, value2]
     // or single value as string: 'value'
 
-    public function queryValuesBuilder($values)
+    private function queryValuesBuilder($values)
     {
         if (is_array($values)) {
             $tmp = [];
@@ -584,5 +568,13 @@ class QueryBuilder
         }
 
         return $values;
+    }
+
+    private function manageError($e)
+    {
+        exceptionHandler($e);
+
+        echo 'An error occurred while executing the query. Try later.';
+        exit();
     }
 }

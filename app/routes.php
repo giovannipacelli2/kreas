@@ -17,10 +17,10 @@ $router->post('api/sales-orders', 'ApiSalesOrderController@insertSalesOrders');
 $router->post('api/sales-orders/sale', 'ApiSalesOrderController@insertProductInOrder,order');
 
 $router->put('api/products/product', 'ApiProductController@updateProduct,id');
-$router->put('api/sales/sale', 'ApiSalesOrderController@updateSales,id');
+$router->put('api/sales/sale', 'ApiSalesController@updateSales,id');
 $router->put('api/sales-orders/order', 'ApiSalesOrderController@updateSalesOrders,id');
 $router->put('api/sales-orders/sale', 'ApiSalesOrderController@updateProductInSalesOrders,product,order');
 
 $router->delete('api/products/product', 'ApiProductController@deleteProduct,id');
-$router->delete('api/sales/sale', 'ApiSalesOrderController@deleteSales,id');
+$router->delete('api/sales/sale', 'ApiSalesController@deleteSales,id');
 $router->delete('api/sales-orders/sale', 'ApiSalesOrderController@deleteProductInSalesOrders,product,order');
