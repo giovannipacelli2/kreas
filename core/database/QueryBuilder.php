@@ -2,6 +2,8 @@
 
 namespace App\core\database;
 
+use App\core\Response;
+
 class QueryBuilder
 {
     protected $pdo;
@@ -574,7 +576,6 @@ class QueryBuilder
     {
         exceptionHandler($e);
 
-        echo 'An error occurred while executing the query. Try later.';
-        exit();
+        Response::json([], 500, 'An error occurred while executing the query. Try later.');
     }
 }

@@ -4,7 +4,7 @@
 
 /* -----> */ error_reporting(E_ALL);
 /* -----> */ ini_set('display_errors', 0);
-/* -----> */ set_error_handler('errorHandler', E_ALL);
+/* -----> */ set_error_handler('errorHandler');
 
 function fileCheck($path)
 {
@@ -17,12 +17,14 @@ function fileCheck($path)
             mkdir('error');
         }
         fopen($path, 'w');
+
+        return $path;
     }
 }
 
 function errorHandler($err_n, $err_str, $err_file, $err_line)
 {
-var_dump("sono_qui");
+    var_dump('sono_qui');
     $date = new DateTime('now');
     $date = $date->format('Y-m-d H:i:s');
 
