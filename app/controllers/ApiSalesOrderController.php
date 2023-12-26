@@ -157,7 +157,7 @@ class ApiSalesOrderController
 
             $result['Inserted_products'] = $affected_products;
 
-            Response::json($result, 200, '');
+            Response::json($result, 201, '');
 
         } elseif ($verify_order) {
 
@@ -195,7 +195,7 @@ class ApiSalesOrderController
             'Inserted_products' => $stmt->rowCount(),
         ];
 
-        Response::json($result, 200, '');
+        Response::json($result, 201, '');
 
     }
 
@@ -213,6 +213,7 @@ class ApiSalesOrderController
 
         $data = (array) ApiFunctions::getInput();
         $data_fields = ['sales_code', 'sales_date', 'destination', 'products'];
+        ApiFunctions::updateChecker($data, $data_fields, FALSE);
 
         /*------------------Check-correctness-of-body-request-data------------------*/
 

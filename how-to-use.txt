@@ -7,8 +7,6 @@ api/product?id={id}             -> Restituisce i dati inerenti ad un solo prodot
 api/sales-orders/all            -> Restituisce tutti gli ordini
 api/sales-order?id={id}   -> Informazioni di un singolo ordine
 
-api/sales/{id}   -> Restituisce le info di un singolo ordine
-
 api/sales-orders/all-co2         -> estrae il totale della co2 risparmiata dalle vendite
 
 api/sales-orders/date-interval-co2?start={start}&end={end}   -> Restituisce tutti gli ordini
@@ -49,12 +47,12 @@ api/sales-orders        ->  inserire nel corpo della richiesta i dati della vend
 
 {     
     "product_id": "5520",        
-    "n_prod" : 4
+    "n_products" : 4
 }
 
 PUT:
 
-api/products/product?code={value}    -> esegue l'update del prodotto con il codice = {value}
+api/products/product?id={value}    -> esegue l'update del prodotto con il codice = {value}
                                    -> esegue l'update del prodotto con il codice = {value}
 
 {
@@ -63,7 +61,7 @@ api/products/product?code={value}    -> esegue l'update del prodotto con il codi
     "saved_kg_co2":"7"
 }
 
-/api/sales/sale?code={value}        -> Esegue l'update delle informazioni riguardanti l'ordine
+/api/sales/sale?id={value}        -> Esegue l'update delle informazioni riguardanti l'ordine
 
 {
     "sales_code": "ZZ0001",
@@ -78,7 +76,7 @@ api/sales-orders/sale?product={p_code}&order=={o_code}      -> esegue l'update d
     "n_products": 5
 }
 
-api/sales-orders/order?code={value}     -> esegue l'update della vendita con il codice = {value}
+api/sales-orders/order?id={value}     -> esegue l'update della vendita con il codice = {value}
                                         -> inserire uno o più elementi da modificare nel corpo della richiesta
 
 {
@@ -103,8 +101,8 @@ api/sales-orders/order?code={value}     -> esegue l'update della vendita con il 
 
 DELETE:
 
-api/products/product?code={value}     -> elimina il prodotto con il codice = {value}
+api/products/product?id={value}     -> elimina il prodotto con il codice = {value}
 
-api/sales/sale?code={value}      -> elimina la vendita con il codice = {value}
+api/sales/sale?id={value}      -> elimina la vendita con il codice = {value}
 
 api/sales-orders/sale?product={p_code}&order={o_code}       -> elimina un prodotto in una vendita

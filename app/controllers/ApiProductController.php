@@ -60,7 +60,7 @@ class ApiProductController
             'inserted_products' => $stmt->rowCount(),
         ];
 
-        Response::json($result, 200, '');
+        Response::json($result, 201, '');
     }
 
     /*---------------------------------------------------PUT-FUNCTIONS---------------------------------------------------*/
