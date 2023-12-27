@@ -213,7 +213,7 @@ class ApiSalesOrderController
 
         $data = (array) ApiFunctions::getInput();
         $data_fields = ['sales_code', 'sales_date', 'destination', 'products'];
-        ApiFunctions::updateChecker($data, $data_fields, FALSE);
+        ApiFunctions::updateChecker($data, $data_fields, false);
 
         /*------------------Check-correctness-of-body-request-data------------------*/
 

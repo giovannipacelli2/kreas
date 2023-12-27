@@ -8,3 +8,6 @@ error/*
 vendor
 
 .php-cs-fixer.cache
+
+presentation
+readme-img

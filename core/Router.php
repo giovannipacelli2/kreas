@@ -84,9 +84,10 @@ class Router
         }
 
         if (isset($params)) {
-            return $controller->$action($params);
+            //return $controller->$action($params);
+            return call_user_func_array(array($controller, $action), array($params));
         }
 
-        return $controller->$action();
+        return call_user_func(array($controller, $action));
     }
 }
