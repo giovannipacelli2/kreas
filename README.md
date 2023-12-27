@@ -41,30 +41,38 @@
 
 # **Organizzazione dei file:** 
 
-## Cartella `./api`
+## File `index.php`:
 
-### In questa cartella vi è il cuore dell’app:
+* Richiama tutte le funzioni e file necessari per la connessione al db, prende i dati della URI , richiama `routes.php`, ridireziona il traffico verso il controller specifico
 
-* Contiene il file `index.php`, il quale ricava i dati dall’URI e reindirizza verso l’operazione desiderata utilizzando la funzione contenuta in `file-renderer.php` che a sua volta utilizza lo schema in `routes.php`
+## File `config.php`:
 
-* Contiene `./product`, `./sale` e `./sales-order` che sono le cartelle che contengono i file che si occupano di effettuare le azioni.
+* Crea la configurazione per la connessione al DB utilizzando i dati di accesso presenti in `.ENV`
 
-## La cartella `./config` contiene:
+## Cartella `./app`
 
-* Il file `./api_config/routes.php` dove ci sono le regole per lo smistamento. 
+* Contiene il file `routes.php`, il quale crea un vero e proprio registro dove vi sono i dati di routing.
 
-* Il file `db_config.php` che crea la configurazione per la connessione al DB utilizzando i dati di accesso presenti in `.ENV`
+* Contiene la cartella `./controllers` con i controller che tramite funzioni dedicate, si occupano di gestire i dati e caricare le risorse necessarie.
+
+* La cartella `./models` contenente le entità con i loro metodi specifici che vanno a richiamare per ogni richiesta la query opportuna.
 
 ## La cartella `./core` contiene:
 
-* `Message` -> incaricata a visualizzare messaggi
-* `ApiFunctions` -> Tutte le funzioni utili per effettuare controlli e determinate azioni atte a processare i dati
-* `UriBuilder` -> costruisce un “oggetto” partendo dall’URI
-* `Connection` -> Instaura la connessione al DB partendo da una determinata configurazione.
+* La cartella `database` contenente `Connection.php` che si occupa di instaurare la connessione vera e propria al DB, il file `QueryBuilder.php` contenente le query specifiche del DB. 
 
-## La cartella `./model` contiene le classi che sono astrazione dei modelli:
+* `ApiFunctions.php` -> Ha tutte le funzioni utili per effettuare controlli e determinate azioni atte a processare i dati.
 
-#### `Product`, `Sales` e `SalesOrder`  ->  Ognuno con i suoi metodi **CRUD** e funzioni per le query.
+* `App.php` -> Consente di memorizzare e prendere dati in un registro
+
+* `bootstrap.php` -> incaricata a creare una connessione al DB passando la configurazione a `Connection.php
+
+* `Response.php` -> è una classe che permette di restituire la risposta in formato json.
+
+* `Request.php` -> è una classe che permette di estrarre i dati dalla URI.
+
+* `Router.php` -> Crea la tabella di routing partendo da `routes.php` e smista il traffico verso il controller dedicato con la sua funzione `direct()`.
+
 
 </br>
 
@@ -75,18 +83,12 @@
 ### Lettura dei prodotti:
 
     GET -> {domain}/api/products/all
-    GET -> {domain}/api/products/{id}
-
-### Lettura info ordini:
-
-    GET -> {domain}/api/sales/all
-    GET -> {domain}/api/sales/{id}
-
+    GET -> {domain}/api/product?id={id}
 
 ### Lettura ordine completo:
 
     GET -> {domain}/api/sales-orders/all
-    GET -> {domain}/api/sales-orders/{id}
+    GET -> {domain}/api/sales-order?id={id}
 
 </br>
 
@@ -150,21 +152,32 @@
 ### Corpo della richiesta: 
 
     {
-        "sales_code": "ZZ0000",
-        "sales_date": "2023-11-22 09:36:20",
+        "sales_code": "ZZ1234",
+        "sales_date": "2023-11-22",
         "destination": "France",
         "products": [
-                {
-                    "product_id": "0234",
-                    "n_products": 5
-                },
-                {
-                    "product_id": "6476",
-                    "n_products": 2
-                }
+            {
+                "product_id": "0100",
+                "n_products": "2"
+            },
+            {
+                "product_id": "1345",
+                "n_products": "3"
+            },
+            {
+                "product_id": "6476",
+                "n_products": "2"
+            },
+            {
+                "product_id": "5520",
+                "n_products": 3
+            }
         ]
-    }
+    } 
 
+<img src = "./readme-img/order_insert.jpg" style = "width:70%" >
+
+</br>
 
 ### Inserimento di un nuovo prodotto in un ordine già esistente:
 	
@@ -174,7 +187,7 @@
 
     {     
         "product_id": "5520",        
-        "n_prod" : 4
+        "n_products" : 4
     }
 
 </br>
@@ -185,7 +198,7 @@
 
 ### Modifica di un prodotto:
 
-		PUT -> {domain}/api/products/product?code={value}
+		PUT -> {domain}/api/products/product?id={value}
 
 #### esegue l'update del prodotto con il codice = {value}
 
@@ -193,22 +206,22 @@
 
     {
         "product_code": "4141",
-        "name": "meat",
-        "saved_kg_co2":"7"
+        "name": "Chicken hamburger",
+        "saved_kg_co2":"10.3"
     }
 
 </br>
 
 ### Modifica di un ordine di vendita:
 
-		PUT -> {domain}/api/sales-orders/order?code={value}
+		PUT -> {domain}/api/sales-orders/order?id={value}
 
 #### esegue l'update dell’ordine con il codice = {value}
 
 #### Corpo della richiesta: 
 
     {
-        "sales_code": "ZZ0001",
+        "sales_code": "ZZ1235",
         "sales_date": "2023-11-25 16:00:00",
         "destination": "Canada",
         "products": [
@@ -230,7 +243,7 @@
 
 #### Si può effettuare la modifica delle informazioni di vendita senza andare a specificare i prodotti con:
 
-		PUT -> {domain}/api/sales/sale?code={value} 
+		PUT -> {domain}/api/sales/sale?id={value} 
 
 #### specificando uno o più campi nel corpo della richiesta
 
@@ -254,7 +267,7 @@
 
 ### Cancellazione di un prodotto:
 
-		DELETE -> {domain}/api/products/product?code={value}
+		DELETE -> {domain}/api/products/product?id={value}
 
 #### esegue il delete del prodotto con il codice = {value}
 
@@ -264,7 +277,7 @@
 
 ### Cancellazione di un ordine di vendita:
 
-		DELETE -> {domain}/api/sales/sale?code={value} 
+		DELETE -> {domain}/api/sales/sale?id={value} 
 
 #### esegue il delete dell’ordine con il codice = {value}
 
