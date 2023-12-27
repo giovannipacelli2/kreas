@@ -34,7 +34,7 @@ class ApiSalesOrderController
         $result = SalesOrder::readId($params['id']);
 
         if ($result->rowCount() == 0) {
-            Response::json([], 404, 'Sales Orders not found');
+            Response::json([], 404, 'Sales Order not found');
         }
 
         $data = ApiFunctions::combineBySalesCode($result);
