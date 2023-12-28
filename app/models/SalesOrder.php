@@ -30,7 +30,7 @@ class SalesOrder
 
     public static function readAll()
     {
-        $join_table = static::$join_table . ' ORDER BY so.sales_code';
+        $join_table = static::$join_table . ' ORDER BY so.sales_date';
 
         return App::get('database')->selectAll($join_table);
     }

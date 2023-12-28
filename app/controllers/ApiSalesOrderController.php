@@ -61,7 +61,7 @@ class ApiSalesOrderController
     public static function getIntervalCo2($params)
     {
         // Says: "Bad request" if user not insert any params in uri
-        $params = ApiFunctions::paramsUri($params);
+        $params = ApiFunctions::paramsUri($params, true);
         $date = ApiFunctions::checkCorrectDates($params);
 
         $result = SalesOrder::getIntervalCo2($date);

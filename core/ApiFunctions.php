@@ -30,7 +30,7 @@ class ApiFunctions
 
     /*-----------------------------------------RECEIVED-DATA----------------------------------------*/
 
-    public static function paramsUri(array $params)
+    public static function paramsUri(array $params, bool $empty = false)
     {
 
         if (!$_REQUEST) {
@@ -38,7 +38,7 @@ class ApiFunctions
             exit();
         }
 
-        $validation = self::existsAllParams($_REQUEST, $params);
+        $validation = self::existsAllParams($_REQUEST, $params, $empty);
 
         if (!$validation) {
             Response::json([], 400, 'Incorrect data in request');
@@ -142,7 +142,7 @@ class ApiFunctions
     // check NOT NULL fields
 
     // Wants data as key=>value and fields as array of string
-    public static function existsAllParams($data, $data_fields)
+    public static function existsAllParams($data, $data_fields, $empty = false)
     {
         //cast sended data in associative array;
         $data = (array) $data;
@@ -159,7 +159,7 @@ class ApiFunctions
 
             // if param NOT EXISTS or an param has empty string
 
-            if (!$exists || $data[$param] == '') {
+            if (!$exists || (!$empty && $data[$param] == '')) {
                 $check = false;
             }
 
