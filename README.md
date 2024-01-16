@@ -83,12 +83,12 @@
 ### Lettura dei prodotti:
 
     GET -> {domain}/api/products/all
-    GET -> {domain}/api/product?id={id}
+    GET -> {domain}/api/product/{id}
 
 ### Lettura ordine completo:
 
     GET -> {domain}/api/sales-orders/all
-    GET -> {domain}/api/sales-order?id={id}
+    GET -> {domain}/api/sales-order/{id}
 
 </br>
 

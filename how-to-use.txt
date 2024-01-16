@@ -1,11 +1,11 @@
 GET:
 
 api/products/all               -> Restituisce tutti i prodotti
-api/product?id={id}             -> Restituisce i dati inerenti ad un solo prodotto
+api/product/{id}             -> Restituisce i dati inerenti ad un solo prodotto
 
 
 api/sales-orders/all            -> Restituisce tutti gli ordini
-api/sales-order?id={id}   -> Informazioni di un singolo ordine
+api/sales-order/{id}   -> Informazioni di un singolo ordine
 
 api/sales-orders/all-co2         -> estrae il totale della co2 risparmiata dalle vendite
 

@@ -4,9 +4,9 @@ use App\core\Response;
 
 // In development comment these lines of code
 
-/* -----> */ //error_reporting(E_ALL);
-/* -----> */ //ini_set('display_errors', 0);
-/* -----> */ //set_error_handler('errorHandler');
+/* -----> */ error_reporting(E_ALL);
+/* -----> */ ini_set('display_errors', 0);
+/* -----> */ set_error_handler('errorHandler');
 
 function fileCheck($path)
 {
