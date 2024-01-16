@@ -25,8 +25,9 @@ class ApiProductController
 
     public function getSingleProduct($params)
     {
-        // Says: "Bad request" if user not insert any params in uri
-        $params = ApiFunctions::paramsUri($params);
+
+        //$params = ApiFunctions::paramsUri($params);
+        ApiFunctions::inputChecker($params, ['id'], false);
 
         $result = Product::readId($params['id']);
 

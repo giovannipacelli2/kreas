@@ -29,7 +29,8 @@ class ApiSalesOrderController
     public function getSingleSalesOrder($params)
     {
         // Says: "Bad request" if user not insert any params in uri
-        $params = ApiFunctions::paramsUri($params);
+        //$params = ApiFunctions::paramsUri($params);
+        ApiFunctions::inputChecker($params, ['id'], false);
 
         $result = SalesOrder::readId($params['id']);
 
